@@ -1,0 +1,165 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-12-30 11:20+0000\n"
+"PO-Revision-Date: 2018-12-30 12:51+0100\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: models/conversion.py:34
+msgid "From amount"
+msgstr "Van hoeveelheid"
+
+#: models/conversion.py:37
+msgid "To amount"
+msgstr "Naar hoeveelheid"
+
+#: models/conversion.py:40
+msgid "Marker"
+msgstr "Markering"
+
+#: models/conversion.py:43
+msgid "Generic"
+msgstr "Generiek"
+
+#: models/conversion.py:45
+msgid "From year"
+msgstr "Vanaf jaar"
+
+#: models/conversion.py:46
+msgid "To year"
+msgstr "Tot jaar"
+
+#: models/conversion.py:47
+msgid "Original text"
+msgstr "Oorspronkelijke text"
+
+#: models/expression.py:26 models/recipe.py:55
+msgid "Amount"
+msgstr "Hoeveelheid"
+
+#: models/expression.py:28
+msgid "Operator"
+msgstr ""
+
+#: models/location.py:10 models/material.py:7 models/recipe.py:12
+#: models/unit.py:12
+msgid "Name"
+msgstr "Naam"
+
+#: models/recipe.py:13
+msgid "Date"
+msgstr "Datum"
+
+#: models/recipe.py:16
+msgid "Information"
+msgstr "Informatie"
+
+#: models/source.py:17
+msgid "Year of publication"
+msgstr "Publicatiejaar"
+
+#: models/source.py:18
+msgid "Title"
+msgstr "Titel"
+
+#: models/source.py:19
+msgid "Author"
+msgstr "Auteur"
+
+#: models/source.py:20
+msgid "Publisher"
+msgstr "Uitgever"
+
+#: models/source.py:22
+msgid "Other info"
+msgstr "Overige"
+
+#: models/source.py:23
+msgid "Original source"
+msgstr "Historische bron"
+
+#: templates/base.html:18
+msgid "Sources"
+msgstr "Bronnen"
+
+#: templates/base.html:21
+msgid "Locations"
+msgstr "Plaatsen"
+
+#: templates/base.html:24
+msgid "Units"
+msgstr "Eenheden"
+
+#: templates/base.html:27
+msgid "Materials"
+msgstr "Grondstoffen"
+
+#: templates/base.html:30
+msgid "Conversions"
+msgstr "Conversies"
+
+#: templates/base.html:33
+msgid "Convert units"
+msgstr "Converteer eenheden"
+
+#: templates/base_listing.html:15
+msgid "Home"
+msgstr ""
+
+#: templates/base_listing.html:24
+#, python-format
+msgid "%(label)s"
+msgstr ""
+
+#: templates/confirm_delete.html:9
+msgid "Do you really want to delete {{ object }}?"
+msgstr ""
+
+#: templates/confirm_delete.html:20
+msgid "Yes"
+msgstr "Ja"
+
+#: templates/confirm_delete.html:23
+msgid "Cancel"
+msgstr "Afbreken"
+
+#: templates/conversion_detail.html:8
+msgid "Add more units"
+msgstr "Voeg eenheden toe"
+
+#: templates/conversion_detail.html:15
+msgid "Extra units"
+msgstr "Extra eenheden"
+
+#: templates/location_detail.html:23
+msgid "Local conversions"
+msgstr "Plaatselijke conversies"
+
+#: templates/snippets/add_action.html:5 templates/snippets/listing.html:25
+msgid "Add"
+msgstr "Toevoegen"
+
+#: templates/snippets/delete_action.html:6
+msgid "Delete"
+msgstr "Verwijderen"
+
+#: templates/snippets/edit_action.html:5
+msgid "Edit"
+msgstr "Bewerken"
+
+#: templates/snippets/listing.html:13
+msgid "Filter"
+msgstr "Filter"
