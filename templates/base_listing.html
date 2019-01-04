@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% load i18n unicorn_tags %}
+
+{% block actions %}
+{% add_action view.model %}
+{% endblock %}
+
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
+    <li class="breadcrumb-item active">{{ view.model_label_plural }}</li>
+  </ol>
+</nav>
+{% endblock %}
+
+
+{% block title %}
+{% blocktrans with label=view.model_label_plural %}{{label}}{% endblocktrans %}
+{% endblock %}
+
+
+{% block content %}
+{% listing '' view.list_items %}
+{% endblock content %}

@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% load bootstrap4 unicorn_tags %}
+
+
+{% block title %}
+<h1>Convert units</h1>
+{% endblock %}
+
+
+{% block content %}
+
+{% bootstrap_messages %}
+
+<form action="{% block action_url %}{{ view.action_url }}{% endblock %}"
+      method="POST" 
+      enctype="multipart/form-data"
+      class="form">
+
+    {% csrf_token %}
+    {{ form.media }}
+
+    {% block formfields %}
+    {% bootstrap_form form %}
+    {% endblock %}
+
+    {% buttons %}
+    <button type="submit" class="btn btn-primary">
+      Convert
+    </button>
+    {% endbuttons %}
+</form>
+
+{% if paths|length %}
+
+{% with result=view.conversion_result %}
+<div class="alert alert-dark" role="alert">
+  1 {{ form.cleaned_data.from_unit }} =
+
+  <dl>
+    <dt>Median</dt><dd>{{ result.median }}</dd>
+    <dt>Min</dt><dd>{{ result.min }}</dd>
+    <dt>Avg</dt><dd>{{ result.avg }}</dd>
+    <dt>Max</dt><dd>{{ result.max }}</dd>    
+  </dl>
+
+  {{ form.cleaned_data.to_unit }}
+</div>
+  
+{% for path in paths %}
+<div class="path">
+  <h2>Conversion path</h2>
+
+  <div class="alert alert-dark" role="alert">
+    <dl>
+      <dt>Factor</dt><dd>{{ result.all|get:forloop.counter0 }}</dd>
+      <dt>Precision</dt><dd>{{ result.precision|get:forloop.counter0 }}</dd>
+    </dl>
+  </div>
+  
+  <ol>
+  {% for conversion in path %}
+  <li>
+    <a href="{% url 'view_conversion' pk=conversion.id %}">{{ conversion }}</a>
+  </li>
+  {% endfor %}
+  </ol>
+  
+</div>
+{% endfor %}
+{% endwith %}
+{% endif %}
+
+{% endblock content %}

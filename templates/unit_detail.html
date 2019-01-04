@@ -1,0 +1,25 @@
+{% extends 'base_detail.html' %}
+
+{% load unicorn_tags %}
+
+{% block content %}
+
+<dl>
+  <dt>Location</dt>
+  <dd><a href="{{ unit.location|detail_url }}">{{ unit.location }}</a></dd>
+</dl>
+
+<h2>Conversions  {% inline_add_action 'conversion' object.id %}</h2>
+<ul class="list-group">
+  {% for conversion in object.list_conversions %}
+  <li class="list-group-item">
+    <a href="{{ conversion|detail_url }}">{{ conversion }}</a>
+
+    <div class="btn-group float-right actions">
+      {% edit_action conversion 'btn-sm' %}
+      {% delete_action conversion 'btn-sm' %}
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+{% endblock %}

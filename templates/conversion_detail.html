@@ -1,0 +1,40 @@
+{% extends 'base_detail.html' %}
+
+{% load i18n unicorn_tags %}
+
+{% block extra_actions %}
+<a type="button"
+   class="btn btn-secondary" href="{% url 'create_expression' object.id %}">
+  {% trans 'Add more units' %}
+</a>
+{% endblock %}
+
+{% block content %}
+
+{% if object.subconversion_set.exists %}
+<h2>{% trans 'Extra units' %}</h2>
+
+<ul class="list-group">
+{% for sub in object.subconversion_set.all %}
+  <li class="list-group-item">
+    {{ sub }}
+    <div class="btn-group float-right actions">
+      {% edit_action sub 'btn-xs' %}
+      {% delete_action sub 'btn-xs' %}
+    </div>
+  </li>
+{% endfor %}
+</ul>
+{% endif %}
+
+<h2>Sources</h2>
+
+<ul class="list-group">
+{% for source in object.source.all %}
+  <li class="list-group-item">
+    <a href="{{ source|detail_url }}">{{ source }}</a>
+  </li>
+{% endfor %}
+</ul>
+
+{% endblock %}

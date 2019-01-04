@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% load bootstrap4 %}
+
+{% block title %}
+<h1>Add {{ view.ctype }}</h1>
+{% endblock %}
+
+{% block content %}
+
+{% block help %}
+{% if form.help %}
+<div id="status" class="alert alert-info alert-dismissable">
+  <button type="button" class="close"
+          data-dismiss="alert" aria-hidden="true">
+    &times;
+  </button>
+  <span id="status-message">
+    {{ form.help|safe }}
+  </span>
+</div>
+{% endif %}
+{% endblock %}
+
+{% bootstrap_messages %}
+
+{% block form %}
+<form action="{% block action_url %}{{ view.action_url }}{% endblock %}"
+      method="POST" 
+      enctype="multipart/form-data"
+      class="form">
+
+    {% csrf_token %}
+    {{ form.media }}
+    {% bootstrap_form form %}
+
+    {% if view.formset %}
+    <h2>{{ view.formset_label }}</h2>
+    {% bootstrap_formset view.formset layout='horizontal' %}
+    {% endif %}
+        
+    {% buttons %}
+    <button type="submit" class="btn btn-primary">
+      Save
+    </button>
+    <a href="{{ view.cancel_url }}" class="btn btn-default">
+      Cancel
+    </a>
+    
+    {% endbuttons %}
+</form>
+{% endblock form %}
+
+{% endblock content %}

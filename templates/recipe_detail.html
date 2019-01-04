@@ -1,0 +1,43 @@
+{% extends 'base_detail.html' %}
+
+{% load i18n unicorn_tags %}
+
+{% block extra_actions %}
+<a type="button"
+   class="btn btn-secondary" href="#">
+  {% trans 'Convert to metric units' %}
+</a>
+{% endblock %}
+
+
+{% block content %}
+<p>{{ object.info }}</p>
+
+<dl>
+  <dt>Source</dt><dd>{{ object.source }}</dd>
+  <dt>Yield</dt>
+  <dd>
+    {{ object.amount}}
+    <a href="{{ object.amount_unit|detail_url }}">{{ object.amount_unit }}</a>    
+  </dd>
+</dl>
+
+{% with materials=object.recipematerial_set.all %}
+{% if materials|length %}
+<h2>{% trans 'Materials' %}</h2>
+
+<ul class="list-group">
+  {% for material in materials %}
+  <li class="list-group-item">
+    {{ material.amount }}
+    <a href="{{ material.unit|detail_url }}">{{ material.unit }}</a>
+    <a href="{{ material.material|detail_url }}">{{ material.material }}</a>    
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+
+
+{% endblock content %}
+

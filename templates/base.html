@@ -1,0 +1,60 @@
+{% extends 'bootstrap4/bootstrap4.html' %}
+
+{% load i18n bootstrap4 %}
+
+{% block bootstrap4_content %}
+
+<nav class="navbar navbar-dark bg-dark navbar-expand-lg">
+  <a class="navbar-brand" href="{% url 'home' %}">Unicorn</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse"
+          data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false"
+          aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav">
+      <a class="nav-item nav-link" href="{% url 'sources' %}">
+        {% trans 'Sources' %}
+      </a>
+      <a class="nav-item nav-link" href="{% url 'locations' %}">
+        {% trans 'Locations' %}
+      </a>
+      <a class="nav-item nav-link" href="{% url 'units' %}">
+        {% trans 'Units' %}
+      </a>
+      <a class="nav-item nav-link" href="{% url 'materials' %}">
+        {% trans 'Materials' %}
+      </a>
+      <a class="nav-item nav-link" href="{% url 'styles' %}">
+        {% trans 'Styles' %}
+      </a>
+      <a class="nav-item nav-link" href="{% url 'conversions' %}">
+        {% trans 'Conversions' %}
+      </a>
+      <a class="nav-item nav-link" href="{% url 'recipes' %}">
+        {% trans 'Recipes' %}
+      </a>      
+      <a class="nav-item nav-link" href="{% url 'convert' %}">
+        {% trans 'Convert units' %}
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  {% autoescape off %}{% bootstrap_messages %}{% endautoescape %}
+
+  {% block breadcrumbs %}{% endblock %}
+
+  <h1>
+    {% block title %}{% endblock %}
+    <div class="btn-group actions">
+      {% block actions %}{% endblock %}
+    </div>
+  </h1>
+
+  {% block content %}(no content){% endblock %}
+</div>
+
+{% endblock %}

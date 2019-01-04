@@ -1,0 +1,14 @@
+{% extends 'base_detail.html' %}
+
+{% load unicorn_tags %}
+
+{% block after_content %}
+<h2>Conversions</h2>
+<ul class="list-group">
+  {% for conversion in object.list_conversions %}
+  <li class="list-group-item">
+    <a href="{{ conversion|detail_url }}">{{ conversion }}</a>
+  </li>
+  {% endfor %}
+</ul>
+{% endblock %}

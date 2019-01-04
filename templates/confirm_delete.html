@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% load i18n bootstrap4 %}
+
+{% block content %}
+
+
+<div class="alert alert-danger">
+  {% trans 'Do you really want to delete {{ object }}?' %}
+</div>
+
+<form action=""
+      method="POST" 
+      class="form">
+
+    {% csrf_token %}
+
+    {% buttons %}
+    <button type="submit" class="btn btn-primary">
+      {% trans 'Yes' %}
+    </button>
+    <a href="{{ view.cancel_url }}" class="btn btn-default">
+      {% trans 'Cancel' %}
+    </a>
+    {% endbuttons %}
+
+</form>
+
+{% endblock %}

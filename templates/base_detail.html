@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% load i18n unicorn_tags %}
+
+{% block bodyclass %}ct detail {{ object.ctype }}{% endblock %}
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a href="{% url 'home' %}">{% trans "Home" %}</a>
+    </li>
+    <li class="breadcrumb-item">
+      <a href="{{ view.listing_url }}">
+        {% blocktrans with label=view.listing_label %}{{label}}{% endblocktrans %}
+      </a>
+    </li>
+    <li class="breadcrumb-item active">{{ object }}</li>    
+  </ol>
+</nav>
+
+{% endblock %}
+
+{% block actions %}
+<div class="btn-group" role="toolbar" aria-label="Actions">
+  {% edit_action object %}
+  {% delete_action object %}
+  {% block extra_actions %}
+  {% endblock %}
+</div>
+{% endblock %}
+
+{% block title %}
+<i class="fa fa-{{ object.get_icon }}"></i> {{ object|safe }}
+{% block status %}
+{% if object.status %}    
+<div class="pull-right">
+</div>
+{% endif %}
+{% endblock status %}
+{% endblock title %}
+
+{% block content %}
+<dl>
+  {% for prop in view.properties %}
+  <dt>{{ prop.0 }}</dt><dd>{{ prop.1 }}</dd>
+  {% endfor %}
+</dl>
+
+{% block after_content %}
+{% endblock %}
+
+{% endblock content %}
