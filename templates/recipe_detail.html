@@ -4,7 +4,7 @@
 
 {% block extra_actions %}
 <a type="button"
-   class="btn btn-secondary" href="#">
+   class="btn btn-secondary" href="{% url 'convert_recipe' pk=object.id %}">
   {% trans 'Convert to metric units' %}
 </a>
 {% endblock %}
@@ -14,8 +14,8 @@
 <p>{{ object.info }}</p>
 
 <dl>
-  <dt>Source</dt><dd>{{ object.source }}</dd>
-  <dt>Yield</dt>
+  <dt>{% trans 'Source' %}</dt><dd>{{ object.source }}</dd>
+  <dt>{% trans 'Yield' %}</dt>
   <dd>
     {{ object.amount}}
     <a href="{{ object.amount_unit|detail_url }}">{{ object.amount_unit }}</a>    

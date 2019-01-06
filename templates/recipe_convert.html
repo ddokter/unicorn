@@ -1,0 +1,110 @@
+{% extends 'base_detail.html' %}
+
+{% load i18n unicorn_tags %}
+
+{% block content %}
+
+<h2>{% trans 'Specifications' %}</h2>
+
+<dl>
+  <dt>&deg; Plato</dt>
+  <dd>{{ view.gravity.plato|floatformat:1 }}</dd>
+  <dt>OG</dt>
+  <dd>{{ view.gravity.og|floatformat:3 }}</dd>
+  <dt>Alc. (vol) (Assuming 50% attenuation)</dt>
+  <dd>{{ view.gravity.alc|floatformat:1 }}</dd>
+</dl>
+
+
+{% with converted=view.converted_yield %}
+<table class="table">
+  <thead>
+    <tr>
+      <th />
+      <th>{% trans 'Original' %}</th>
+      <th>{% trans 'Converted' %}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>{% trans 'Yield' %}</th>
+      <td>
+        {{ object.amount}}
+        <a href="{{ object.amount_unit|detail_url }}">
+          {{ object.amount_unit }}
+        </a>
+      </td>
+      <td>
+        {{ converted.amount }}
+        <a href="{{ converted.unit|detail_url }}">{{ converted.unit }}</a>
+      </td>
+    </tr>
+    <tr>
+      <th>{% trans 'Conversion' %}</th>
+      <td colspan="2">
+        <ol>
+          {% for conversion in converted.path %}
+          <li>
+            <a href="{% url 'view_conversion' pk=conversion.id %}">
+              {{ conversion }}
+            </a>
+          </li>
+          {% endfor %}
+        </ol>
+
+      </td>
+    </tr>
+  </tbody>
+</table>
+{% endwith %}
+
+{% with materials=object.recipematerial_set.all %}
+{% if materials|length %}
+<h2>{% trans 'Materials' %}</h2>
+
+{% with converted=view.converted_ingredients %}
+<table class="table">
+  <thead>
+    <tr>
+      <th />
+      <th>{% trans 'Original' %}</th>
+      <th>{% trans 'Converted' %}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for material in materials %}
+    <tr>
+      <th>
+        <a href="{{ material.material|detail_url }}">{{ material.material }}</a>
+      </th>
+      <td>
+        {{ material.amount }}
+        <a href="{{ material.unit|detail_url }}">{{ material.unit }}</a>
+      </td>
+      <td>
+        {{ converted|get:material.id|get:'amount'|floatformat:2 }}
+        {{ converted|get:material.id|get:'unit' }}
+      </td>
+    </tr>
+    <tr>
+      <th>{% trans 'Conversion' %}</th>
+      <td colspan="2">
+        <ol>
+          {% for conversion in converted|get:material.id|get:'path' %}
+          <li>
+            <a href="{% url 'view_conversion' pk=conversion.id %}">
+              {{ conversion }}
+            </a>
+          </li>
+          {% endfor %}
+        </ol>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endwith %}
+{% endif %}
+{% endwith %}
+
+{% endblock content %}

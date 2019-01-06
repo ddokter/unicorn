@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-30 11:20+0000\n"
-"PO-Revision-Date: 2018-12-30 12:51+0100\n"
+"POT-Creation-Date: 2019-01-04 17:49+0000\n"
+"PO-Revision-Date: 2019-01-04 18:50+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -17,6 +17,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: models/base.py:8 models/location.py:10 models/material.py:7
+#: models/style.py:9 models/unit.py:15
+msgid "Name"
+msgstr "Naam"
 
 #: models/conversion.py:34
 msgid "From amount"
@@ -46,7 +51,7 @@ msgstr "Tot jaar"
 msgid "Original text"
 msgstr "Oorspronkelijke text"
 
-#: models/expression.py:26 models/recipe.py:55
+#: models/expression.py:26 models/recipe.py:34
 msgid "Amount"
 msgstr "Hoeveelheid"
 
@@ -54,22 +59,23 @@ msgstr "Hoeveelheid"
 msgid "Operator"
 msgstr ""
 
-#: models/location.py:10 models/material.py:7 models/recipe.py:12
-#: models/unit.py:12
-msgid "Name"
-msgstr "Naam"
-
-#: models/recipe.py:13
+#: models/recipe.py:15
 msgid "Date"
 msgstr "Datum"
 
-#: models/recipe.py:16
+#: models/recipe.py:16 models/source.py:17
+msgid "Year of publication"
+msgstr "Publicatiejaar"
+
+#: models/recipe.py:19
 msgid "Information"
 msgstr "Informatie"
 
-#: models/source.py:17
-msgid "Year of publication"
-msgstr "Publicatiejaar"
+#: models/recipe.py:20
+#, fuzzy
+#| msgid "To amount"
+msgid "Yield amount"
+msgstr "Naar hoeveelheid"
 
 #: models/source.py:18
 msgid "Title"
@@ -91,6 +97,10 @@ msgstr "Overige"
 msgid "Original source"
 msgstr "Historische bron"
 
+#: models/style.py:10
+msgid "Synonyms"
+msgstr "Synoniemen"
+
 #: templates/base.html:18
 msgid "Sources"
 msgstr "Bronnen"
@@ -99,27 +109,35 @@ msgstr "Bronnen"
 msgid "Locations"
 msgstr "Plaatsen"
 
-#: templates/base.html:24
+#: templates/base.html:24 templates/location_detail.html:10
 msgid "Units"
 msgstr "Eenheden"
 
-#: templates/base.html:27
+#: templates/base.html:27 templates/recipe_detail.html:27 views/recipe.py:21
 msgid "Materials"
 msgstr "Grondstoffen"
 
 #: templates/base.html:30
+msgid "Styles"
+msgstr "Bierstijlen"
+
+#: templates/base.html:33
 msgid "Conversions"
 msgstr "Conversies"
 
-#: templates/base.html:33
+#: templates/base.html:36
+msgid "Recipes"
+msgstr "Recepten"
+
+#: templates/base.html:39
 msgid "Convert units"
 msgstr "Converteer eenheden"
 
-#: templates/base_listing.html:15
+#: templates/base_detail.html:11 templates/base_listing.html:13
 msgid "Home"
 msgstr ""
 
-#: templates/base_listing.html:24
+#: templates/base_detail.html:15 templates/base_listing.html:21
 #, python-format
 msgid "%(label)s"
 msgstr ""
@@ -144,9 +162,15 @@ msgstr "Voeg eenheden toe"
 msgid "Extra units"
 msgstr "Extra eenheden"
 
-#: templates/location_detail.html:23
+#: templates/location_detail.html:33
 msgid "Local conversions"
 msgstr "Plaatselijke conversies"
+
+#: templates/recipe_detail.html:8
+#, fuzzy
+#| msgid "Convert units"
+msgid "Convert to metric units"
+msgstr "Converteer eenheden"
 
 #: templates/snippets/add_action.html:5 templates/snippets/listing.html:25
 msgid "Add"

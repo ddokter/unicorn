@@ -4,10 +4,12 @@
 
 {% block content %}
 
+{% if unit.location %}
 <dl>
   <dt>Location</dt>
   <dd><a href="{{ unit.location|detail_url }}">{{ unit.location }}</a></dd>
 </dl>
+{% endif %}
 
 <h2>Conversions  {% inline_add_action 'conversion' object.id %}</h2>
 <ul class="list-group">

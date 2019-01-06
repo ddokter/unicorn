@@ -6,6 +6,7 @@ from .location import Location
 
 
 MAX_RELATIVE_PATH_LENGTH = 1.5
+MAX_DEPTH = 10
 
 
 class Unit(models.Model):
@@ -18,7 +19,13 @@ class Unit(models.Model):
 
     def __str__(self):
 
-        return "%s (%s)" % (self.name, self.location or '-')
+        _str = self.name
+
+        if self.location:
+
+            _str = "%s (%s)" % (_str, self.location)
+
+        return _str
 
     def find_conversion_paths(self, unit, material, date=None):
 
@@ -46,7 +53,14 @@ class Unit(models.Model):
 
             (last_unit, path) = stack.pop(0)
 
+            # Whenever the paths are getting too long, call it a day.
+            #
             if shortest_straw > -1 and len(path) > shortest_straw * 1.5:
+                break
+
+            # stop whenever MAX_DEPTH is reached
+            #
+            if len(path) > MAX_DEPTH:
                 break
 
             qs = conv_model.objects.exclude(
@@ -73,6 +87,8 @@ class Unit(models.Model):
                     stack.append((next.to_unit, path + [next]))
 
     def list_conversions(self):
+
+        """ List conversions for this unit in both directions """
 
         return self.conversion_set.all().union(
             self.conversion_set_reverse.all())

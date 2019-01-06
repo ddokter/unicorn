@@ -4,7 +4,8 @@ from unicorn.views.base import (ListingView, CreateView, UpdateView,
                                 DeleteView, DetailView, InlineCreateView)
 from unicorn.views.convert import ConvertView
 from unicorn.views.expression import ExpressionCreateView
-from unicorn.views.recipe import RecipeCreateView, RecipeUpdateView
+from unicorn.views.recipe import (RecipeCreateView, RecipeUpdateView,
+                                  RecipeConvertView)
 from unicorn.models.conversion import Conversion
 from unicorn.models.expression import SubConversion
 from unicorn.models.unit import Unit
@@ -135,7 +136,9 @@ urlpatterns = [
     path('recipes/<int:pk>/',
          DetailView.as_view(model=Recipe),
          name="view_recipe"),
-
+    path('recipes/<int:pk>/convert/',
+         RecipeConvertView.as_view(),
+         name='convert_recipe'),
     path('styles/',
          ListingView.as_view(model=Style),
          name="styles"),
