@@ -69,6 +69,7 @@
       <th />
       <th>{% trans 'Original' %}</th>
       <th>{% trans 'Converted' %}</th>
+      <th>{% trans 'Per HL' %}</th>
     </tr>
   </thead>
   <tbody>
@@ -85,10 +86,13 @@
         {{ converted|get:material.id|get:'amount'|floatformat:2 }}
         {{ converted|get:material.id|get:'unit' }}
       </td>
+      <td>
+        {{ converted|get:material.id|get:'amount_hl'|floatformat:2 }}
+      </td>
     </tr>
     <tr>
       <th>{% trans 'Conversion' %}</th>
-      <td colspan="2">
+      <td colspan="3">
         <ol>
           {% for conversion in converted|get:material.id|get:'path' %}
           <li>

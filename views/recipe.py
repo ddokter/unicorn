@@ -10,8 +10,10 @@ from unicorn.utils import conversion_result
 
 BREWHOUSE_EFF = 0.8
 
+# Factor to compensate for the difference of modern day yield and the
+# average yield of ye good old days.
+#
 YIELD_FACTOR = 0.75
-
 
 # Extract, average, with compensation for old skool yield
 #
@@ -86,14 +88,12 @@ class RecipeConvertView(DetailView):
 
     def render_to_response(self, context):
 
-        self.calculate_values()
+        self.converted_yield = self._converted_yield()
+        self.converted_ingredients = self._converted_ingredients(
+            self.converted_yield['amount']
+        )
 
         return super().render_to_response(context)
-
-    def calculate_values(self):
-
-        self.converted_yield = self._converted_yield()
-        self.converted_ingredients = self._converted_ingredients()
 
     @property
     def gravity(self):
@@ -152,9 +152,10 @@ class RecipeConvertView(DetailView):
                     'unit': liter,
                     'path': []}
 
-    def _converted_ingredients(self):
+    def _converted_ingredients(self, _yield):
 
         kilo = Unit.objects.filter(name="Kilo").first()
+        hl = _yield / 100
 
         results = {}
 
@@ -170,11 +171,13 @@ class RecipeConvertView(DetailView):
 
                 results[material.id] = {
                     'amount': res['median'] * material.amount,
+                    'amount_hl': (res['median'] * material.amount) / hl,
                     'unit': kilo,
                     'path': paths[0]}
             else:
                 results[material.id] = {
                     'amount': -1,
+                    'amount_hl': -1,
                     'unit': kilo,
                     'path': []}
 
