@@ -11,6 +11,25 @@
 
 {% block content %}
 
+<dl>
+  <dt>{% trans 'From' %}</dt>
+  <dd>
+    <a href="{{ object.from_unit|detail_url }}">{{ object.from_unit }}</a>
+  </dd>
+  <dt>{% trans 'To' %}</dt>
+  <dd>
+    <a href="{{ object.to_unit|detail_url }}">{{ object.to_unit }}</a>
+  </dd>
+  <dt>{% trans 'Materials' %}</dt>
+  <dd>
+    <ol>
+      {% for material in object.material.all %}
+      <li><a href="{{ material|detail_url }}">{{ material }}</a></li>
+      {% endfor %}
+    </ol>
+  </dd>
+</dl>
+
 {% if object.subconversion_set.exists %}
 <h2>{% trans 'Extra units' %}</h2>
 

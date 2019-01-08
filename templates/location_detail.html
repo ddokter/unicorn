@@ -6,45 +6,49 @@
 
 {% with units=object.list_units %}
 {% if units|length %}
-<h2>
-  {% trans 'Units' %}
-  {% inline_add_action 'unit' object.id %}
-</h2>
+<section>
+  <h2>
+    {% trans 'Units' %}
+    {% inline_add_action 'unit' object %}
+  </h2>
 
-<ul class="list-group">
-  {% for unit in units %}
-  <li class="list-group-item">
-    <a href="{{ unit|detail_url }}">{{ unit.name }}</a>
+  <ul class="list-group">
+    {% for unit in units %}
+    <li class="list-group-item">
+      <a href="{{ unit|detail_url }}">{{ unit.name }}</a>
 
-    <div class="btn-group float-right actions">
-      {% edit_action unit 'btn-sm' %}
-      {% delete_action unit 'btn-sm' %}
-    </div>
+      <div class="btn-group float-right actions">
+        {% edit_action unit 'btn-sm' %}
+        {% inline_delete_action unit object 'btn-sm' %}
+      </div>
 
-  </li>
-  {% endfor %}
-</ul>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
 {% endif %}
 {% endwith %}
 
 
 {% with conversions=object.list_conversions %}
 {% if conversions|length %}
-<h2>{% trans 'Local conversions' %}</h2>
+<section>
+  <h2>{% trans 'Local conversions' %}</h2>
 
-<ul class="list-group">
-  {% for conversion in conversions %}
-  <li class="list-group-item">
-    <a href="{{ conversion|detail_url }}">{{ conversion }}</a>
+  <ul class="list-group">
+    {% for conversion in conversions %}
+    <li class="list-group-item">
+      <a href="{{ conversion|detail_url }}">{{ conversion }}</a>
 
-    <div class="btn-group float-right actions">
-      {% edit_action conversion 'btn-sm' %}
-      {% delete_action conversion 'btn-sm' %}
-    </div>
+      <div class="btn-group float-right actions">
+        {% edit_action conversion 'btn-sm' %}
+        {% delete_action conversion 'btn-sm' %}
+      </div>
 
-  </li>
-  {% endfor %}
-</ul>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
 {% endif %}
 {% endwith %}
 

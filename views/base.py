@@ -1,4 +1,3 @@
-from django.db.models import Q
 from django.views.generic.detail import DetailView as BaseDetailView
 from django.views.generic.edit import CreateView as BaseCreateView
 from django.views.generic.edit import UpdateView as BaseUpdateView
@@ -6,8 +5,9 @@ from django.views.generic.edit import DeleteView as BaseDeleteView
 from django.views.generic import FormView
 from django import forms
 from django.urls import reverse, reverse_lazy
-from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
+from django.apps import apps
+from unicorn.utils import get_model_name
 
 
 class SearchForm(forms.Form):
@@ -30,20 +30,74 @@ class CTypeMixin(object):
     @property
     def listing_url(self):
 
-        return reverse_lazy(self.model._meta.verbose_name_plural)
+        return reverse_lazy("list", kwargs={'model': self.ctype})
 
 
-class CreateView(BaseCreateView, CTypeMixin):
+class GenericMixin:
 
-    """ Base create view that enables creation within a parent """
+    _model = None
 
-    list_url_name = ""
-    fields = "__all__"
+    @property
+    def model(self):
+
+        if self.kwargs.get('model', None):
+            return apps.get_model("unicorn", self.kwargs['model'])
+        else:
+            return self._model
+
+    @model.setter
+    def model(self, value):
+
+        self._model = value
 
     @property
     def success_url(self):
 
-        return reverse(self.model._meta.verbose_name_plural)
+        modelname = self.kwargs.get('model',
+                                    self._model.__class__.__name__.lower())
+
+        return reverse("list", kwargs={'model': modelname})
+
+    @property
+    def cancel_url(self):
+
+        return self.success_url
+
+
+class InlineActionMixin:
+
+    parent_model = None  # RM!
+
+    @property
+    def parent(self):
+
+        parent_model = apps.get_model("unicorn", self.kwargs['parent_model'])
+
+        return parent_model.objects.get(id=self.kwargs['parent_pk'])
+
+    def get_initial(self):
+
+        return {self.fk_field: self.parent}
+
+    @property
+    def fk_field(self):
+
+        return self.request.GET.get('fk_field', self.kwargs['parent_model'])
+
+    @property
+    def success_url(self):
+
+        return reverse("view", kwargs={
+            'pk': self.parent.pk,
+            'model': self.kwargs['parent_model']
+        })
+
+
+class CreateView(GenericMixin, BaseCreateView, CTypeMixin):
+
+    """ Base create view that enables creation within a parent """
+
+    fields = "__all__"
 
     def check_permission(self, request):
 
@@ -68,21 +122,16 @@ class CreateView(BaseCreateView, CTypeMixin):
         return "unicorn.add_%s" % self.ctype
 
     @property
-    def cancel_url(self):
-
-        return self.success_url
-
-    @property
     def action_url(self):
 
-        return reverse("create_%s" % self.ctype)
+        return reverse("create", kwargs={'model': self.ctype})
 
     def get_template_names(self):
 
         return ["%s_create.html" % self.ctype, "base_create.html"]
 
 
-class UpdateView(BaseUpdateView, CTypeMixin):
+class UpdateView(GenericMixin, BaseUpdateView, CTypeMixin):
 
     fields = "__all__"
 
@@ -92,26 +141,17 @@ class UpdateView(BaseUpdateView, CTypeMixin):
         return "unicorn.change_%s" % self.ctype
 
     @property
-    def success_url(self):
-
-        return reverse(self.model._meta.verbose_name_plural)
-
-    @property
-    def cancel_url(self):
-
-        return reverse(self.model._meta.verbose_name_plural)
-
-    @property
     def action_url(self):
 
-        return reverse("edit_%s" % self.ctype, kwargs={'pk': self.object.pk})
+        return reverse("edit", kwargs={'pk': self.object.pk,
+                                       'model': self.ctype})
 
     def get_template_names(self):
 
         return ["%s_update.html" % self.ctype, "base_update.html"]
 
 
-class DetailView(BaseDetailView, CTypeMixin):
+class DetailView(GenericMixin, BaseDetailView, CTypeMixin):
 
     @property
     def permission(self):
@@ -143,14 +183,28 @@ class DeleteView(BaseDeleteView):
 
     """
 
-    model = None
+    _model = None
     template_name = "confirm_delete.html"
     _list_url = None
 
     @property
+    def model(self):
+
+        if self.kwargs.get('model', None):
+            return apps.get_model("unicorn", self.kwargs['model'])
+        else:
+            return self._model
+
+    @model.setter
+    def model(self, value):
+
+        self._model = value
+
+    @property
     def success_url(self):
 
-        return reverse_lazy(self.model._meta.verbose_name_plural)
+        return reverse_lazy("list",
+                            kwargs={'model': self.model.__name__.lower()})
 
     @success_url.setter
     def success_url(self, value):
@@ -160,12 +214,11 @@ class DeleteView(BaseDeleteView):
     @property
     def cancel_url(self):
 
-        return reverse_lazy(self.model._meta.verbose_name_plural)
+        return self.success_url
 
 
-class ListingView(FormView, CTypeMixin):
+class ListingView(GenericMixin, FormView, CTypeMixin):
 
-    model = None
     permission = "unicorn.manage_products"
     template_name = "base_listing.html"
     form_class = SearchForm
@@ -187,11 +240,6 @@ class ListingView(FormView, CTypeMixin):
 
         return _(self.model._meta.verbose_name_plural.capitalize())
 
-    def get_detail_url(self, obj):
-
-        return reverse('%s_detail' % obj._meta.vebose_name,
-                       kwargs={'pk': obj.pk})
-
     def form_valid(self, form):
 
         self.query = form.cleaned_data['query']
@@ -201,27 +249,45 @@ class ListingView(FormView, CTypeMixin):
         return self.render_to_response(context)
 
 
-class InlineCreateView(CreateView):
-
-    parent_model = None
-    fk_field = None
-
-    @property
-    def parent(self):
-
-        return self.parent_model.objects.get(id=self.kwargs['pk'])
-
-    def get_initial(self):
-
-        return {self.fk_field: self.parent}
+class InlineCreateView(InlineActionMixin, CreateView):
 
     @property
     def success_url(self):
 
-        return reverse("view_%s" % self.parent_model._meta.verbose_name,
-                       kwargs={'pk': self.parent.pk})
+        return reverse("view", kwargs={
+            'pk': self.parent.pk,
+            'model': get_model_name(self.parent)})
 
     @property
     def action_url(self):
 
-        return reverse("create_%s" % self.ctype, kwargs={'pk': self.parent.id})
+        return reverse("inline_create", kwargs={
+            'parent_pk': self.parent.id,
+            'parent_model': get_model_name(self.parent),
+            'model': self.kwargs['model']
+        })
+
+
+class InlineUpdateView(InlineActionMixin, UpdateView):
+
+    @property
+    def success_url(self):
+
+        return reverse("view", kwargs={
+            'pk': self.parent.pk,
+            'model': get_model_name(self.parent)})
+
+    @property
+    def action_url(self):
+
+        return reverse("inline_edit", kwargs={
+            'parent_pk': self.parent.id,
+            'parent_model': get_model_name(self.parent),
+            'model': self.kwargs['model'],
+            'pk': self.kwargs['pk']
+        })
+
+
+class InlineDeleteView(InlineActionMixin, DeleteView):
+
+    pass

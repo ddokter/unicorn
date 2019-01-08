@@ -14,25 +14,25 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
-      <a class="nav-item nav-link" href="{% url 'sources' %}">
+      <a class="nav-item nav-link" href="{% url 'list' model='source' %}">
         {% trans 'Sources' %}
       </a>
-      <a class="nav-item nav-link" href="{% url 'locations' %}">
+      <a class="nav-item nav-link" href="{% url 'list' model='location' %}">
         {% trans 'Locations' %}
       </a>
-      <a class="nav-item nav-link" href="{% url 'units' %}">
+      <a class="nav-item nav-link" href="{% url 'list' model='unit' %}">
         {% trans 'Units' %}
       </a>
-      <a class="nav-item nav-link" href="{% url 'materials' %}">
+      <a class="nav-item nav-link" href="{% url 'list' model='material' %}">
         {% trans 'Materials' %}
       </a>
-      <a class="nav-item nav-link" href="{% url 'styles' %}">
+      <a class="nav-item nav-link" href="{% url 'list' model='style' %}">
         {% trans 'Styles' %}
       </a>
-      <a class="nav-item nav-link" href="{% url 'conversions' %}">
+      <a class="nav-item nav-link" href="{% url 'list' model='conversion' %}">
         {% trans 'Conversions' %}
       </a>
-      <a class="nav-item nav-link" href="{% url 'recipes' %}">
+      <a class="nav-item nav-link" href="{% url 'list' model='recipe' %}">
         {% trans 'Recipes' %}
       </a>      
       <a class="nav-item nav-link" href="{% url 'convert' %}">

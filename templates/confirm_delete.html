@@ -3,10 +3,9 @@
 {% load i18n bootstrap4 %}
 
 {% block content %}
-
-
 <div class="alert alert-danger">
-  {% trans 'Do you really want to delete {{ object }}?' %}
+  {% blocktrans with object=object %}Do you really want to delete {{ object }}?
+  {% endblocktrans %}
 </div>
 
 <form action=""

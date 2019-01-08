@@ -62,7 +62,7 @@ class Conversion(models.Model):
 
             _str = "%s %s" % (_str, sub)
 
-        if self.material.exists():
+        if self.material.exists() and False:
 
             _str = "%s [%s]" % (
                 _str,

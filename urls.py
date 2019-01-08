@@ -1,7 +1,8 @@
 from django.urls import path
 from unicorn.views.home import Home
 from unicorn.views.base import (ListingView, CreateView, UpdateView,
-                                DeleteView, DetailView, InlineCreateView)
+                                DeleteView, DetailView, InlineCreateView,
+                                InlineDeleteView, InlineUpdateView)
 from unicorn.views.convert import ConvertView
 from unicorn.views.expression import ExpressionCreateView
 from unicorn.views.recipe import (RecipeCreateView, RecipeUpdateView,
@@ -9,11 +10,6 @@ from unicorn.views.recipe import (RecipeCreateView, RecipeUpdateView,
 from unicorn.models.conversion import Conversion
 from unicorn.models.expression import SubConversion
 from unicorn.models.unit import Unit
-from unicorn.models.source import Source
-from unicorn.models.location import Location
-from unicorn.models.material import Material
-from unicorn.models.recipe import Recipe
-from unicorn.models.style import Style
 
 
 urlpatterns = [
@@ -21,21 +17,53 @@ urlpatterns = [
 
     path('convert/', ConvertView.as_view(), name="convert"),
 
-    path('conversions/',
-         ListingView.as_view(model=Conversion),
-         name="conversions"),
-    path('conversion/add/',
-         CreateView.as_view(model=Conversion),
-         name="create_conversion"),
-    path('conversions/<int:pk>/edit',
-         UpdateView.as_view(model=Conversion),
-         name="edit_conversion"),
-    path('conversions/<int:pk>/delete',
-         DeleteView.as_view(model=Conversion),
-         name="delete_conversion"),
-    path('conversions/<int:pk>/',
-         DetailView.as_view(model=Conversion),
-         name="view_conversion"),
+    # Generic delete view
+    #
+    path('<str:model>/<int:pk>/delete',
+         DeleteView.as_view(),
+         name="delete"),
+
+    # Generic listing
+    #
+    path('<str:model>/list',
+         ListingView.as_view(),
+         name="list"),
+
+    # Generic detail view
+    #
+    path('<str:model>/<int:pk>',
+         DetailView.as_view(),
+         name="view"),
+
+    # Generic add view
+    #
+    path('<str:model>/add/',
+         CreateView.as_view(),
+         name="create"),
+
+    # Generic edit view
+    #
+    path('<str:model>/<int:pk>/edit',
+         UpdateView.as_view(),
+         name="edit"),
+
+    # Generic inline add
+    #
+    path('<str:parent_model>/<int:parent_pk>/add_<str:model>',
+         InlineCreateView.as_view(),
+         name="inline_create"),
+
+    # Generic inline edit
+    #
+    path('<str:parent_model>/<int:parent_pk>/edit_<str:model>/<int:pk>',
+         InlineUpdateView.as_view(),
+         name="inline_edit"),
+
+    # Generic inline delete
+    #
+    path('<str:parent_model>/<int:parent_pk>/rm_<str:model>/<int:pk>',
+         InlineDeleteView.as_view(),
+         name="inline_delete"),
 
     path('expression/<int:pk>/add',
          ExpressionCreateView.as_view(model=SubConversion),
@@ -43,116 +71,15 @@ urlpatterns = [
     path('expressions/<int:pk>/edit',
          UpdateView.as_view(model=SubConversion),
          name="edit_expression"),
-    path('expressions/<int:pk>/delete',
-         DeleteView.as_view(model=SubConversion),
-         name="delete_expression"),
 
-    path('units/',
-         ListingView.as_view(model=Unit),
-         name="units"),
-    path('units/add/',
-         CreateView.as_view(model=Unit),
-         name="create_unit"),
-    path('units/<int:pk>/add_conversion',
-         InlineCreateView.as_view(parent_model=Unit,
-                                  fk_field='from_unit',
-                                  model=Conversion),
-         name="create_conversion"),
-    path('units/<int:pk>/edit',
-         UpdateView.as_view(model=Unit),
-         name="edit_unit"),
-    path('units/<int:pk>/delete',
-         DeleteView.as_view(model=Unit),
-         name="delete_unit"),
-    path('units/<int:pk>/',
-         DetailView.as_view(model=Unit),
-         name="view_unit"),
-
-    path('sources/',
-         ListingView.as_view(model=Source),
-         name="sources"),
-    path('sources/add/',
-         CreateView.as_view(model=Source),
-         name="create_source"),
-    path('sources/<int:pk>/edit',
-         UpdateView.as_view(model=Source),
-         name="edit_source"),
-    path('sources/<int:pk>/delete',
-         DeleteView.as_view(model=Source),
-         name="delete_source"),
-    path('sources/<int:pk>/',
-         DetailView.as_view(model=Source),
-         name="view_source"),
-
-    path('locations/',
-         ListingView.as_view(model=Location),
-         name="locations"),
-    path('locations/add/',
-         CreateView.as_view(model=Location),
-         name="create_location"),
-    path('locations/<int:pk>/add_unit',
-         InlineCreateView.as_view(parent_model=Location,
-                                  fk_field='location',
-                                  model=Unit),
-         name="create_unit"),
-    path('locations/<int:pk>/edit',
-         UpdateView.as_view(model=Location),
-         name="edit_location"),
-    path('locations/<int:pk>/delete',
-         DeleteView.as_view(model=Location),
-         name="delete_location"),
-    path('locations/<int:pk>/',
-         DetailView.as_view(model=Location),
-         name="view_location"),
-
-    path('materials/',
-         ListingView.as_view(model=Material),
-         name="materials"),
-    path('materials/add/',
-         CreateView.as_view(model=Material),
-         name="create_material"),
-    path('materials/<int:pk>/edit',
-         UpdateView.as_view(model=Material),
-         name="edit_material"),
-    path('materials/<int:pk>/delete',
-         DeleteView.as_view(model=Material),
-         name="delete_material"),
-    path('materials/<int:pk>/',
-         DetailView.as_view(model=Material),
-         name="view_material"),
-
-    path('recipes/',
-         ListingView.as_view(model=Recipe),
-         name="recipes"),
+    path('recipes/<int:pk>/convert/',
+         RecipeConvertView.as_view(),
+         name='convert_recipe'),
     path('recipes/add/',
          RecipeCreateView.as_view(),
          name="create_recipe"),
     path('recipes/<int:pk>/edit',
-         RecipeUpdateView.as_view(model=Recipe),
+         RecipeUpdateView.as_view(),
          name="edit_recipe"),
-    path('recipes/<int:pk>/delete',
-         DeleteView.as_view(model=Recipe),
-         name="delete_recipe"),
-    path('recipes/<int:pk>/',
-         DetailView.as_view(model=Recipe),
-         name="view_recipe"),
-    path('recipes/<int:pk>/convert/',
-         RecipeConvertView.as_view(),
-         name='convert_recipe'),
-    path('styles/',
-         ListingView.as_view(model=Style),
-         name="styles"),
-    path('styles/add/',
-         CreateView.as_view(model=Style),
-         name="create_style"),
-    path('styles/<int:pk>/edit',
-         UpdateView.as_view(model=Style),
-         name="edit_style"),
-    path('styles/<int:pk>/delete',
-         DeleteView.as_view(model=Style),
-         name="delete_style"),
-    path('styles/<int:pk>/',
-         DetailView.as_view(model=Style),
-         name="view_style"),
 
 ]

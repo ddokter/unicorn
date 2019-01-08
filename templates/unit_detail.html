@@ -1,27 +1,33 @@
 {% extends 'base_detail.html' %}
 
-{% load unicorn_tags %}
+{% load i18n unicorn_tags %}
 
 {% block content %}
 
 {% if unit.location %}
 <dl>
-  <dt>Location</dt>
+  <dt>{% trans 'Location' %}</dt>
   <dd><a href="{{ unit.location|detail_url }}">{{ unit.location }}</a></dd>
 </dl>
 {% endif %}
 
-<h2>Conversions  {% inline_add_action 'conversion' object.id %}</h2>
-<ul class="list-group">
-  {% for conversion in object.list_conversions %}
-  <li class="list-group-item">
-    <a href="{{ conversion|detail_url }}">{{ conversion }}</a>
+<section>
+  <h2>
+    {% trans 'Conversions' %}
+    {% inline_add_action 'conversion' object '' '?fk_field=from_unit' %}
+  </h2>
 
-    <div class="btn-group float-right actions">
-      {% edit_action conversion 'btn-sm' %}
-      {% delete_action conversion 'btn-sm' %}
-    </div>
-  </li>
-  {% endfor %}
-</ul>
+  <ul class="list-group">
+    {% for conversion in object.list_conversions %}
+    <li class="list-group-item">
+      <a href="{{ conversion|detail_url }}">{{ conversion }}</a>
+
+      <div class="btn-group float-right actions">
+        {% inline_edit_action conversion object 'btn-sm' %}
+        {% inline_delete_action conversion object 'btn-sm' '?fk_field=from_unit' %}
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
 {% endblock %}
