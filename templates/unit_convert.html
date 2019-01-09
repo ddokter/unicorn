@@ -1,0 +1,83 @@
+{% extends 'unit_detail.html' %}
+
+{% load i18n bootstrap4 unicorn_tags %}
+
+{% block content %}
+
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'view' pk=object.id model='unit' %}">
+      {% trans 'Details' %}
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" href="#">
+      {% trans 'Convert' %}
+    </a>
+  </li>
+</ul>
+
+{% bootstrap_messages %}
+
+<form action="{% url 'convert_unit' pk=object.id %}"
+      method="POST" 
+      enctype="multipart/form-data"
+      class="form">
+
+    {% csrf_token %}
+    {{ form.media }}
+
+    {% block formfields %}
+    {% bootstrap_form form %}
+    {% endblock %}
+
+    {% buttons %}
+    <button type="submit" class="btn btn-primary">
+      {% trans 'Convert' %}
+    </button>
+    {% endbuttons %}
+</form>
+
+{% if view.result %}
+<div class="alert alert-success">
+  1 {{ object }} = {{ view.result.median }} {{ form.cleaned_data.to_unit }}
+</div>
+
+<div class="alert alert-dark" role="alert">
+  <dl>
+    <dt>Median</dt><dd>{{ view.result.median }}</dd>
+    <dt>Min</dt><dd>{{ view.result.min }}</dd>
+    <dt>Avg</dt><dd>{{ view.result.avg }}</dd>
+    <dt>Max</dt><dd>{{ view.result.max }}</dd>    
+  </dl>
+</div>
+
+{% for path in view.result.paths %}
+<section>
+  <h2>{% trans 'Conversion path' %}</h2>
+
+  <div class="alert alert-dark" role="alert">
+    <dl>
+      <dt>{% trans 'Factor' %}</dt>
+      <dd>{{ view.result.all|get:forloop.counter0 }}</dd>
+      <dt>{% trans 'Precision' %}</dt>
+      <dd>{{ view.result.precision|get:forloop.counter0 }}</dd>
+    </dl>
+  </div>
+  
+  <ol>
+    {% for conversion in path %}
+    <li>
+      <a href="{% url 'view' model='conversion' pk=conversion.id %}">
+        {{ conversion }}
+      </a>
+    </li>
+    {% endfor %}
+  </ol>
+  
+</section>
+{% endfor %}
+{% endif %}
+
+{% endblock content %}
+

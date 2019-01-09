@@ -24,6 +24,19 @@ def listing(context, title, items, create_url=None):
     return context
 
 
+@register.inclusion_tag('snippets/sublisting.html', takes_context=True)
+def sublisting(context, title, items, submodel, create_url=None):
+
+    """ Show listing of items within object """
+
+    context.update({'title': title,
+                    'items': items,
+                    'submodel': submodel,
+                    'create_url': create_url})
+
+    return context
+
+
 @register.inclusion_tag('snippets/edit_action.html')
 def edit_action(obj, btn_class=""):
 
@@ -44,22 +57,26 @@ def inline_edit_action(obj, parent, btn_class="", extra_args=""):
 
 
 @register.inclusion_tag('snippets/add_action.html')
-def add_action(model, btn_class=""):
+def add_action(model, btn_class="", btn_label="Add"):
 
     model_name = model.__class__.__name__.lower()
 
     return {'create_url': reverse("create", kwargs={'model': model_name}),
+            'btn_label': btn_label,
             'btn_class': btn_class}
 
 
 @register.inclusion_tag('snippets/add_action.html')
-def inline_add_action(model_name, parent, btn_class="", extra_args=""):
+def inline_add_action(model_name, parent, btn_class="", extra_args="",
+                      btn_label="Add"):
 
     return {'create_url': "%s%s" % (reverse("inline_create", kwargs={
         'parent_pk': parent.id,
         'parent_model': get_model_name(parent),
         'model': model_name}), extra_args),
-        'btn_class': btn_class}
+        'btn_class': btn_class,
+        'btn_label': btn_label
+    }
 
 
 @register.inclusion_tag('snippets/delete_action.html')

@@ -11,11 +11,14 @@ MAX_DEPTH = 10
 
 class Unit(models.Model):
 
-    """ Any historic or modern unit """
+    """Any historic or modern unit. Location may be used to position the
+    unit in a specific geographical place.
+    """
 
     name = models.CharField(_("Name"), max_length=100)
     location = models.ForeignKey(Location, blank=True, null=True,
                                  on_delete=models.CASCADE)
+    info = models.TextField(_("Description"), blank=True, null=True)
 
     def __str__(self):
 
@@ -96,5 +99,5 @@ class Unit(models.Model):
     class Meta:
 
         app_label = "unicorn"
-        ordering = ["name"]
+        ordering = ["name", "location__name"]
         unique_together = ("name", "location")

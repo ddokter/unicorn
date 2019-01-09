@@ -2,54 +2,7 @@
 
 {% load i18n unicorn_tags %}
 
-{% block after_content %}
-
-{% with units=object.list_units %}
-{% if units|length %}
-<section>
-  <h2>
-    {% trans 'Units' %}
-    {% inline_add_action 'unit' object %}
-  </h2>
-
-  <ul class="list-group">
-    {% for unit in units %}
-    <li class="list-group-item">
-      <a href="{{ unit|detail_url }}">{{ unit.name }}</a>
-
-      <div class="btn-group float-right actions">
-        {% edit_action unit 'btn-sm' %}
-        {% inline_delete_action unit object 'btn-sm' %}
-      </div>
-
-    </li>
-    {% endfor %}
-  </ul>
-</section>
-{% endif %}
-{% endwith %}
-
-
-{% with conversions=object.list_conversions %}
-{% if conversions|length %}
-<section>
-  <h2>{% trans 'Local conversions' %}</h2>
-
-  <ul class="list-group">
-    {% for conversion in conversions %}
-    <li class="list-group-item">
-      <a href="{{ conversion|detail_url }}">{{ conversion }}</a>
-
-      <div class="btn-group float-right actions">
-        {% edit_action conversion 'btn-sm' %}
-        {% delete_action conversion 'btn-sm' %}
-      </div>
-
-    </li>
-    {% endfor %}
-  </ul>
-</section>
-{% endif %}
-{% endwith %}
-
+{% block content %}
+{% sublisting 'Units' object.list_units 'unit' %}
+{% sublisting 'Local conversions' object.list_conversions 'conversion' %}
 {% endblock %}

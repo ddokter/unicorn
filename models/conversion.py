@@ -7,6 +7,7 @@ from .material import Material
 
 
 MARKERS = (('<', '<'), ('=', '='), ('>', '>'))
+BASE_PRECISION = 0.98
 
 
 class ConversionQuerySet(models.QuerySet):
@@ -45,6 +46,7 @@ class Conversion(models.Model):
     year_from = models.SmallIntegerField(_("From year"), null=True, blank=True)
     year_to = models.SmallIntegerField(_("To year"), null=True, blank=True)
     original_text = models.TextField(_("Original text"), null=True, blank=True)
+    precision = models.FloatField(blank=True, null=True)
 
     objects = ConversionManager()
 
@@ -79,6 +81,40 @@ class Conversion(models.Model):
             _res = sub.get_operator()(_res, sub.resolve(unit, material))
 
         return _res
+
+    def get_precision(self):
+
+        """Calculate precision, in a range 0-1. This works as follows: the
+        relation of amount_from to amount_to is considered
+        significant. The greater the difference, the greater the
+        precision.  Also, the number of digits after the dot is
+        important. However, precision may be set manually.
+
+        """
+
+        if self.precision:
+            return self.precision
+
+        _precision = BASE_PRECISION
+
+        rel = (min(self.from_amount, self.to_amount) /
+               max(self.from_amount, self.to_amount))
+
+        # Maximum of 10% punishment
+        #
+        _precision -= (rel * 0.05)
+
+        # Maximum of 10% punishment
+        #
+        part = (len(str(self.from_amount).split('.')[1].strip('0')) +
+                len(str(self.to_amount).split('.')[1].strip('0')))
+
+        _precision -= ((1/pow(part + 1, 3)) * 0.05)
+
+        if not self.to_unit.location == self.from_unit.location:
+            _precision -= 0.05
+
+        return _precision
 
     class Meta:
 

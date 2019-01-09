@@ -1,7 +1,10 @@
 from django.utils.translation import ugettext_lazy as _
 from django.http import HttpResponseRedirect
 from django.forms import inlineformset_factory
-from .base import CreateView, UpdateView, DetailView
+from django import forms
+from django.views.generic import FormView
+from .base import CreateView, UpdateView
+from django.views.generic.detail import SingleObjectMixin
 from unicorn.models.recipe import Recipe
 from unicorn.models.unit import Unit
 from unicorn.models.material import Material
@@ -78,22 +81,40 @@ class RecipeUpdateView(FormSetMixin, UpdateView):
     model = Recipe
 
 
-class RecipeConvertView(DetailView):
+class ConvertForm(forms.Form):
+
+    yield_to_unit = forms.ModelChoiceField(queryset=Unit.objects.all())
+    material_to_unit = forms.ModelChoiceField(queryset=Unit.objects.all())
+
+
+class RecipeConvertView(FormView, SingleObjectMixin):
 
     template_name = "recipe_convert.html"
     model = Recipe
+    form_class = ConvertForm
 
     converted_yield = None
     converted_ingredients = None
 
-    def render_to_response(self, context):
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().get(request, *args, **kwargs)
 
-        self.converted_yield = self._converted_yield()
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+
+        self.converted_yield = self._converted_yield(
+            form.cleaned_data['yield_to_unit']
+        )
         self.converted_ingredients = self._converted_ingredients(
-            self.converted_yield['amount']
+            self.converted_yield['amount'],
+            form.cleaned_data['material_to_unit']
         )
 
-        return super().render_to_response(context)
+        return self.render_to_response(self.get_context_data(form=form))
 
     @property
     def gravity(self):
@@ -101,7 +122,7 @@ class RecipeConvertView(DetailView):
         """ Calculate degrees Plato if both yield and ingredients are
         found """
 
-        if not self.converted_yield and self.converted_ingredients:
+        if not (self.converted_yield and self.converted_ingredients):
             return None
 
         if self.converted_yield['amount'] == -1:
@@ -133,35 +154,33 @@ class RecipeConvertView(DetailView):
                 'og': density,
                 'alc': (og_units - og_units * 0.5) * 0.135}
 
-    def _converted_yield(self):
+    def _converted_yield(self, unit):
 
-        liter = Unit.objects.filter(name="Liter").first()
         beer = Material.objects.filter(name="Bier").first()
 
-        paths = self.object.amount_unit.find_conversion_paths(liter, beer)
+        paths = self.object.amount_unit.find_conversion_paths(unit, beer)
 
         if len(paths):
 
             res = conversion_result(paths, self.object.amount_unit, beer)
 
             return {'amount': res['median'] * self.object.amount,
-                    'unit': liter,
+                    'unit': unit,
                     'path': paths[0]}
         else:
             return {'amount': -1,
-                    'unit': liter,
+                    'unit': unit,
                     'path': []}
 
-    def _converted_ingredients(self, _yield):
+    def _converted_ingredients(self, _yield, unit):
 
-        kilo = Unit.objects.filter(name="Kilo").first()
         hl = _yield / 100
 
         results = {}
 
         for material in self.object.recipematerial_set.all():
 
-            paths = material.unit.find_conversion_paths(kilo,
+            paths = material.unit.find_conversion_paths(unit,
                                                         material.material)
 
             if len(paths):
@@ -172,13 +191,13 @@ class RecipeConvertView(DetailView):
                 results[material.id] = {
                     'amount': res['median'] * material.amount,
                     'amount_hl': (res['median'] * material.amount) / hl,
-                    'unit': kilo,
+                    'unit': unit,
                     'path': paths[0]}
             else:
                 results[material.id] = {
                     'amount': -1,
                     'amount_hl': -1,
-                    'unit': kilo,
+                    'unit': unit,
                     'path': []}
 
         return results

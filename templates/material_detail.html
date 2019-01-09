@@ -3,17 +3,5 @@
 {% load unicorn_tags %}
 
 {% block after_content %}
-<h2>Conversions</h2>
-<ul class="list-group">
-  {% for conversion in object.list_conversions %}
-  <li class="list-group-item">
-    <a href="{{ conversion|detail_url }}">{{ conversion }}</a>
-
-    <div class="btn-group float-right actions">
-      {% edit_action conversion 'btn-xs' %}
-      {% delete_action conversion 'btn-xs' %}
-    </div>
-  </li>
-  {% endfor %}
-</ul>
+{% sublisting 'Conversions' object.list_conversions 'conversion' %}
 {% endblock %}

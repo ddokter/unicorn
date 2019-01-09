@@ -7,15 +7,12 @@ from unicorn.views.convert import ConvertView
 from unicorn.views.expression import ExpressionCreateView
 from unicorn.views.recipe import (RecipeCreateView, RecipeUpdateView,
                                   RecipeConvertView)
-from unicorn.models.conversion import Conversion
+from unicorn.views.unit import UnitConvertView
 from unicorn.models.expression import SubConversion
-from unicorn.models.unit import Unit
 
 
 urlpatterns = [
     path('', Home.as_view(), name="home"),
-
-    path('convert/', ConvertView.as_view(), name="convert"),
 
     # Generic delete view
     #
@@ -65,12 +62,16 @@ urlpatterns = [
          InlineDeleteView.as_view(),
          name="inline_delete"),
 
-    path('expression/<int:pk>/add',
-         ExpressionCreateView.as_view(model=SubConversion),
-         name="create_expression"),
-    path('expressions/<int:pk>/edit',
-         UpdateView.as_view(model=SubConversion),
-         name="edit_expression"),
+    path('unit/<int:pk>/convert/',
+         UnitConvertView.as_view(),
+         name='convert_unit'),
+
+    # path('expression/<int:pk>/add',
+    #     ExpressionCreateView.as_view(model=SubConversion),
+    #     name="create_expression"),
+    # path('expressions/<int:pk>/edit',
+    #     UpdateView.as_view(model=SubConversion),
+    #     name="edit_expression"),
 
     path('recipes/<int:pk>/convert/',
          RecipeConvertView.as_view(),

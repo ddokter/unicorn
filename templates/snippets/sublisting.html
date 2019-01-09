@@ -1,0 +1,22 @@
+{% load i18n unicorn_tags %}
+
+<section>
+  <h2>
+    {% trans title %}
+    {% inline_add_action submodel object %}
+  </h2>
+
+  <ul class="list-group">
+    {% for item in items %}
+    <li class="list-group-item">
+      <a href="{{ item|detail_url }}">{{ item }}</a>
+
+      <div class="btn-group float-right actions">
+        {% inline_edit_action item object 'btn-sm' %}
+        {% inline_delete_action item object 'btn-sm' %}
+      </div>
+
+    </li>
+    {% endfor %}
+  </ul>
+</section>

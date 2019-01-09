@@ -4,6 +4,23 @@
 
 {% block content %}
 
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link active" href="#">{% trans 'Details' %}</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'convert_unit' pk=object.id %}">
+      {% trans 'Convert' %}
+    </a>
+  </li>
+</ul>
+
+{% if unit.info %}
+<p>
+  {{ unit.info }}
+</p>
+{% endif %}
+
 {% if unit.location %}
 <dl>
   <dt>{% trans 'Location' %}</dt>
@@ -11,23 +28,6 @@
 </dl>
 {% endif %}
 
-<section>
-  <h2>
-    {% trans 'Conversions' %}
-    {% inline_add_action 'conversion' object '' '?fk_field=from_unit' %}
-  </h2>
+{% sublisting 'Conversions' object.list_conversions 'conversion' %}
 
-  <ul class="list-group">
-    {% for conversion in object.list_conversions %}
-    <li class="list-group-item">
-      <a href="{{ conversion|detail_url }}">{{ conversion }}</a>
-
-      <div class="btn-group float-right actions">
-        {% inline_edit_action conversion object 'btn-sm' %}
-        {% inline_delete_action conversion object 'btn-sm' '?fk_field=from_unit' %}
-      </div>
-    </li>
-    {% endfor %}
-  </ul>
-</section>
 {% endblock %}

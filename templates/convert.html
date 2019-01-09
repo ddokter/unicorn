@@ -61,7 +61,9 @@
   <ol>
   {% for conversion in path %}
   <li>
-    <a href="{% url 'view_conversion' pk=conversion.id %}">{{ conversion }}</a>
+    <a href="{% url 'view' model='conversion' pk=conversion.id %}">
+      {{ conversion }}
+    </a>
   </li>
   {% endfor %}
   </ol>

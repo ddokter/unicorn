@@ -1,9 +1,44 @@
 {% extends 'base_detail.html' %}
 
-{% load i18n unicorn_tags %}
+{% load i18n bootstrap4 unicorn_tags %}
 
 {% block content %}
 
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" href="{{ object|detail_url }}">
+      {% trans 'Details' %}
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" href="#">
+      {% trans 'Convert' %}
+    </a>
+  </li>
+</ul>
+
+{% bootstrap_messages %}
+
+<form action="{% url 'convert_recipe' pk=object.id %}"
+      method="POST"
+      enctype="multipart/form-data"
+      class="form">
+
+    {% csrf_token %}
+    {{ form.media }}
+
+    {% block formfields %}
+    {% bootstrap_form form %}
+    {% endblock %}
+
+    {% buttons %}
+    <button type="submit" class="btn btn-primary">
+      {% trans 'Convert' %}
+    </button>
+    {% endbuttons %}
+</form>
+
+{% if view.converted_yield %}
 <h2>{% trans 'Specifications' %}</h2>
 
 <dl>
@@ -45,7 +80,7 @@
         <ol>
           {% for conversion in converted.path %}
           <li>
-            <a href="{% url 'view_conversion' pk=conversion.id %}">
+            <a href="{{ conversion|detail_url }}">
               {{ conversion }}
             </a>
           </li>
@@ -96,7 +131,7 @@
         <ol>
           {% for conversion in converted|get:material.id|get:'path' %}
           <li>
-            <a href="{% url 'view_conversion' pk=conversion.id %}">
+            <a href="{% url 'view' pk=conversion.id model='conversion'%}">
               {{ conversion }}
             </a>
           </li>
@@ -110,5 +145,7 @@
 {% endwith %}
 {% endif %}
 {% endwith %}
+{% endif %}
+
 
 {% endblock content %}

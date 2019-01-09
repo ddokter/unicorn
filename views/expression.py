@@ -11,8 +11,7 @@ class ExpressionCreateView(CreateView):
     @property
     def success_url(self):
 
-        return reverse("view_conversion",
-                       kwargs={'pk': self.kwargs.get('pk', None)})
+        return reverse("view", kwargs={'pk': self.kwargs.get('pk', None)})
 
     @property
     def cancel_url(self):
