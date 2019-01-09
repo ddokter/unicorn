@@ -1,3 +1,4 @@
+import operator as _op
 from django.db import models
 from django.db.models import F
 from django.utils.translation import ugettext_lazy as _
@@ -14,10 +15,17 @@ class ConversionQuerySet(models.QuerySet):
 
     def find_for_unit(self, unit):
 
+        """Find conversions for the given unit. This will find conversion
+        that have the unit as 'to' value and 'from' value, but will
+        exclude conversions that have complex 'to' values, using
+        subconversions.
+        """
+
         qs = super().filter(from_unit=unit).annotate(
             reverse=F('to_amount') - F('to_amount'))
 
-        qs_reverse = super().filter(to_unit=unit).annotate(
+        qs_reverse = super().filter(to_unit=unit).filter(
+            subconversion__isnull=True).annotate(
             reverse=F('to_amount') - F('to_amount') + 1)
 
         return qs.union(qs_reverse)
@@ -72,30 +80,39 @@ class Conversion(models.Model):
 
         return _str
 
-    def resolve(self, unit, material):
+    def resolve(self, material):
+
+        """ Resolve the conversion to it's 'to_unit'. If any subconversions
+        are found, try to resolve these as well. """
 
         _res = self.to_amount / self.from_amount
 
         for sub in self.subconversion_set.all():
 
-            _res = sub.get_operator()(_res, sub.resolve(unit, material))
+            _res = sub.get_operator()(_res,
+                                      sub.resolve(self.to_unit, material))
 
         return _res
 
     def get_precision(self):
 
-        """Calculate precision, in a range 0-1. This works as follows: the
-        relation of amount_from to amount_to is considered
-        significant. The greater the difference, the greater the
-        precision.  Also, the number of digits after the dot is
-        important. However, precision may be set manually.
-
         """
+        Calculate precision, in a range 0-1. This works as follows:
+            1. if precision is specified on the model, return that
+            2. if the conversion's from_unit location and to_unit location are
+               the same, return BASE_PRECISION
+            3. the bigger the difference in to_amount and from_amount, the less
+               punishment
+            4. more digits after the comma means more precision, hence, less
+               punishment
+        """
+
+        _precision = BASE_PRECISION
 
         if self.precision:
             return self.precision
-
-        _precision = BASE_PRECISION
+        elif self.to_unit.location == self.from_unit.location:
+            return _precision
 
         rel = (min(self.from_amount, self.to_amount) /
                max(self.from_amount, self.to_amount))
@@ -110,9 +127,6 @@ class Conversion(models.Model):
                 len(str(self.to_amount).split('.')[1].strip('0')))
 
         _precision -= ((1/pow(part + 1, 3)) * 0.05)
-
-        if not self.to_unit.location == self.from_unit.location:
-            _precision -= 0.05
 
         return _precision
 

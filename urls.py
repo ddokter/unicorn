@@ -1,14 +1,11 @@
 from django.urls import path
 from unicorn.views.home import Home
-from unicorn.views.base import (ListingView, CreateView, UpdateView,
-                                DeleteView, DetailView, InlineCreateView,
-                                InlineDeleteView, InlineUpdateView)
-from unicorn.views.convert import ConvertView
-from unicorn.views.expression import ExpressionCreateView
+from unicorn.views.base import (
+    ListingView, CreateView, UpdateView, DeleteView, DetailView,
+    InlineCreateView, InlineDeleteView, InlineUpdateView)
 from unicorn.views.recipe import (RecipeCreateView, RecipeUpdateView,
                                   RecipeConvertView)
 from unicorn.views.unit import UnitConvertView
-from unicorn.models.expression import SubConversion
 
 
 urlpatterns = [
@@ -65,13 +62,6 @@ urlpatterns = [
     path('unit/<int:pk>/convert/',
          UnitConvertView.as_view(),
          name='convert_unit'),
-
-    # path('expression/<int:pk>/add',
-    #     ExpressionCreateView.as_view(model=SubConversion),
-    #     name="create_expression"),
-    # path('expressions/<int:pk>/edit',
-    #     UpdateView.as_view(model=SubConversion),
-    #     name="edit_expression"),
 
     path('recipes/<int:pk>/convert/',
          RecipeConvertView.as_view(),

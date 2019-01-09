@@ -46,11 +46,15 @@ class SubConversion(Expression):
 
     def resolve(self, unit, material):
 
+        if unit == self.unit:
+
+            return 1
+
         paths = self.unit.find_conversion_paths(unit, material)
 
         def map_conversion_to_factor(conversion):
 
-            factor = conversion.resolve(unit, material)
+            factor = conversion.resolve(material)
 
             if conversion.reverse:
                 return 1 / factor

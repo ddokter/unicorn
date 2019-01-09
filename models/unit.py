@@ -79,15 +79,15 @@ class Unit(models.Model):
 
             qs = qs.find_for_unit(last_unit)
 
-            for next in qs:
-                if next.to_unit == unit or next.from_unit == unit:
+            for conv in qs:
+                if conv.to_unit == unit or conv.from_unit == unit:
                     if shortest_straw == -1:
                         shortest_straw = len(path) + 1
-                    yield path + [next]
-                elif next.to_unit == last_unit:
-                    stack.append((next.from_unit, path + [next]))
+                    yield path + [conv]
+                elif conv.to_unit == last_unit:
+                    stack.append((conv.from_unit, path + [conv]))
                 else:
-                    stack.append((next.to_unit, path + [next]))
+                    stack.append((conv.to_unit, path + [conv]))
 
     def list_conversions(self):
 

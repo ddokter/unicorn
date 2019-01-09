@@ -2,15 +2,13 @@ from django.test import TestCase
 from unicorn.models.unit import Unit
 from unicorn.models.location import Location
 from unicorn.models.conversion import Conversion
-from unicorn.models.expression import Expression
+from unicorn.models.expression import SubConversion
 from unicorn.models.material import Material
 
 
 class TestUnit(TestCase):
 
     def setUp(self):
-
-        hop = Material.objects.create(name="Hop")
 
         groningen = Location.objects.create(name="Groningen")
         utrecht = Location.objects.create(name="Utrecht")
@@ -122,7 +120,7 @@ class TestUnit(TestCase):
 
         for conv in paths[0]:
 
-            _factor = conv.resolve(self.kilo, hop)
+            _factor = conv.resolve(hop)
             precision *= conv.get_precision()
 
             if conv.reverse:
@@ -142,7 +140,7 @@ class TestExpression(TestCase):
 
     def setUp(self):
 
-        self.gerst = Fermentable.objects.create(name="generic")
+        self.gerst = Material.objects.create(name="Gerst")
 
         gent = Location.objects.create(name="Gent")
 
@@ -154,22 +152,31 @@ class TestExpression(TestCase):
             name="Halster",
             location=gent)
 
-        gentse_mud_halster = Conversion.objects.create(
+        self.gentse_mueken = Unit.objects.create(
+            name="Mueken",
+            location=gent)
+
+        self.gentse_mud_halster = Conversion.objects.create(
             from_unit=self.gentse_mud,
             to_unit=gentse_halster,
-            factor=12)
+            to_amount=12)
 
-        gentse_mud_halster.material.add(self.gerst)
+        self.gentse_halster_mueken = Conversion.objects.create(
+            from_unit=gentse_halster,
+            to_unit=self.gentse_mueken,
+            to_amount=4)
 
-        self.expr = Expression.objects.create(
-            lh_amount=4,
-            lh_unit=self.gentse_mud,
-            rh_amount=8,
-            rh_unit=gentse_halster,
+        self.gentse_mud_halster.material.add(self.gerst)
+        self.gentse_halster_mueken.material.add(self.gerst)
+
+        SubConversion.objects.create(
+            amount=2,
+            conversion=self.gentse_mud_halster,
+            unit=self.gentse_mueken,
             operator="+"
         )
 
-    def xxx_test_resolve(self):
+    def test_resolve(self):
 
-        self.assertAlmostEqual(12.08, self.expr.resolve(
-            self.gentse_mud, self.gerst), 2)
+        self.assertAlmostEqual(12.5, self.gentse_mud_halster.resolve(
+            self.gerst), 2)

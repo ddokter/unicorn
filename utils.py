@@ -3,7 +3,7 @@ from functools import reduce
 from statistics import mean, median
 
 
-def conversion_result(paths, unit, material):
+def conversion_result(paths, material):
 
     results = []
     deviation = 0.99
@@ -11,7 +11,7 @@ def conversion_result(paths, unit, material):
 
     def map_conversion_to_factor(conversion):
 
-        factor = conversion.resolve(unit, material)
+        factor = conversion.resolve(material)
 
         if conversion.reverse:
             return 1 / factor

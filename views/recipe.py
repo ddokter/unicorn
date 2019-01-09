@@ -185,8 +185,7 @@ class RecipeConvertView(FormView, SingleObjectMixin):
 
             if len(paths):
 
-                res = conversion_result(paths, self.object.amount_unit,
-                                        material.material)
+                res = conversion_result(paths, material.material)
 
                 results[material.id] = {
                     'amount': res['median'] * material.amount,

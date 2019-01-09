@@ -48,7 +48,7 @@ class UnitConvertView(FormView, SingleObjectMixin):
 
         def map_conversion_to_factor(conversion):
 
-            factor = conversion.resolve(to_unit, material)
+            factor = conversion.resolve(material)
 
             if conversion.reverse:
                 return 1 / factor
