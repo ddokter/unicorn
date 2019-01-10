@@ -12,7 +12,12 @@ class Style(models.Model):
 
     def __str__(self):
 
-        return self.name
+        _str = self.name
+
+        if self.synonyms:
+            _str += " (%s)" % self.synonyms
+
+        return _str
 
     def list_recipes(self):
 

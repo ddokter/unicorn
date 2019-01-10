@@ -14,27 +14,41 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
-      <a class="nav-item nav-link" href="{% url 'list' model='source' %}">
+      <a class="nav-item nav-link
+                {% if view.view_name == 'list_source' %}active{% endif %}"
+         href="{% url 'list' model='source' %}">
         {% trans 'Sources' %}
       </a>
-      <a class="nav-item nav-link" href="{% url 'list' model='location' %}">
+      <a class="nav-item nav-link
+                {% if view.view_name == 'list_location' %}active{% endif %}"
+         href="{% url 'list' model='location' %}">
         {% trans 'Locations' %}
       </a>
-      <a class="nav-item nav-link" href="{% url 'list' model='unit' %}">
+      <a class="nav-item nav-link
+                {% if view.view_name == 'list_unit' %}active{% endif %}"
+         href="{% url 'list' model='unit' %}">
         {% trans 'Units' %}
       </a>
-      <a class="nav-item nav-link" href="{% url 'list' model='material' %}">
+      <a class="nav-item nav-link
+                {% if view.view_name == 'list_material' %}active{% endif %}"
+         href="{% url 'list' model='material' %}">
         {% trans 'Materials' %}
       </a>
-      <a class="nav-item nav-link" href="{% url 'list' model='style' %}">
+      <a class="nav-item nav-link
+                {% if view.view_name == 'list_style' %}active{% endif %}"
+         href="{% url 'list' model='style' %}">
         {% trans 'Styles' %}
       </a>
-      <a class="nav-item nav-link" href="{% url 'list' model='conversion' %}">
+      <a class="nav-item nav-link
+         {% if view.view_name == 'list_conversion' %}active{% endif %}"
+         href="{% url 'list' model='conversion' %}">
         {% trans 'Conversions' %}
       </a>
-      <a class="nav-item nav-link" href="{% url 'list' model='recipe' %}">
+      <a class="nav-item nav-link
+         {% if view.view_name == 'list_recipe' %}active{% endif %}"
+         href="{% url 'list' model='recipe' %}">
         {% trans 'Recipes' %}
-      </a>      
+      </a>
     </div>
   </div>
 </nav>

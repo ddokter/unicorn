@@ -17,6 +17,8 @@ class SearchForm(forms.Form):
 
 class CTypeMixin(object):
 
+    view_name = ""
+
     @property
     def ctype(self):
 
@@ -25,7 +27,7 @@ class CTypeMixin(object):
     @property
     def listing_label(self):
 
-        return self.model._meta.verbose_name_plural.capitalize()
+        return _(self.model._meta.verbose_name_plural.capitalize())
 
     @property
     def listing_url(self):
@@ -223,6 +225,11 @@ class ListingView(GenericMixin, FormView, CTypeMixin):
     template_name = "base_listing.html"
     form_class = SearchForm
     query = None
+
+    @property
+    def view_name(self):
+
+        return "list_%s" % self.ctype
 
     def list_items(self):
 

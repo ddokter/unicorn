@@ -78,6 +78,13 @@ class Conversion(models.Model):
                 _str,
                 ", ".join([str(obj) for obj in self.material.all()]))
 
+        if self.year_from and self.year_to:
+            _str += " [%s - %s]" % (self.year_from, self.year_to)
+        elif self.year_from:
+            _str += " [> %s]" % self.year_from
+        elif self.year_to:
+            _str += " [< %s]" % self.year_to
+
         return _str
 
     def resolve(self, material):
