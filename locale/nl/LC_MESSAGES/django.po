@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-04 17:49+0000\n"
-"PO-Revision-Date: 2019-01-04 18:50+0100\n"
+"POT-Creation-Date: 2019-01-10 16:38+0000\n"
+"PO-Revision-Date: 2019-01-10 17:43+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -19,35 +19,35 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: models/base.py:8 models/location.py:10 models/material.py:7
-#: models/style.py:9 models/unit.py:15
+#: models/style.py:9 models/unit.py:19
 msgid "Name"
 msgstr "Naam"
 
-#: models/conversion.py:34
+#: models/conversion.py:43
 msgid "From amount"
 msgstr "Van hoeveelheid"
 
-#: models/conversion.py:37
+#: models/conversion.py:46
 msgid "To amount"
 msgstr "Naar hoeveelheid"
 
-#: models/conversion.py:40
+#: models/conversion.py:49
 msgid "Marker"
 msgstr "Markering"
 
-#: models/conversion.py:43
+#: models/conversion.py:52
 msgid "Generic"
 msgstr "Generiek"
 
-#: models/conversion.py:45
+#: models/conversion.py:54
 msgid "From year"
 msgstr "Vanaf jaar"
 
-#: models/conversion.py:46
+#: models/conversion.py:55
 msgid "To year"
 msgstr "Tot jaar"
 
-#: models/conversion.py:47
+#: models/conversion.py:56
 msgid "Original text"
 msgstr "Oorspronkelijke text"
 
@@ -101,6 +101,10 @@ msgstr "Historische bron"
 msgid "Synonyms"
 msgstr "Synoniemen"
 
+#: models/unit.py:22
+msgid "Description"
+msgstr "Beschrijving"
+
 #: templates/base.html:18
 msgid "Sources"
 msgstr "Bronnen"
@@ -109,11 +113,13 @@ msgstr "Bronnen"
 msgid "Locations"
 msgstr "Plaatsen"
 
-#: templates/base.html:24 templates/location_detail.html:10
+#: templates/base.html:24
 msgid "Units"
 msgstr "Eenheden"
 
-#: templates/base.html:27 templates/recipe_detail.html:27 views/recipe.py:21
+#: templates/base.html:27 templates/conversion_detail.html:16
+#: templates/recipe_convert.html:98 templates/recipe_detail.html:31
+#: views/recipe.py:44
 msgid "Materials"
 msgstr "Grondstoffen"
 
@@ -129,10 +135,6 @@ msgstr "Conversies"
 msgid "Recipes"
 msgstr "Recepten"
 
-#: templates/base.html:39
-msgid "Convert units"
-msgstr "Converteer eenheden"
-
 #: templates/base_detail.html:11 templates/base_listing.html:13
 msgid "Home"
 msgstr ""
@@ -142,41 +144,71 @@ msgstr ""
 msgid "%(label)s"
 msgstr ""
 
-#: templates/confirm_delete.html:9
-msgid "Do you really want to delete {{ object }}?"
-msgstr ""
+#: templates/confirm_delete.html:7
+#, python-format
+msgid ""
+"Do you really want to delete %(object)s?\n"
+"  "
+msgstr "Wil je %(object)s echt weggooien?"
 
-#: templates/confirm_delete.html:20
+#: templates/confirm_delete.html:19
 msgid "Yes"
 msgstr "Ja"
 
-#: templates/confirm_delete.html:23
+#: templates/confirm_delete.html:22
 msgid "Cancel"
 msgstr "Afbreken"
 
 #: templates/conversion_detail.html:8
-msgid "Add more units"
-msgstr "Voeg eenheden toe"
-
-#: templates/conversion_detail.html:15
-msgid "Extra units"
-msgstr "Extra eenheden"
-
-#: templates/location_detail.html:33
-msgid "Local conversions"
-msgstr "Plaatselijke conversies"
-
-#: templates/recipe_detail.html:8
 #, fuzzy
-#| msgid "Convert units"
-msgid "Convert to metric units"
-msgstr "Converteer eenheden"
+#| msgid "From year"
+msgid "From"
+msgstr "Vanaf jaar"
 
-#: templates/snippets/add_action.html:5 templates/snippets/listing.html:25
-msgid "Add"
-msgstr "Toevoegen"
+#: templates/conversion_detail.html:12
+msgid "To"
+msgstr "Naar"
 
-#: templates/snippets/delete_action.html:6
+#: templates/recipe_convert.html:10 templates/recipe_detail.html:9
+#: templates/unit_convert.html:10 templates/unit_detail.html:9
+msgid "Details"
+msgstr "Details"
+
+#: templates/recipe_convert.html:15 templates/recipe_convert.html:36
+#: templates/recipe_detail.html:13 templates/unit_convert.html:15
+#: templates/unit_convert.html:36 templates/unit_detail.html:13
+msgid "Convert"
+msgstr "Converteer"
+
+#: templates/recipe_convert.html:42
+msgid "Specifications"
+msgstr "Specificaties"
+
+#: templates/recipe_convert.html:59 templates/recipe_convert.html:105
+msgid "Original"
+msgstr "Oorspronkelijk"
+
+#: templates/recipe_convert.html:60 templates/recipe_convert.html:106
+msgid "Converted"
+msgstr "Geconverteerd"
+
+#: templates/recipe_convert.html:65 templates/recipe_detail.html:22
+msgid "Yield"
+msgstr "Opbrengst"
+
+#: templates/recipe_convert.html:78 templates/recipe_convert.html:131
+msgid "Conversion"
+msgstr "Conversie"
+
+#: templates/recipe_convert.html:122
+msgid "No conversion path found"
+msgstr ""
+
+#: templates/recipe_detail.html:21
+msgid "Source"
+msgstr "Bron"
+
+#: templates/snippets/delete_action.html:5
 msgid "Delete"
 msgstr "Verwijderen"
 
@@ -187,3 +219,39 @@ msgstr "Bewerken"
 #: templates/snippets/listing.html:13
 msgid "Filter"
 msgstr "Filter"
+
+#: templates/snippets/listing.html:25
+msgid "Add"
+msgstr "Toevoegen"
+
+#: templates/unit_convert.html:58
+#, fuzzy
+#| msgid "Conversions"
+msgid "Conversion path"
+msgstr "Conversies"
+
+#: templates/unit_convert.html:62
+msgid "Factor"
+msgstr "Factor"
+
+#: templates/unit_convert.html:64
+msgid "Precision"
+msgstr "Precisie"
+
+#: templates/unit_detail.html:26
+msgid "Location"
+msgstr "Plaats"
+
+#~ msgid "Add more units"
+#~ msgstr ""
+
+#~ msgid "Extra units"
+#~ msgstr "Extra eenheden"
+
+#~ msgid "Local conversions"
+#~ msgstr "Plaatselijke conversies"
+
+#, fuzzy
+#~| msgid "Convert units"
+#~ msgid "Convert to metric units"
+#~ msgstr "Converteer eenheden"

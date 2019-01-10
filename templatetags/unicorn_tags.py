@@ -25,14 +25,16 @@ def listing(context, title, items, create_url=None):
 
 
 @register.inclusion_tag('snippets/sublisting.html', takes_context=True)
-def sublisting(context, title, items, submodel, create_url=None):
+def sublisting(context, title, items, submodel, fk_field=None):
 
     """ Show listing of items within object """
 
     context.update({'title': title,
                     'items': items,
-                    'submodel': submodel,
-                    'create_url': create_url})
+                    'submodel': submodel})
+
+    if fk_field:
+        context.update({'extra_args': '?fk_field=%s' % fk_field})
 
     return context
 
@@ -67,7 +69,7 @@ def add_action(model, btn_class="", btn_label="Add"):
 
 
 @register.inclusion_tag('snippets/add_action.html')
-def inline_add_action(model_name, parent, btn_class="", extra_args="",
+def inline_add_action(model_name, parent, extra_args="", btn_class="",
                       btn_label="Add"):
 
     return {'create_url': "%s%s" % (reverse("inline_create", kwargs={

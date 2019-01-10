@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-04 17:49+0000\n"
+"POT-Creation-Date: 2019-01-10 16:38+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,35 +19,35 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: models/base.py:8 models/location.py:10 models/material.py:7
-#: models/style.py:9 models/unit.py:15
+#: models/style.py:9 models/unit.py:19
 msgid "Name"
 msgstr ""
 
-#: models/conversion.py:34
+#: models/conversion.py:43
 msgid "From amount"
 msgstr ""
 
-#: models/conversion.py:37
+#: models/conversion.py:46
 msgid "To amount"
 msgstr ""
 
-#: models/conversion.py:40
+#: models/conversion.py:49
 msgid "Marker"
 msgstr ""
 
-#: models/conversion.py:43
+#: models/conversion.py:52
 msgid "Generic"
 msgstr ""
 
-#: models/conversion.py:45
+#: models/conversion.py:54
 msgid "From year"
 msgstr ""
 
-#: models/conversion.py:46
+#: models/conversion.py:55
 msgid "To year"
 msgstr ""
 
-#: models/conversion.py:47
+#: models/conversion.py:56
 msgid "Original text"
 msgstr ""
 
@@ -99,6 +99,10 @@ msgstr ""
 msgid "Synonyms"
 msgstr ""
 
+#: models/unit.py:22
+msgid "Description"
+msgstr ""
+
 #: templates/base.html:18
 msgid "Sources"
 msgstr ""
@@ -107,11 +111,13 @@ msgstr ""
 msgid "Locations"
 msgstr ""
 
-#: templates/base.html:24 templates/location_detail.html:10
+#: templates/base.html:24
 msgid "Units"
 msgstr ""
 
-#: templates/base.html:27 templates/recipe_detail.html:27 views/recipe.py:21
+#: templates/base.html:27 templates/conversion_detail.html:16
+#: templates/recipe_convert.html:98 templates/recipe_detail.html:31
+#: views/recipe.py:44
 msgid "Materials"
 msgstr ""
 
@@ -127,10 +133,6 @@ msgstr ""
 msgid "Recipes"
 msgstr ""
 
-#: templates/base.html:39
-msgid "Convert units"
-msgstr ""
-
 #: templates/base_detail.html:11 templates/base_listing.html:13
 msgid "Home"
 msgstr ""
@@ -140,39 +142,69 @@ msgstr ""
 msgid "%(label)s"
 msgstr ""
 
-#: templates/confirm_delete.html:9
-msgid "Do you really want to delete {{ object }}?"
+#: templates/confirm_delete.html:7
+#, python-format
+msgid ""
+"Do you really want to delete %(object)s?\n"
+"  "
 msgstr ""
 
-#: templates/confirm_delete.html:20
+#: templates/confirm_delete.html:19
 msgid "Yes"
 msgstr ""
 
-#: templates/confirm_delete.html:23
+#: templates/confirm_delete.html:22
 msgid "Cancel"
 msgstr ""
 
 #: templates/conversion_detail.html:8
-msgid "Add more units"
+msgid "From"
 msgstr ""
 
-#: templates/conversion_detail.html:15
-msgid "Extra units"
+#: templates/conversion_detail.html:12
+msgid "To"
 msgstr ""
 
-#: templates/location_detail.html:33
-msgid "Local conversions"
+#: templates/recipe_convert.html:10 templates/recipe_detail.html:9
+#: templates/unit_convert.html:10 templates/unit_detail.html:9
+msgid "Details"
 msgstr ""
 
-#: templates/recipe_detail.html:8
-msgid "Convert to metric units"
+#: templates/recipe_convert.html:15 templates/recipe_convert.html:36
+#: templates/recipe_detail.html:13 templates/unit_convert.html:15
+#: templates/unit_convert.html:36 templates/unit_detail.html:13
+msgid "Convert"
 msgstr ""
 
-#: templates/snippets/add_action.html:5 templates/snippets/listing.html:25
-msgid "Add"
+#: templates/recipe_convert.html:42
+msgid "Specifications"
 msgstr ""
 
-#: templates/snippets/delete_action.html:6
+#: templates/recipe_convert.html:59 templates/recipe_convert.html:105
+msgid "Original"
+msgstr ""
+
+#: templates/recipe_convert.html:60 templates/recipe_convert.html:106
+msgid "Converted"
+msgstr ""
+
+#: templates/recipe_convert.html:65 templates/recipe_detail.html:22
+msgid "Yield"
+msgstr ""
+
+#: templates/recipe_convert.html:78 templates/recipe_convert.html:131
+msgid "Conversion"
+msgstr ""
+
+#: templates/recipe_convert.html:122
+msgid "No conversion path found"
+msgstr ""
+
+#: templates/recipe_detail.html:21
+msgid "Source"
+msgstr ""
+
+#: templates/snippets/delete_action.html:5
 msgid "Delete"
 msgstr ""
 
@@ -182,4 +214,24 @@ msgstr ""
 
 #: templates/snippets/listing.html:13
 msgid "Filter"
+msgstr ""
+
+#: templates/snippets/listing.html:25
+msgid "Add"
+msgstr ""
+
+#: templates/unit_convert.html:58
+msgid "Conversion path"
+msgstr ""
+
+#: templates/unit_convert.html:62
+msgid "Factor"
+msgstr ""
+
+#: templates/unit_convert.html:64
+msgid "Precision"
+msgstr ""
+
+#: templates/unit_detail.html:26
+msgid "Location"
 msgstr ""

@@ -43,34 +43,10 @@ class UnitConvertView(FormView, SingleObjectMixin):
 
     def _result(self, paths, to_unit, material):
 
-        results = []
-        precision = []
-
-        def map_conversion_to_factor(conversion):
-
-            factor = conversion.resolve(material)
-
-            if conversion.reverse:
-                return 1 / factor
-            else:
-                return factor
-
-        def map_conversion_to_precision(conversion):
-
-            return conversion.get_precision()
-
-        for path in paths:
-
-            result = reduce(mul, map(map_conversion_to_factor, path), 1)
-            _precision = reduce(mul, map(map_conversion_to_precision, path), 1)
-
-            precision.append(_precision)
-            results.append(result)
+        results = [path.factor for path in paths]
 
         return {
             'paths': paths,
-            'all': results,
-            'precision': precision,
             'min': min(results),
             'max': max(results),
             'avg': mean(results),

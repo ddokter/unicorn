@@ -1,3 +1,4 @@
+from statistics import median
 from django.utils.translation import ugettext_lazy as _
 from django.http import HttpResponseRedirect
 from django.forms import inlineformset_factory
@@ -8,7 +9,6 @@ from django.views.generic.detail import SingleObjectMixin
 from unicorn.models.recipe import Recipe
 from unicorn.models.unit import Unit
 from unicorn.models.material import Material
-from unicorn.utils import conversion_result
 
 
 BREWHOUSE_EFF = 0.8
@@ -162,9 +162,9 @@ class RecipeConvertView(FormView, SingleObjectMixin):
 
         if len(paths):
 
-            res = conversion_result(paths, self.object.amount_unit, beer)
+            _median = median([path.factor for path in paths])
 
-            return {'amount': res['median'] * self.object.amount,
+            return {'amount': _median * self.object.amount,
                     'unit': unit,
                     'path': paths[0]}
         else:
@@ -173,8 +173,6 @@ class RecipeConvertView(FormView, SingleObjectMixin):
                     'path': []}
 
     def _converted_ingredients(self, _yield, unit):
-
-        hl = _yield / 100
 
         results = {}
 
@@ -185,17 +183,15 @@ class RecipeConvertView(FormView, SingleObjectMixin):
 
             if len(paths):
 
-                res = conversion_result(paths, material.material)
+                _median = median([path.factor for path in paths])
 
                 results[material.id] = {
-                    'amount': res['median'] * material.amount,
-                    'amount_hl': (res['median'] * material.amount) / hl,
+                    'amount': _median * material.amount,
                     'unit': unit,
                     'path': paths[0]}
             else:
                 results[material.id] = {
                     'amount': -1,
-                    'amount_hl': -1,
                     'unit': unit,
                     'path': []}
 

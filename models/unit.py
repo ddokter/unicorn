@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Q
 from django.apps import apps
 from django.utils.translation import ugettext_lazy as _
+from unicorn.path import Path
 from .location import Location
 
 
@@ -38,8 +39,10 @@ class Unit(models.Model):
 
         """
 
-        return list(self._find_conversion_paths(
-            unit, material, date=date))
+        return sorted(
+            list(self._find_conversion_paths(unit, material, date=date)),
+            key=lambda x: x.precision,
+            reverse=True)
 
     def _find_conversion_paths(self, unit, material, date=None):
 
@@ -49,8 +52,12 @@ class Unit(models.Model):
         """
 
         conv_model = apps.get_model("unicorn", "Conversion")
-        stack = [(self, [])]
+        stack = [(self, Path(self, unit, material))]
         shortest_straw = -1
+
+        # Set initial precision, so as to be able to cut off
+        #
+        precision = 0
 
         while stack:
 
@@ -60,6 +67,11 @@ class Unit(models.Model):
             #
             if shortest_straw > -1 and len(path) > shortest_straw * 1.5:
                 break
+
+            # Throw out paths that lack precision
+            #
+            if path.precision < precision * 0.8:
+                continue
 
             # stop whenever MAX_DEPTH is reached
             #
@@ -80,14 +92,28 @@ class Unit(models.Model):
             qs = qs.find_for_unit(last_unit)
 
             for conv in qs:
+
+                # We have a terminal conversion!
+                #
                 if conv.to_unit == unit or conv.from_unit == unit:
+
+                    path.append(conv)
+
                     if shortest_straw == -1:
-                        shortest_straw = len(path) + 1
-                    yield path + [conv]
-                elif conv.to_unit == last_unit:
-                    stack.append((conv.from_unit, path + [conv]))
+                        shortest_straw = len(path)
+
+                    precision = max(precision, path.precision)
+
+                    yield path
+
                 else:
-                    stack.append((conv.to_unit, path + [conv]))
+                    new_path = path.copy()
+                    new_path.append(conv)
+
+                    if conv.to_unit == last_unit:
+                        stack.append((conv.from_unit, new_path))
+                    else:
+                        stack.append((conv.to_unit, new_path))
 
     def list_conversions(self):
 

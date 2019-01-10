@@ -40,15 +40,16 @@
 
 {% if view.result %}
 <div class="alert alert-success">
-  1 {{ object }} = {{ view.result.median }} {{ form.cleaned_data.to_unit }}
+  1 {{ object }} = {{ view.result.median|floatformat:2 }}
+  {{ form.cleaned_data.to_unit }}
 </div>
 
 <div class="alert alert-dark" role="alert">
   <dl>
-    <dt>Median</dt><dd>{{ view.result.median }}</dd>
-    <dt>Min</dt><dd>{{ view.result.min }}</dd>
-    <dt>Avg</dt><dd>{{ view.result.avg }}</dd>
-    <dt>Max</dt><dd>{{ view.result.max }}</dd>    
+    <dt>Median</dt><dd>{{ view.result.median|floatformat:2 }}</dd>
+    <dt>Min</dt><dd>{{ view.result.min|floatformat:2 }}</dd>
+    <dt>Avg</dt><dd>{{ view.result.avg|floatformat:2 }}</dd>
+    <dt>Max</dt><dd>{{ view.result.max|floatformat:2 }}</dd>    
   </dl>
 </div>
 
@@ -59,9 +60,9 @@
   <div class="alert alert-dark" role="alert">
     <dl>
       <dt>{% trans 'Factor' %}</dt>
-      <dd>{{ view.result.all|get:forloop.counter0 }}</dd>
+      <dd>{{ path.factor }}</dd>
       <dt>{% trans 'Precision' %}</dt>
-      <dd>{{ view.result.precision|get:forloop.counter0 }}</dd>
+      <dd>{{ path.precision }}</dd>      
     </dl>
   </div>
   

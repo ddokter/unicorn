@@ -104,7 +104,6 @@
       <th />
       <th>{% trans 'Original' %}</th>
       <th>{% trans 'Converted' %}</th>
-      <th>{% trans 'Per HL' %}</th>
     </tr>
   </thead>
   <tbody>
@@ -118,11 +117,14 @@
         <a href="{{ material.unit|detail_url }}">{{ material.unit }}</a>
       </td>
       <td>
+        {% if converted|get:material.id|get:'amount' == -1 %}
+        <div class="alert alert-warning">
+          {% trans 'No conversion path found' %}
+        </div>
+        {% else %}
         {{ converted|get:material.id|get:'amount'|floatformat:2 }}
         {{ converted|get:material.id|get:'unit' }}
-      </td>
-      <td>
-        {{ converted|get:material.id|get:'amount_hl'|floatformat:2 }}
+        {% endif %}
       </td>
     </tr>
     <tr>

@@ -94,6 +94,10 @@ class Conversion(models.Model):
 
         return _res
 
+    def get_factor(self):
+
+        return self.from_amount / self.to_amount
+
     def get_precision(self):
 
         """
