@@ -11,9 +11,9 @@
     <li class="list-group-item">
       <a href="{{ item|detail_url }}">{{ item }}</a>
 
-      <div class="btn-group float-right actions">
-        {% inline_edit_action item object 'btn-sm' %}
-        {% inline_delete_action item object 'btn-sm' %}
+      <div class="float-right">
+        {% inline_edit_action item object %}
+        {% inline_delete_action item object %}
       </div>
 
     </li>

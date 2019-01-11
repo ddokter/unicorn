@@ -18,26 +18,17 @@
     <li class="breadcrumb-item active">{{ object }}</li>    
   </ol>
 </nav>
-
 {% endblock %}
 
 {% block actions %}
-<div class="btn-group" role="toolbar" aria-label="Actions">
-  {% edit_action object %}
-  {% delete_action object %}
-  {% block extra_actions %}
-  {% endblock %}
-</div>
+{% edit_action object %}
+{% delete_action object %}
+{% block extra_actions %}
+{% endblock %}
 {% endblock %}
 
 {% block title %}
-<i class="fa fa-{{ object.get_icon }}"></i> {{ object|safe }}
-{% block status %}
-{% if object.status %}    
-<div class="pull-right">
-</div>
-{% endif %}
-{% endblock status %}
+{{ object }}
 {% endblock title %}
 
 {% block content %}

@@ -1,11 +1,10 @@
-from operator import mul
-from functools import reduce
 from statistics import mean, median
 from django import forms
 from django.views.generic import FormView
 from django.views.generic.detail import SingleObjectMixin
 from unicorn.models.unit import Unit
 from unicorn.models.material import Material
+from unicorn.views.base import CTypeMixin
 
 
 class ConvertForm(forms.Form):
@@ -14,7 +13,7 @@ class ConvertForm(forms.Form):
     material = forms.ModelChoiceField(queryset=Material.objects.all())
 
 
-class UnitConvertView(FormView, SingleObjectMixin):
+class UnitConvertView(FormView, SingleObjectMixin, CTypeMixin):
 
     template_name = "unit_convert.html"
     form_class = ConvertForm

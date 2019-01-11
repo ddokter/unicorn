@@ -1,6 +1,8 @@
 {% load i18n %}
 
-<a type="button" class="btn btn-success {{ btn_class }}"
-   href="{{ create_url }}">
-  {% trans btn_label %}
+<a type="button"
+   class="btn btn-outline-secondary btn-sm rounded-circle"
+   href="{{ create_url }}"
+   data-toggle="tooltip" data-placement="right" title="{% trans 'Add' %}">
+  <span class="fas fa-plus" />
 </a>

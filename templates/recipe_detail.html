@@ -22,20 +22,23 @@
   <dt>{% trans 'Yield' %}</dt>
   <dd>
     {{ object.amount}}
-    <a href="{{ object.amount_unit|detail_url }}">{{ object.amount_unit }}</a>    
+    <a href="{{ object.amount_unit|detail_url }}">{{ object.amount_unit }}</a>
   </dd>
 </dl>
 
 {% with materials=object.recipematerial_set.all %}
 {% if materials|length %}
-<h2>{% trans 'Materials' %}</h2>
+<h2>
+  {% trans 'Materials' %}
+  {% inline_add_action 'recipematerial' object '?fk_field=recepy' %}
+</h2>
 
 <ul class="list-group">
   {% for material in materials %}
   <li class="list-group-item">
     {{ material.amount }}
     <a href="{{ material.unit|detail_url }}">{{ material.unit }}</a>
-    <a href="{{ material.material|detail_url }}">{{ material.material }}</a>    
+    <a href="{{ material.material|detail_url }}">{{ material.material }}</a>
   </li>
   {% endfor %}
 </ul>
@@ -44,4 +47,3 @@
 
 
 {% endblock content %}
-

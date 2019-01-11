@@ -9,6 +9,7 @@ from django.views.generic.detail import SingleObjectMixin
 from unicorn.models.recipe import Recipe
 from unicorn.models.unit import Unit
 from unicorn.models.material import Material
+from unicorn.views.base import CTypeMixin
 
 
 BREWHOUSE_EFF = 0.8
@@ -87,12 +88,11 @@ class ConvertForm(forms.Form):
     material_to_unit = forms.ModelChoiceField(queryset=Unit.objects.all())
 
 
-class RecipeConvertView(FormView, SingleObjectMixin):
+class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
 
     template_name = "recipe_convert.html"
     model = Recipe
     form_class = ConvertForm
-
     converted_yield = None
     converted_ingredients = None
 

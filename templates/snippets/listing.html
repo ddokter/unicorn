@@ -1,46 +1,26 @@
 {% load i18n unicorn_tags %}
 
-<div class="panel panel-default listing">
+<section>
 
-  <div class="panel-heading">
-    {{ title }}
-    <span class="controls">
-      <form class="input-group listingfilter" role="form" method="POST">
+  <form class="input-group listingfilter" role="form" method="POST">
 
-        {% csrf_token %}
-        
-        <input type="text" class="form-control input-sm"
-               placeholder="{% trans 'Filter' %}"
-               name="query">
-        <!--span class="input-group-btn">
-          <button class="btn btn-default input-sm" type="submit">
-            <i class="fa fa-filter"></i>
-          </button>
-        </span-->
-      </form>
-      <div class="btn-group">
-        {% if create_url %}
-        <a href="{{ create_url }}" 
-           class="btn btn-xs btn-success">
-          <i class="fa fa-plus"></i> {% trans "Add" %}
-        </a>
-        {% endif %}
+    {% csrf_token %}
+
+    <input type="text" class="form-control input-sm"
+           placeholder="{% trans 'Filter' %}"
+           name="query">
+  </form>
+
+  <ul class="list-group">
+    {% for item in items %}
+    <li class="list-group-item">
+      <a href="{{ item|detail_url }}">{{ item|safe }}</a>
+
+      <div class="float-right">
+        {% edit_action item %}
+        {% delete_action item %}
       </div>
-    </span>
-  </div>
-
-  <div class="panel-body">
-    <ul class="list-group">
-      {% for item in items %}
-      <li class="list-group-item">
-        <a href="{{ item|detail_url }}">{{ item|safe }}</a>
-
-        <div class="btn-group float-right actions">
-          {% edit_action item 'btn-sm' %}
-          {% delete_action item 'btn-sm' %}
-        </div>
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
-</div>
+    </li>
+    {% endfor %}
+  </ul>
+</section>

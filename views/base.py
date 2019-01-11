@@ -17,12 +17,24 @@ class SearchForm(forms.Form):
 
 class CTypeMixin(object):
 
-    view_name = ""
-
     @property
     def ctype(self):
 
         return self.model.__name__.lower()
+
+    @property
+    def view_type(self):
+
+        """ Return one of: list, detail, edit, create, delete, other """
+
+        return ""
+
+    @property
+    def view_name(self):
+
+        """  Return a tuple of model name and view type """
+
+        return (self.ctype, self.view_type)
 
     @property
     def listing_label(self):
@@ -100,6 +112,7 @@ class CreateView(GenericMixin, BaseCreateView, CTypeMixin):
     """ Base create view that enables creation within a parent """
 
     fields = "__all__"
+    view_type = "create"
 
     def check_permission(self, request):
 
@@ -136,6 +149,7 @@ class CreateView(GenericMixin, BaseCreateView, CTypeMixin):
 class UpdateView(GenericMixin, BaseUpdateView, CTypeMixin):
 
     fields = "__all__"
+    view_type = "edit"
 
     @property
     def permission(self):
@@ -154,6 +168,8 @@ class UpdateView(GenericMixin, BaseUpdateView, CTypeMixin):
 
 
 class DetailView(GenericMixin, BaseDetailView, CTypeMixin):
+
+    view_type = "detail"
 
     @property
     def permission(self):
@@ -188,6 +204,7 @@ class DeleteView(BaseDeleteView):
     _model = None
     template_name = "confirm_delete.html"
     _list_url = None
+    view_type = "delete"
 
     @property
     def model(self):
@@ -225,11 +242,7 @@ class ListingView(GenericMixin, FormView, CTypeMixin):
     template_name = "base_listing.html"
     form_class = SearchForm
     query = None
-
-    @property
-    def view_name(self):
-
-        return "list_%s" % self.ctype
+    view_type = "list"
 
     def list_items(self):
 

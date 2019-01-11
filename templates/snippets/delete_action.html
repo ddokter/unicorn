@@ -1,6 +1,7 @@
 {% load i18n %}
 
-<a class="btn btn-danger {{ btn_class }}"
-   href="{{ delete_url }}">
-  {% trans "Delete" %}
+<a class="btn btn-outline-danger btn-sm rounded-circle"
+   href="{{ delete_url }}"
+   data-toggle="tooltip" data-placement="right" title="{% trans 'Delete' %}">
+  <span class="fas fa-minus" />
 </a>

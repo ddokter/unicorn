@@ -2,10 +2,20 @@
 
 {% load i18n bootstrap4 %}
 
+{% block bootstrap4_extra_head %}
+<link rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+      crossorigin="anonymous">
+{% endblock %}
+
 {% block bootstrap4_content %}
 
 <nav class="navbar navbar-dark bg-dark navbar-expand-lg">
-  <a class="navbar-brand" href="{% url 'home' %}">Unicorn</a>
+  <a class="navbar-brand" href="{% url 'home' %}">
+    <span class="fas fa-beer" />
+    Unicorn
+  </a>
   <button class="navbar-toggler" type="button" data-toggle="collapse"
           data-target="#navbarSupportedContent"
           aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -15,37 +25,37 @@
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
       <a class="nav-item nav-link
-                {% if view.view_name == 'list_source' %}active{% endif %}"
+                {% if view.view_name.0 == 'source' %}active{% endif %}"
          href="{% url 'list' model='source' %}">
         {% trans 'Sources' %}
       </a>
       <a class="nav-item nav-link
-                {% if view.view_name == 'list_location' %}active{% endif %}"
+                {% if view.view_name.0 == 'location' %}active{% endif %}"
          href="{% url 'list' model='location' %}">
         {% trans 'Locations' %}
       </a>
       <a class="nav-item nav-link
-                {% if view.view_name == 'list_unit' %}active{% endif %}"
+                {% if view.view_name.0 == 'unit' %}active{% endif %}"
          href="{% url 'list' model='unit' %}">
         {% trans 'Units' %}
       </a>
       <a class="nav-item nav-link
-                {% if view.view_name == 'list_material' %}active{% endif %}"
+                {% if view.view_name.0 == 'material' %}active{% endif %}"
          href="{% url 'list' model='material' %}">
         {% trans 'Materials' %}
       </a>
       <a class="nav-item nav-link
-                {% if view.view_name == 'list_style' %}active{% endif %}"
+                {% if view.view_name.0 == 'style' %}active{% endif %}"
          href="{% url 'list' model='style' %}">
         {% trans 'Styles' %}
       </a>
       <a class="nav-item nav-link
-         {% if view.view_name == 'list_conversion' %}active{% endif %}"
+         {% if view.view_name.0 == 'conversion' %}active{% endif %}"
          href="{% url 'list' model='conversion' %}">
         {% trans 'Conversions' %}
       </a>
       <a class="nav-item nav-link
-         {% if view.view_name == 'list_recipe' %}active{% endif %}"
+         {% if view.view_name.0 == 'recipe' %}active{% endif %}"
          href="{% url 'list' model='recipe' %}">
         {% trans 'Recipes' %}
       </a>
@@ -60,12 +70,12 @@
 
   <h1>
     {% block title %}{% endblock %}
-    <div class="btn-group actions">
+    <div role="toolbar" class="d-inline">
       {% block actions %}{% endblock %}
     </div>
   </h1>
 
-  {% block content %}(no content){% endblock %}
+  {% block content %}{% endblock %}
 </div>
 
 {% endblock %}

@@ -1,6 +1,7 @@
 {% load i18n %}
 
-<a class="btn btn-secondary {{ btn_class }}"
-   href="{{ edit_url }}">
-  {% trans "Edit" %}
+<a class="btn btn-outline-secondary btn-sm rounded-circle"
+   href="{{ edit_url }}"
+   data-toggle="tooltip" data-placement="right" title="{% trans 'Edit' %}">
+  <span class="fas fa-pen" />
 </a>
