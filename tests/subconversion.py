@@ -1,5 +1,5 @@
 from django.test import TestCase
-from unicorn.models.unit import Unit
+from unicorn.models.unit import Unit, LocalUnit
 from unicorn.models.location import Location
 from unicorn.models.conversion import Conversion
 from unicorn.models.expression import SubConversion
@@ -14,15 +14,15 @@ class TestSubConversion(TestCase):
 
         gent = Location.objects.create(name="Gent")
 
-        self.gentse_mud = Unit.objects.create(
+        self.gentse_mud = LocalUnit.objects.create(
             name="Mud",
             location=gent)
 
-        gentse_halster = Unit.objects.create(
+        gentse_halster = LocalUnit.objects.create(
             name="Halster",
             location=gent)
 
-        self.gentse_mueken = Unit.objects.create(
+        self.gentse_mueken = LocalUnit.objects.create(
             name="Mueken",
             location=gent)
 

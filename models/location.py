@@ -15,7 +15,7 @@ class Location(models.Model):
 
     def list_units(self):
 
-        return self.unit_set.all()
+        return self.localunit_set.all()
 
     def list_conversions(self):
 

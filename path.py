@@ -4,15 +4,15 @@ class Path(list):
     factor and the precision of the path found.
     """
 
-    def __init__(self, from_unit, to_unit, material):
+    def __init__(self, from_node, to_node, material):
 
         self.factor = 1
         self.precision = 1
-        self.from_unit = from_unit
-        self.to_unit = to_unit
+        self.from_node = from_node
+        self.to_node = to_node
         self.material = material
 
-        self._last_unit = from_unit
+        self._last_node = from_node
 
         return super().__init__()
 
@@ -28,12 +28,12 @@ class Path(list):
 
         self.precision *= conversion.get_precision()
 
-        if self._last_unit == conversion.from_unit:
+        if self._last_node == conversion.from_unit:
             self.factor *= conversion.resolve(self.material)
-            self._last_unit = conversion.to_unit
+            self._last_node = conversion.to_unit
         else:
             self.factor /= conversion.resolve(self.material)
-            self._last_unit = conversion.from_unit
+            self._last_node = conversion.from_unit
 
         return super().append(conversion)
 
@@ -41,7 +41,7 @@ class Path(list):
 
         self.precision = 1
         self.factor = 1
-        self._last_unit = self.from_unit
+        self._last_node = self.from_node
 
         return super().clear()
 
@@ -51,7 +51,7 @@ class Path(list):
 
         self.precision *= path.precision
         self.factor *= path.factor
-        self._last_unit = path._last_unit
+        self._last_node = path._last_node
 
         return super().extend(path)
 
@@ -61,12 +61,12 @@ class Path(list):
 
     def copy(self):
 
-        new = Path(self.from_unit, self.to_unit, self.material)
+        new = Path(self.from_node, self.to_node, self.material)
         new._extend(self[:])
 
         new.precision = self.precision
         new.factor = self.factor
-        new._last_unit = self._last_unit
+        new._last_node = self._last_node
 
         return new
 

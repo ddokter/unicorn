@@ -1,5 +1,5 @@
 from django.test import TestCase
-from unicorn.models.unit import Unit
+from unicorn.models.unit import Unit, LocalUnit
 from unicorn.models.location import Location
 from unicorn.models.conversion import Conversion
 from unicorn.models.material import Material
@@ -15,35 +15,35 @@ class TestUnit(TestCase):
         delft = Location.objects.create(name="Delft")
         amsterdam = Location.objects.create(name="Amsterdam")
 
-        self.groningse_mud = Unit.objects.create(
+        self.groningse_mud = LocalUnit.objects.create(
             name="Mud",
             location=groningen)
 
-        self.utrechtse_mud = Unit.objects.create(
+        self.utrechtse_mud = LocalUnit.objects.create(
             name="Mud",
             location=utrecht)
 
-        self.amersfoortse_mud = Unit.objects.create(
+        self.amersfoortse_mud = LocalUnit.objects.create(
             name="Mud",
             location=amersfoort)
 
-        self.delftse_hoed = Unit.objects.create(
+        self.delftse_hoed = LocalUnit.objects.create(
             name="Hoed",
             location=delft)
 
         self.liter = Unit.objects.create(name="Liter")
 
-        self.groningse_pond = Unit.objects.create(
+        self.groningse_pond = LocalUnit.objects.create(
             name="Pond",
             location=groningen)
 
         self.kilo = Unit.objects.create(name="Kilo")
 
-        self.amsterdamse_schippond = Unit.objects.create(
+        self.amsterdamse_schippond = LocalUnit.objects.create(
             name="Schippond",
             location=amsterdam)
 
-        self.amsterdamse_pond = Unit.objects.create(
+        self.amsterdamse_pond = LocalUnit.objects.create(
             name="Pond",
             location=amsterdam)
 
@@ -114,10 +114,5 @@ class TestUnit(TestCase):
 
         paths = self.groningse_mud.find_conversion_paths(self.kilo, hop)
 
-        for conv in paths[0]:
-
-            print(conv)
-
-        print("Precision: %.4f" % paths[0].precision)
-
         self.assertAlmostEqual(paths[0].factor, 8.45, 2)
+        self.assertAlmostEqual(paths[0].precision, 0.80, 2)

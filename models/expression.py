@@ -52,21 +52,7 @@ class SubConversion(Expression):
 
         paths = self.unit.find_conversion_paths(unit, material)
 
-        def map_conversion_to_factor(conversion):
-
-            factor = conversion.resolve(material)
-
-            if conversion.reverse:
-                return 1 / factor
-            else:
-                return factor
-
-        if len(paths):
-            _res = reduce(_op.mul, map(map_conversion_to_factor, paths[0]), 1)
-        else:
-            _res = 0
-
-        return _res * self.amount
+        return paths[0].factor * self.amount
 
     class Meta:
 

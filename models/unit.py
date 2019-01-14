@@ -4,32 +4,25 @@ from django.apps import apps
 from django.utils.translation import ugettext_lazy as _
 from unicorn.path import Path
 from .location import Location
+from polymorphic.models import PolymorphicModel
 
 
 MAX_RELATIVE_PATH_LENGTH = 1.5
 MAX_DEPTH = 10
 
 
-class Unit(models.Model):
+class Unit(PolymorphicModel):
 
     """Any historic or modern unit. Location may be used to position the
     unit in a specific geographical place.
     """
 
     name = models.CharField(_("Name"), max_length=100)
-    location = models.ForeignKey(Location, blank=True, null=True,
-                                 on_delete=models.CASCADE)
     info = models.TextField(_("Description"), blank=True, null=True)
 
     def __str__(self):
 
-        _str = self.name
-
-        if self.location:
-
-            _str = "%s (%s)" % (_str, self.location)
-
-        return _str
+        return self.name
 
     def find_conversion_paths(self, unit, material, date=None):
 
@@ -125,5 +118,15 @@ class Unit(models.Model):
     class Meta:
 
         app_label = "unicorn"
-        ordering = ["name", "location__name"]
-        unique_together = ("name", "location")
+        ordering = ["name"]
+
+
+class LocalUnit(Unit):
+
+    local_name = models.CharField(null=True, blank=True, max_length=100,
+                                  unique=True)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)
+
+    def __str__(self):
+
+        return self.local_name or "%s (%s)" % (self.name, self.location)
