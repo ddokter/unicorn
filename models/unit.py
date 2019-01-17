@@ -1,35 +1,38 @@
+from math import inf
 from django.db import models
 from django.db.models import Q
 from django.apps import apps
 from django.utils.translation import ugettext_lazy as _
 from unicorn.path import Path
 from .location import Location
+from polymorphic.models import PolymorphicModel
 
 
-MAX_RELATIVE_PATH_LENGTH = 1.5
+# Do not seek any deeper than this... more than 10 conversions is
+# probably a very unreliable path anyway.
+#
 MAX_DEPTH = 10
 
+# Set the minimum precision needed as percentage/100 of the best result
+# found.  Only paths with a precision beter than this are kept.
+#
+MIN_PRECISION = 0.8
 
-class Unit(models.Model):
+# Set maximum path length as a percentage/100 of the shortest path found.
+#
+MAX_PATH_LENGTH = 1.5
 
-    """Any historic or modern unit. Location may be used to position the
-    unit in a specific geographical place.
+
+class AbstractUnit(PolymorphicModel):
+
+    """Base class for unit models, so as to be able to define both
+    generic and local units, and let the Conversion model accept
+    both.
     """
 
-    name = models.CharField(_("Name"), max_length=100)
-    location = models.ForeignKey(Location, blank=True, null=True,
-                                 on_delete=models.CASCADE)
-    info = models.TextField(_("Description"), blank=True, null=True)
-
-    def __str__(self):
-
-        _str = self.name
-
-        if self.location:
-
-            _str = "%s (%s)" % (_str, self.location)
-
-        return _str
+    name = models.CharField(_("Name"), null=True, blank=True, max_length=100)
+    synonyms = models.CharField(_("Synonyms"), max_length=255,
+                                null=True, blank=True)
 
     def find_conversion_paths(self, unit, material, date=None):
 
@@ -47,15 +50,20 @@ class Unit(models.Model):
     def _find_conversion_paths(self, unit, material, date=None):
 
         """Use breath-first to find the shortest paths for the conversion
-        asked. The search will stop when no more paths exist that have a
-        maximum length of 150% of the shortest path found.
+        asked. The search will only be performed up to MAX_DEPTH, to
+        prevent long searches for non existing conversions. Whenever a
+        path is found, only paths where precision and length is a
+        precentage of the best path are considered, determined by
+        MIN_PRECISION and MAX_PATH_LENGTH.
+
         """
 
         conv_model = apps.get_model("unicorn", "Conversion")
         stack = [(self, Path(self, unit, material))]
-        shortest_straw = -1
+        shortest = inf
 
-        # Set initial precision, so as to be able to cut off
+        # Set initial precision, so as to be able to cut off whenever the
+        # precision is getting too low
         #
         precision = 0
 
@@ -65,12 +73,12 @@ class Unit(models.Model):
 
             # Whenever the paths are getting too long, call it a day.
             #
-            if shortest_straw > -1 and len(path) > shortest_straw * 1.5:
+            if (len(path) > shortest * MAX_PATH_LENGTH):
                 break
 
             # Throw out paths that lack precision
             #
-            if path.precision < precision * 0.8:
+            if path.precision < precision * MIN_PRECISION:
                 continue
 
             # stop whenever MAX_DEPTH is reached
@@ -99,8 +107,7 @@ class Unit(models.Model):
 
                     path.append(conv)
 
-                    if shortest_straw == -1:
-                        shortest_straw = len(path)
+                    shortest = min(len(path), shortest)
 
                     precision = max(precision, path.precision)
 
@@ -125,5 +132,28 @@ class Unit(models.Model):
     class Meta:
 
         app_label = "unicorn"
-        ordering = ["name", "location__name"]
-        unique_together = ("name", "location")
+        ordering = ["name"]
+
+
+class BaseUnit(AbstractUnit):
+
+    def __str__(self):
+
+        _str = self.name
+
+        if self.synonyms:
+            _str += " (%s)" % self.synonyms
+
+        return _str
+
+
+class LocalUnit(AbstractUnit):
+
+    unit = models.ForeignKey(BaseUnit, on_delete=models.CASCADE,
+                             verbose_name=_("Base unit"))
+    location = models.ForeignKey(Location, on_delete=models.CASCADE,
+                                 verbose_name=_("Location"))
+
+    def __str__(self):
+
+        return self.name or "%s (%s)" % (self.unit.name, self.location)

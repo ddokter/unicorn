@@ -9,7 +9,7 @@
     <a class="nav-link active" href="#">{% trans 'Details' %}</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="{% url 'convert_unit' pk=object.id %}">
+    <a class="nav-link" href="{% url 'convert_localunit' pk=object.id %}">
       {% trans 'Convert' %}
     </a>
   </li>
@@ -21,13 +21,13 @@
 </p>
 {% endif %}
 
-{% if unit.location %}
 <dl>
+  <dt>{% trans 'Unit' %}</dt>
+  <dd><a href="{{ object.unit|detail_url }}">{{ object.unit }}</a></dd>
   <dt>{% trans 'Location' %}</dt>
-  <dd><a href="{{ unit.location|detail_url }}">{{ unit.location }}</a></dd>
+  <dd>
+    <a href="{{ object.location|detail_url }}">{{ object.location }}</a>
+  </dd>  
 </dl>
-{% endif %}
-
-{% sublisting 'Conversions' object.list_conversions 'conversion' 'from_unit' %}
 
 {% endblock %}

@@ -11,6 +11,18 @@ from unicorn.views.unit import UnitConvertView
 urlpatterns = [
     path('', Home.as_view(), name="home"),
 
+    # Not so generic views
+    #
+    path('recipe/<int:pk>/convert/',
+         RecipeConvertView.as_view(),
+         name='convert_recipe'),
+    path('recipe/add/',
+         RecipeCreateView.as_view(),
+         name="create_recipe"),
+    path('recipe/<int:pk>/edit',
+         RecipeUpdateView.as_view(),
+         name="edit_recipe"),
+
     # Generic delete view
     #
     path('<str:model>/<int:pk>/delete',
@@ -62,15 +74,7 @@ urlpatterns = [
     path('unit/<int:pk>/convert/',
          UnitConvertView.as_view(),
          name='convert_unit'),
-
-    path('recipes/<int:pk>/convert/',
-         RecipeConvertView.as_view(),
-         name='convert_recipe'),
-    path('recipes/add/',
-         RecipeCreateView.as_view(),
-         name="create_recipe"),
-    path('recipes/<int:pk>/edit',
-         RecipeUpdateView.as_view(),
-         name="edit_recipe"),
-
+    path('localunit/<int:pk>/convert/',
+         UnitConvertView.as_view(),
+         name='convert_localunit'),
 ]

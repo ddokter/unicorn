@@ -1,5 +1,6 @@
 from django.template import Library
 from django.urls import reverse
+from django.urls.exceptions import NoReverseMatch
 from unicorn.utils import get_model_name
 
 
@@ -61,7 +62,11 @@ def add_action(model):
 
     model_name = model.__class__.__name__.lower()
 
-    return {'create_url': reverse("create", kwargs={'model': model_name})}
+    try:
+        create_url = reverse("create_%s" % model_name)
+    except NoReverseMatch:
+        create_url = reverse("create", kwargs={'model': model_name})
+    return {'create_url': create_url}
 
 
 @register.inclusion_tag('snippets/add_action.html')

@@ -1,5 +1,5 @@
 from django.test import TestCase
-from unicorn.models.unit import Unit
+from unicorn.models.unit import BaseUnit, LocalUnit
 from unicorn.models.location import Location
 from unicorn.models.conversion import Conversion
 from unicorn.models.material import Material
@@ -15,36 +15,39 @@ class TestUnit(TestCase):
         delft = Location.objects.create(name="Delft")
         amsterdam = Location.objects.create(name="Amsterdam")
 
-        self.groningse_mud = Unit.objects.create(
-            name="Mud",
+        mud = BaseUnit.objects.create(name="Mud")
+        hoed = BaseUnit.objects.create(name="Hoed")
+        pond = BaseUnit.objects.create(name="Pond")
+        spond = BaseUnit.objects.create(name="Schippond")
+        self.kilo = BaseUnit.objects.create(name="Kilo")
+        self.liter = BaseUnit.objects.create(name="Liter")
+
+        self.groningse_mud = LocalUnit.objects.create(
+            unit=mud,
             location=groningen)
 
-        self.utrechtse_mud = Unit.objects.create(
-            name="Mud",
+        self.utrechtse_mud = LocalUnit.objects.create(
+            unit=mud,
             location=utrecht)
 
-        self.amersfoortse_mud = Unit.objects.create(
-            name="Mud",
+        self.amersfoortse_mud = LocalUnit.objects.create(
+            unit=mud,
             location=amersfoort)
 
-        self.delftse_hoed = Unit.objects.create(
-            name="Hoed",
+        self.delftse_hoed = LocalUnit.objects.create(
+            unit=hoed,
             location=delft)
 
-        self.liter = Unit.objects.create(name="Liter")
-
-        self.groningse_pond = Unit.objects.create(
-            name="Pond",
+        self.groningse_pond = LocalUnit.objects.create(
+            unit=pond,
             location=groningen)
 
-        self.kilo = Unit.objects.create(name="Kilo")
-
-        self.amsterdamse_schippond = Unit.objects.create(
-            name="Schippond",
+        self.amsterdamse_schippond = LocalUnit.objects.create(
+            unit=spond,
             location=amsterdam)
 
-        self.amsterdamse_pond = Unit.objects.create(
-            name="Pond",
+        self.amsterdamse_pond = LocalUnit.objects.create(
+            unit=pond,
             location=amsterdam)
 
         Conversion.objects.create(
@@ -114,10 +117,5 @@ class TestUnit(TestCase):
 
         paths = self.groningse_mud.find_conversion_paths(self.kilo, hop)
 
-        for conv in paths[0]:
-
-            print(conv)
-
-        print("Precision: %.4f" % paths[0].precision)
-
         self.assertAlmostEqual(paths[0].factor, 8.45, 2)
+        self.assertAlmostEqual(paths[0].precision, 0.80, 2)

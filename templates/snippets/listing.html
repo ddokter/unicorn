@@ -2,15 +2,13 @@
 
 <section>
 
-  <form class="input-group listingfilter" role="form" method="POST">
-
+  <form class="form mb-2" method="POST">
     {% csrf_token %}
-
-    <input type="text" class="form-control input-sm"
+    <input type="text" class="form-control"
            placeholder="{% trans 'Filter' %}"
            name="query">
   </form>
-
+  
   <ul class="list-group">
     {% for item in items %}
     <li class="list-group-item">

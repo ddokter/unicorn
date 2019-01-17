@@ -1,10 +1,9 @@
-import operator as _op
 from django.db import models
-from django.db.models import F
+from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
-from .unit import Unit
 from .source import Source
 from .material import Material
+from .unit import AbstractUnit
 
 
 MARKERS = (('<', '<'), ('=', '='), ('>', '>'))
@@ -13,7 +12,7 @@ BASE_PRECISION = 0.98
 
 class ConversionQuerySet(models.QuerySet):
 
-    def find_for_unit(self, unit):
+    def find_for_unit(self, local_unit):
 
         """Find conversions for the given unit. This will find conversion
         that have the unit as 'to' value and 'from' value, but will
@@ -21,14 +20,10 @@ class ConversionQuerySet(models.QuerySet):
         subconversions.
         """
 
-        qs = super().filter(from_unit=unit).annotate(
-            reverse=F('to_amount') - F('to_amount'))
-
-        qs_reverse = super().filter(to_unit=unit).filter(
-            subconversion__isnull=True).annotate(
-            reverse=F('to_amount') - F('to_amount') + 1)
-
-        return qs.union(qs_reverse)
+        return super().filter(
+            Q(from_unit=local_unit) |
+            (Q(to_unit=local_unit) & Q(subconversion__isnull=True))
+        )
 
 
 class ConversionManager(models.Manager):
@@ -41,10 +36,10 @@ class ConversionManager(models.Manager):
 class Conversion(models.Model):
 
     from_amount = models.FloatField(_("From amount"), default=1.0)
-    from_unit = models.ForeignKey(Unit, on_delete=models.CASCADE,
+    from_unit = models.ForeignKey(AbstractUnit, on_delete=models.CASCADE,
                                   related_name="conversion_set")
     to_amount = models.FloatField(_("To amount"), default=1.0)
-    to_unit = models.ForeignKey(Unit, on_delete=models.CASCADE,
+    to_unit = models.ForeignKey(AbstractUnit, on_delete=models.CASCADE,
                                 related_name="conversion_set_reverse")
     marker = models.CharField(_("Marker"), choices=MARKERS, max_length=1,
                               default="=")
@@ -122,7 +117,8 @@ class Conversion(models.Model):
 
         if self.precision:
             return self.precision
-        elif self.to_unit.location == self.from_unit.location:
+        elif (getattr(self.to_unit, 'location', None) ==
+              getattr(self.from_unit, 'location', None)):
             return _precision
 
         rel = (min(self.from_amount, self.to_amount) /
@@ -144,4 +140,4 @@ class Conversion(models.Model):
     class Meta:
 
         app_label = "unicorn"
-        # ordering = ["from_unit__name"]
+        ordering = ["from_unit__name"]

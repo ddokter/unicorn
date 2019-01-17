@@ -1,0 +1,26 @@
+{% extends 'base_detail.html' %}
+
+{% load i18n unicorn_tags %}
+
+{% block content %}
+
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link active" href="#">{% trans 'Details' %}</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'convert_unit' pk=object.id %}">
+      {% trans 'Convert' %}
+    </a>
+  </li>
+</ul>
+
+{% if unit.info %}
+<p>
+  {{ unit.info }}
+</p>
+{% endif %}
+
+{% sublisting 'Local Units' object.localunit_set.all 'localunit' 'unit' %}
+
+{% endblock %}

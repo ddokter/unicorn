@@ -2,14 +2,14 @@ from statistics import mean, median
 from django import forms
 from django.views.generic import FormView
 from django.views.generic.detail import SingleObjectMixin
-from unicorn.models.unit import Unit
+from unicorn.models.unit import BaseUnit, LocalUnit
 from unicorn.models.material import Material
 from unicorn.views.base import CTypeMixin
 
 
 class ConvertForm(forms.Form):
 
-    to_unit = forms.ModelChoiceField(queryset=Unit.objects.all())
+    to_unit = forms.ModelChoiceField(queryset=BaseUnit.objects.all())
     material = forms.ModelChoiceField(queryset=Material.objects.all())
 
 
@@ -18,7 +18,7 @@ class UnitConvertView(FormView, SingleObjectMixin, CTypeMixin):
     template_name = "unit_convert.html"
     form_class = ConvertForm
     result = None
-    model = Unit
+    model = LocalUnit
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()

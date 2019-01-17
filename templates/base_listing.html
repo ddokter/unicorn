@@ -11,14 +11,14 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
-    <li class="breadcrumb-item active">{{ view.model_label_plural }}</li>
+    <li class="breadcrumb-item active">{{ view.listing_label }}</li>
   </ol>
 </nav>
 {% endblock %}
 
 
 {% block title %}
-{% blocktrans with label=view.model_label_plural %}{{label}}{% endblocktrans %}
+{% blocktrans with label=view.listing_label %}{{label}}{% endblocktrans %}
 {% endblock %}
 
 
