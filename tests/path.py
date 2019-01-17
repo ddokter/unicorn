@@ -1,7 +1,7 @@
 from django.test import TestCase
 from unicorn.path import Path
 from unicorn.models.conversion import Conversion
-from unicorn.models.unit import Unit, LocalUnit
+from unicorn.models.unit import BaseUnit, LocalUnit
 from unicorn.models.location import Location
 from unicorn.models.material import Material
 
@@ -14,11 +14,13 @@ class TestPath(TestCase):
 
         delft = Location.objects.create(name="Delft")
 
+        self.liter = BaseUnit.objects.create(name="Liter")
+        hoed = BaseUnit.objects.create(name="Hoed")
+
         self.delftse_hoed = LocalUnit.objects.create(
             name="Hoed",
+            unit=hoed,
             location=delft)
-
-        self.liter = Unit.objects.create(name="Liter")
 
         self.path = Path(self.delftse_hoed, self.liter, self.hop)
 

@@ -5,6 +5,7 @@ from django.views.generic.edit import DeleteView as BaseDeleteView
 from django.views.generic import FormView
 from django import forms
 from django.urls import reverse, reverse_lazy
+from django.urls.exceptions import NoReverseMatch
 from django.utils.translation import ugettext_lazy as _
 from django.apps import apps
 from unicorn.utils import get_model_name
@@ -21,6 +22,11 @@ class CTypeMixin(object):
     def ctype(self):
 
         return self.model.__name__.lower()
+
+    @property
+    def ct_label(self):
+
+        return _(self.model._meta.verbose_name.capitalize())
 
     @property
     def view_type(self):
@@ -67,8 +73,7 @@ class GenericMixin:
     @property
     def success_url(self):
 
-        modelname = self.kwargs.get('model',
-                                    self._model.__class__.__name__.lower())
+        modelname = self.kwargs.get('model', self.model.__name__.lower())
 
         return reverse("list", kwargs={'model': modelname})
 
@@ -77,10 +82,18 @@ class GenericMixin:
 
         return self.success_url
 
+    @property
+    def action_url(self):
+
+        try:
+            action_url = reverse("%s_%s" % (self.view_type, self.ctype))
+        except NoReverseMatch:
+            action_url = reverse(self.view_type, kwargs={'model': self.ctype})
+
+        return action_url
+
 
 class InlineActionMixin:
-
-    parent_model = None  # RM!
 
     @property
     def parent(self):
@@ -136,11 +149,6 @@ class CreateView(GenericMixin, BaseCreateView, CTypeMixin):
 
         return "unicorn.add_%s" % self.ctype
 
-    @property
-    def action_url(self):
-
-        return reverse("create", kwargs={'model': self.ctype})
-
     def get_template_names(self):
 
         return ["%s_create.html" % self.ctype, "base_create.html"]
@@ -155,12 +163,6 @@ class UpdateView(GenericMixin, BaseUpdateView, CTypeMixin):
     def permission(self):
 
         return "unicorn.change_%s" % self.ctype
-
-    @property
-    def action_url(self):
-
-        return reverse("edit", kwargs={'pk': self.object.pk,
-                                       'model': self.ctype})
 
     def get_template_names(self):
 
@@ -254,11 +256,6 @@ class ListingView(GenericMixin, FormView, CTypeMixin):
                      self.query.lower() in str(item).lower()]
 
         return items
-
-    @property
-    def model_label_plural(self):
-
-        return _(self.model._meta.verbose_name_plural.capitalize())
 
     def form_valid(self, form):
 

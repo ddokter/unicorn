@@ -7,7 +7,7 @@ from django.views.generic import FormView
 from .base import CreateView, UpdateView
 from django.views.generic.detail import SingleObjectMixin
 from unicorn.models.recipe import Recipe
-from unicorn.models.unit import Unit
+from unicorn.models.unit import BaseUnit
 from unicorn.models.material import Material
 from unicorn.views.base import CTypeMixin
 
@@ -84,8 +84,8 @@ class RecipeUpdateView(FormSetMixin, UpdateView):
 
 class ConvertForm(forms.Form):
 
-    yield_to_unit = forms.ModelChoiceField(queryset=Unit.objects.all())
-    material_to_unit = forms.ModelChoiceField(queryset=Unit.objects.all())
+    yield_to_unit = forms.ModelChoiceField(queryset=BaseUnit.objects.all())
+    material_to_unit = forms.ModelChoiceField(queryset=BaseUnit.objects.all())
 
 
 class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):

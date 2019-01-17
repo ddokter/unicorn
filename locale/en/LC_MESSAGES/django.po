@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-10 16:38+0000\n"
+"POT-Creation-Date: 2019-01-17 10:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,59 +19,71 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: models/base.py:8 models/location.py:10 models/material.py:7
-#: models/style.py:9 models/unit.py:19
+#: models/style.py:9 models/unit.py:20
 msgid "Name"
 msgstr ""
 
-#: models/conversion.py:43
+#: models/conversion.py:38
 msgid "From amount"
 msgstr ""
 
-#: models/conversion.py:46
+#: models/conversion.py:41
 msgid "To amount"
 msgstr ""
 
-#: models/conversion.py:49
+#: models/conversion.py:44
 msgid "Marker"
 msgstr ""
 
-#: models/conversion.py:52
+#: models/conversion.py:47
 msgid "Generic"
 msgstr ""
 
-#: models/conversion.py:54
+#: models/conversion.py:49
 msgid "From year"
 msgstr ""
 
-#: models/conversion.py:55
+#: models/conversion.py:50
 msgid "To year"
 msgstr ""
 
-#: models/conversion.py:56
+#: models/conversion.py:51
 msgid "Original text"
 msgstr ""
 
-#: models/expression.py:26 models/recipe.py:34
+#: models/expression.py:25 models/recipe.py:37
 msgid "Amount"
 msgstr ""
 
-#: models/expression.py:28
+#: models/expression.py:27
 msgid "Operator"
 msgstr ""
 
+#: models/location.py:34
+msgid "location"
+msgstr ""
+
 #: models/recipe.py:15
+msgid "Style"
+msgstr ""
+
+#: models/recipe.py:16
 msgid "Date"
 msgstr ""
 
-#: models/recipe.py:16 models/source.py:17
+#: models/recipe.py:17 models/source.py:17
 msgid "Year of publication"
 msgstr ""
 
-#: models/recipe.py:19
+#: models/recipe.py:20 templates/recipe_detail.html:21
+msgid "Source"
+msgstr ""
+
+#: models/recipe.py:21
 msgid "Information"
 msgstr ""
 
-#: models/recipe.py:20
+#: models/recipe.py:22
 msgid "Yield amount"
 msgstr ""
 
@@ -95,42 +107,51 @@ msgstr ""
 msgid "Original source"
 msgstr ""
 
-#: models/style.py:10
+#: models/style.py:10 models/unit.py:21
 msgid "Synonyms"
 msgstr ""
 
-#: models/unit.py:22
-msgid "Description"
-msgstr ""
-
-#: templates/base.html:18
+#: templates/base.html:30
 msgid "Sources"
 msgstr ""
 
-#: templates/base.html:21
+#: templates/base.html:35
 msgid "Locations"
 msgstr ""
 
-#: templates/base.html:24
+#: templates/base.html:40
 msgid "Units"
 msgstr ""
 
-#: templates/base.html:27 templates/conversion_detail.html:16
-#: templates/recipe_convert.html:98 templates/recipe_detail.html:31
-#: views/recipe.py:44
+#: templates/base.html:45 templates/conversion_detail.html:16
+#: templates/recipe_convert.html:98 templates/recipe_detail.html:32
+#: views/recipe.py:45
 msgid "Materials"
 msgstr ""
 
-#: templates/base.html:30
+#: templates/base.html:50
 msgid "Styles"
 msgstr ""
 
-#: templates/base.html:33
+#: templates/base.html:55
 msgid "Conversions"
 msgstr ""
 
-#: templates/base.html:36
+#: templates/base.html:60
 msgid "Recipes"
+msgstr ""
+
+#: templates/base_create.html:6
+#, python-format
+msgid "Add %(label)s"
+msgstr ""
+
+#: templates/base_create.html:44
+msgid "Save"
+msgstr ""
+
+#: templates/base_create.html:47 templates/confirm_delete.html:22
+msgid "Cancel"
 msgstr ""
 
 #: templates/base_detail.html:11 templates/base_listing.html:13
@@ -140,6 +161,19 @@ msgstr ""
 #: templates/base_detail.html:15 templates/base_listing.html:21
 #, python-format
 msgid "%(label)s"
+msgstr ""
+
+#: templates/baseunit_detail.html:9 templates/localunit_detail.html:9
+#: templates/recipe_convert.html:10 templates/recipe_detail.html:9
+#: templates/unit_convert.html:10
+msgid "Details"
+msgstr ""
+
+#: templates/baseunit_detail.html:13 templates/localunit_detail.html:13
+#: templates/recipe_convert.html:15 templates/recipe_convert.html:36
+#: templates/recipe_detail.html:13 templates/unit_convert.html:15
+#: templates/unit_convert.html:36
+msgid "Convert"
 msgstr ""
 
 #: templates/confirm_delete.html:7
@@ -153,10 +187,6 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: templates/confirm_delete.html:22
-msgid "Cancel"
-msgstr ""
-
 #: templates/conversion_detail.html:8
 msgid "From"
 msgstr ""
@@ -165,15 +195,12 @@ msgstr ""
 msgid "To"
 msgstr ""
 
-#: templates/recipe_convert.html:10 templates/recipe_detail.html:9
-#: templates/unit_convert.html:10 templates/unit_detail.html:9
-msgid "Details"
+#: templates/localunit_detail.html:25
+msgid "Unit"
 msgstr ""
 
-#: templates/recipe_convert.html:15 templates/recipe_convert.html:36
-#: templates/recipe_detail.html:13 templates/unit_convert.html:15
-#: templates/unit_convert.html:36 templates/unit_detail.html:13
-msgid "Convert"
+#: templates/localunit_detail.html:27
+msgid "Location"
 msgstr ""
 
 #: templates/recipe_convert.html:42
@@ -200,8 +227,8 @@ msgstr ""
 msgid "No conversion path found"
 msgstr ""
 
-#: templates/recipe_detail.html:21
-msgid "Source"
+#: templates/snippets/add_action.html:6
+msgid "Add"
 msgstr ""
 
 #: templates/snippets/delete_action.html:5
@@ -212,12 +239,8 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: templates/snippets/listing.html:13
+#: templates/snippets/listing.html:8
 msgid "Filter"
-msgstr ""
-
-#: templates/snippets/listing.html:25
-msgid "Add"
 msgstr ""
 
 #: templates/unit_convert.html:58
@@ -230,8 +253,4 @@ msgstr ""
 
 #: templates/unit_convert.html:64
 msgid "Precision"
-msgstr ""
-
-#: templates/unit_detail.html:26
-msgid "Location"
 msgstr ""

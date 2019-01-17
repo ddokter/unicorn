@@ -22,9 +22,10 @@ class Location(models.Model):
         """ List all conversions for units within the same location """
 
         conv_model = apps.get_model("unicorn", "Conversion")
+        local_unit_ids = [unit.id for unit in self.list_units()]
 
-        return conv_model.objects.filter(to_unit__location=self).filter(
-            from_unit__location=self)
+        return conv_model.objects.filter(to_unit__in=local_unit_ids).filter(
+            from_unit__in=local_unit_ids)
 
     class Meta:
 

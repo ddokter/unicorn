@@ -1,5 +1,5 @@
 from django.test import TestCase
-from unicorn.models.unit import Unit, LocalUnit
+from unicorn.models.unit import BaseUnit, LocalUnit
 from unicorn.models.location import Location
 from unicorn.models.conversion import Conversion
 from unicorn.models.material import Material
@@ -15,36 +15,39 @@ class TestUnit(TestCase):
         delft = Location.objects.create(name="Delft")
         amsterdam = Location.objects.create(name="Amsterdam")
 
+        mud = BaseUnit.objects.create(name="Mud")
+        hoed = BaseUnit.objects.create(name="Hoed")
+        pond = BaseUnit.objects.create(name="Pond")
+        spond = BaseUnit.objects.create(name="Schippond")
+        self.kilo = BaseUnit.objects.create(name="Kilo")
+        self.liter = BaseUnit.objects.create(name="Liter")
+
         self.groningse_mud = LocalUnit.objects.create(
-            name="Mud",
+            unit=mud,
             location=groningen)
 
         self.utrechtse_mud = LocalUnit.objects.create(
-            name="Mud",
+            unit=mud,
             location=utrecht)
 
         self.amersfoortse_mud = LocalUnit.objects.create(
-            name="Mud",
+            unit=mud,
             location=amersfoort)
 
         self.delftse_hoed = LocalUnit.objects.create(
-            name="Hoed",
+            unit=hoed,
             location=delft)
 
-        self.liter = Unit.objects.create(name="Liter")
-
         self.groningse_pond = LocalUnit.objects.create(
-            name="Pond",
+            unit=pond,
             location=groningen)
 
-        self.kilo = Unit.objects.create(name="Kilo")
-
         self.amsterdamse_schippond = LocalUnit.objects.create(
-            name="Schippond",
+            unit=spond,
             location=amsterdam)
 
         self.amsterdamse_pond = LocalUnit.objects.create(
-            name="Pond",
+            unit=pond,
             location=amsterdam)
 
         Conversion.objects.create(

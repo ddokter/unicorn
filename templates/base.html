@@ -35,8 +35,8 @@
         {% trans 'Locations' %}
       </a>
       <a class="nav-item nav-link
-                {% if view.view_name.0 == 'unit' %}active{% endif %}"
-         href="{% url 'list' model='unit' %}">
+                {% if view.view_name.0 == 'baseunit' %}active{% endif %}"
+         href="{% url 'list' model='baseunit' %}">
         {% trans 'Units' %}
       </a>
       <a class="nav-item nav-link

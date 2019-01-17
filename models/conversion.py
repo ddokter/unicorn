@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from .source import Source
 from .material import Material
-from .unit import Unit
+from .unit import AbstractUnit
 
 
 MARKERS = (('<', '<'), ('=', '='), ('>', '>'))
@@ -36,10 +36,10 @@ class ConversionManager(models.Manager):
 class Conversion(models.Model):
 
     from_amount = models.FloatField(_("From amount"), default=1.0)
-    from_unit = models.ForeignKey(Unit, on_delete=models.CASCADE,
+    from_unit = models.ForeignKey(AbstractUnit, on_delete=models.CASCADE,
                                   related_name="conversion_set")
     to_amount = models.FloatField(_("To amount"), default=1.0)
-    to_unit = models.ForeignKey(Unit, on_delete=models.CASCADE,
+    to_unit = models.ForeignKey(AbstractUnit, on_delete=models.CASCADE,
                                 related_name="conversion_set_reverse")
     marker = models.CharField(_("Marker"), choices=MARKERS, max_length=1,
                               default="=")

@@ -1,9 +1,8 @@
 import operator as _op
-from functools import reduce
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from polymorphic.models import PolymorphicModel
-from .unit import Unit
+from .unit import AbstractUnit
 from .conversion import Conversion
 
 
@@ -24,7 +23,7 @@ class Expression(PolymorphicModel):
 class SubConversion(Expression):
 
     amount = models.FloatField(_("Amount"))
-    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+    unit = models.ForeignKey(AbstractUnit, on_delete=models.CASCADE)
     operator = models.CharField(_("Operator"),
                                 max_length=1,
                                 choices=OPERATORS)
@@ -57,5 +56,3 @@ class SubConversion(Expression):
     class Meta:
 
         app_label = "unicorn"
-        verbose_name = "expression"
-        verbose_name_plural = "expressions"

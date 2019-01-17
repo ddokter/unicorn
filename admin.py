@@ -1,13 +1,7 @@
 from django.contrib import admin
-from unicorn.models.unit import Unit
 from unicorn.models.location import Location
 from unicorn.models.conversion import Conversion
 from unicorn.models.recipe import Recipe
-
-
-class UnitAdmin(admin.ModelAdmin):
-
-    pass
 
 
 class LocationAdmin(admin.ModelAdmin):
@@ -30,7 +24,6 @@ class RecipeAdmin(admin.ModelAdmin):
     inlines = [MaterialsInline]
 
 
-admin.site.register(Unit, UnitAdmin)
 admin.site.register(Location, LocationAdmin)
 admin.site.register(Conversion, ConversionAdmin)
 admin.site.register(Recipe, RecipeAdmin)

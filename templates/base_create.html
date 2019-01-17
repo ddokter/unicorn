@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
-{% load bootstrap4 %}
+{% load i18n bootstrap4 %}
 
 {% block title %}
-<h1>Add {{ view.ctype }}</h1>
+<h1>{% blocktrans with label=view.ct_label %}Add {{label}}{% endblocktrans %} </h1>
 {% endblock %}
 
 {% block content %}
@@ -41,10 +41,10 @@
         
     {% buttons %}
     <button type="submit" class="btn btn-primary">
-      Save
+      {% trans 'Save' %}
     </button>
     <a href="{{ view.cancel_url }}" class="btn btn-default">
-      Cancel
+      {% trans 'Cancel' %}
     </a>
     
     {% endbuttons %}
