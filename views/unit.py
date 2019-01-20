@@ -2,7 +2,7 @@ from statistics import mean, median
 from django import forms
 from django.views.generic import FormView
 from django.views.generic.detail import SingleObjectMixin
-from unicorn.models.unit import BaseUnit, LocalUnit
+from unicorn.models.unit import AbstractUnit, BaseUnit
 from unicorn.models.material import Material
 from unicorn.views.base import CTypeMixin
 
@@ -18,7 +18,7 @@ class UnitConvertView(FormView, SingleObjectMixin, CTypeMixin):
     template_name = "unit_convert.html"
     form_class = ConvertForm
     result = None
-    model = LocalUnit
+    model = AbstractUnit
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -44,10 +44,13 @@ class UnitConvertView(FormView, SingleObjectMixin, CTypeMixin):
 
         results = [path.factor for path in paths]
 
-        return {
-            'paths': paths,
-            'min': min(results),
-            'max': max(results),
-            'avg': mean(results),
-            'median': median(results)
-        }
+        if len(results):
+            return {
+                'paths': paths,
+                'min': min(results),
+                'max': max(results),
+                'avg': mean(results),
+                'median': median(results)
+            }
+        else:
+            return None

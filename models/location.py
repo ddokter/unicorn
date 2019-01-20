@@ -27,6 +27,21 @@ class Location(models.Model):
         return conv_model.objects.filter(to_unit__in=local_unit_ids).filter(
             from_unit__in=local_unit_ids)
 
+    @property
+    def child_fk_qs(self):
+
+        localunit_model = apps.get_model("unicorn", "LocalUnit")
+
+        return {
+            'conversion': {
+                'to_unit': localunit_model.objects.filter(location=self),
+                'from_unit': localunit_model.objects.filter(location=self)
+            },
+            'localunit': {
+                'location': Location.objects.filter(id=self.id)
+            }
+        }
+
     class Meta:
 
         app_label = "unicorn"

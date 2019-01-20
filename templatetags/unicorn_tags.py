@@ -43,8 +43,13 @@ def sublisting(context, title, items, submodel, fk_field=None):
 @register.inclusion_tag('snippets/edit_action.html')
 def edit_action(obj):
 
-    return {'edit_url': reverse("edit", kwargs={'model': get_model_name(obj),
-                                                'pk': obj.id})}
+    model_name = get_model_name(obj)
+
+    try:
+        _url = reverse("edit_%s" % model_name, kwargs={'pk': obj.id})
+    except NoReverseMatch:
+        _url = reverse("edit", kwargs={'model': model_name, 'pk': obj.id})
+    return {'edit_url': _url}
 
 
 @register.inclusion_tag('snippets/edit_action.html')
@@ -109,3 +114,18 @@ def detail_url(obj):
 def get(iterable, idx):
 
     return iterable[idx]
+
+
+@register.filter
+def status_label(obj):
+
+    return obj._meta.model.get_status_display(obj)
+
+
+@register.filter
+def status_class(status):
+
+    if status == 1:
+        return "info"
+    else:
+        return "warning"

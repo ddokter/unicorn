@@ -6,6 +6,7 @@ from unicorn.views.base import (
 from unicorn.views.recipe import (RecipeCreateView, RecipeUpdateView,
                                   RecipeConvertView)
 from unicorn.views.unit import UnitConvertView
+from unicorn.views.conversion import ConversionCreateView, ConversionUpdateView
 
 
 urlpatterns = [
@@ -16,12 +17,22 @@ urlpatterns = [
     path('recipe/<int:pk>/convert/',
          RecipeConvertView.as_view(),
          name='convert_recipe'),
+
     path('recipe/add/',
          RecipeCreateView.as_view(),
          name="create_recipe"),
+
     path('recipe/<int:pk>/edit',
          RecipeUpdateView.as_view(),
          name="edit_recipe"),
+
+    path('conversion/add/',
+         ConversionCreateView.as_view(),
+         name="create_conversion"),
+
+    path('conversion/<int:pk>/edit',
+         ConversionUpdateView.as_view(),
+         name="edit_conversion"),
 
     # Generic delete view
     #
@@ -74,6 +85,7 @@ urlpatterns = [
     path('unit/<int:pk>/convert/',
          UnitConvertView.as_view(),
          name='convert_unit'),
+
     path('localunit/<int:pk>/convert/',
          UnitConvertView.as_view(),
          name='convert_localunit'),

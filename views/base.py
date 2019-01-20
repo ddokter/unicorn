@@ -18,15 +18,31 @@ class SearchForm(forms.Form):
 
 class CTypeMixin(object):
 
+    def get_model(self):
+
+        if getattr(self, 'object', None):
+            if hasattr(self.object, 'get_real_instance'):
+                model = self.object.get_real_instance()._meta.model
+            else:
+                model = self.object._meta.model
+        else:
+            model = self.model
+
+        return model
+
     @property
     def ctype(self):
 
-        return self.model.__name__.lower()
+        """ Determine content type, keeping in mind that some views are on
+        polymorphic types
+        """
+
+        return self.get_model().__name__.lower()
 
     @property
     def ct_label(self):
 
-        return _(self.model._meta.verbose_name.capitalize())
+        return _(self.get_model()._meta.verbose_name.capitalize())
 
     @property
     def view_type(self):
@@ -45,7 +61,7 @@ class CTypeMixin(object):
     @property
     def listing_label(self):
 
-        return _(self.model._meta.verbose_name_plural.capitalize())
+        return _(self.get_model()._meta.verbose_name_plural.capitalize())
 
     @property
     def listing_url(self):
@@ -82,16 +98,6 @@ class GenericMixin:
 
         return self.success_url
 
-    @property
-    def action_url(self):
-
-        try:
-            action_url = reverse("%s_%s" % (self.view_type, self.ctype))
-        except NoReverseMatch:
-            action_url = reverse(self.view_type, kwargs={'model': self.ctype})
-
-        return action_url
-
 
 class InlineActionMixin:
 
@@ -118,6 +124,21 @@ class InlineActionMixin:
             'pk': self.parent.pk,
             'model': self.kwargs['parent_model']
         })
+
+    def get_form(self, form_class=None):
+
+        form = super().get_form(form_class=form_class)
+
+        try:
+            field_defs = self.parent.child_fk_qs.get(self.ctype)
+
+            for field in field_defs.keys():
+                form.fields[field].queryset = field_defs[field]
+
+        except:
+            pass
+
+        return form
 
 
 class CreateView(GenericMixin, BaseCreateView, CTypeMixin):
@@ -153,6 +174,16 @@ class CreateView(GenericMixin, BaseCreateView, CTypeMixin):
 
         return ["%s_create.html" % self.ctype, "base_create.html"]
 
+    @property
+    def action_url(self):
+
+        try:
+            action_url = reverse("%s_%s" % (self.view_type, self.ctype))
+        except NoReverseMatch:
+            action_url = reverse(self.view_type, kwargs={'model': self.ctype})
+
+        return action_url
+
 
 class UpdateView(GenericMixin, BaseUpdateView, CTypeMixin):
 
@@ -167,6 +198,19 @@ class UpdateView(GenericMixin, BaseUpdateView, CTypeMixin):
     def get_template_names(self):
 
         return ["%s_update.html" % self.ctype, "base_update.html"]
+
+    @property
+    def action_url(self):
+
+        try:
+            action_url = reverse("%s_%s" % (self.view_type, self.ctype),
+                                 kwargs={'pk': self.object.id})
+        except NoReverseMatch:
+            action_url = reverse(self.view_type,
+                                 kwargs={'model': self.ctype,
+                                         'pk': self.object.id})
+
+        return action_url
 
 
 class DetailView(GenericMixin, BaseDetailView, CTypeMixin):

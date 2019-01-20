@@ -8,11 +8,17 @@
            placeholder="{% trans 'Filter' %}"
            name="query">
   </form>
-  
+
   <ul class="list-group">
     {% for item in items %}
     <li class="list-group-item">
       <a href="{{ item|detail_url }}">{{ item|safe }}</a>
+
+      {% if item.status %}
+      <span class="badge badge-pill badge-{{ item.status|status_class }}">
+        {{ item|status_label }}
+      </span>
+      {% endif %}
 
       <div class="float-right">
         {% edit_action item %}

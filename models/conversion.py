@@ -7,6 +7,14 @@ from .unit import AbstractUnit
 
 
 MARKERS = (('<', '<'), ('=', '='), ('>', '>'))
+
+STATUS = (
+    (1, _("Reference")),
+    (2, _("Inferred")),
+    (3, _("Ambiguous")))
+
+# No conversion is considered to be more precise than this.
+#
 BASE_PRECISION = 0.98
 
 
@@ -36,11 +44,13 @@ class ConversionManager(models.Manager):
 class Conversion(models.Model):
 
     from_amount = models.FloatField(_("From amount"), default=1.0)
-    from_unit = models.ForeignKey(AbstractUnit, on_delete=models.CASCADE,
-                                  related_name="conversion_set")
+    from_unit = models.ForeignKey(
+        AbstractUnit, on_delete=models.CASCADE,
+        related_name="conversion_set", verbose_name=_("From unit"))
     to_amount = models.FloatField(_("To amount"), default=1.0)
-    to_unit = models.ForeignKey(AbstractUnit, on_delete=models.CASCADE,
-                                related_name="conversion_set_reverse")
+    to_unit = models.ForeignKey(
+        AbstractUnit, on_delete=models.CASCADE,
+        related_name="conversion_set_reverse", verbose_name=_("To unit"))
     marker = models.CharField(_("Marker"), choices=MARKERS, max_length=1,
                               default="=")
     material = models.ManyToManyField(Material, blank=True)
@@ -50,6 +60,7 @@ class Conversion(models.Model):
     year_to = models.SmallIntegerField(_("To year"), null=True, blank=True)
     original_text = models.TextField(_("Original text"), null=True, blank=True)
     precision = models.FloatField(blank=True, null=True)
+    status = models.SmallIntegerField(_("Status"), default=1, choices=STATUS)
 
     objects = ConversionManager()
 

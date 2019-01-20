@@ -35,8 +35,18 @@
     {% bootstrap_form form %}
 
     {% if view.formset %}
-    <h2>{{ view.formset_label }}</h2>
-    {% bootstrap_formset view.formset layout='horizontal' %}
+    <h2>
+      {{ view.formset_label }}
+      <button class="btn btn-primary" type="button"
+              data-toggle="collapse" data-target="#formset_collapse"
+              aria-expanded="false" aria-controls="formset_collapse"
+              title="{% trans 'Show subformset' %}">
+        <span class="fas fa-angle-down" />
+      </button>
+    </h2>
+    <section class="collapse" id="formset_collapse">
+      {% bootstrap_formset view.formset layout='horizontal' %}
+    </section>
     {% endif %}
         
     {% buttons %}

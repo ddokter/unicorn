@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-17 10:39+0000\n"
+"POT-Creation-Date: 2019-01-17 12:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,36 +19,60 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: models/base.py:8 models/location.py:10 models/material.py:7
-#: models/style.py:9 models/unit.py:20
+#: models/style.py:9 models/unit.py:33
 msgid "Name"
 msgstr ""
 
-#: models/conversion.py:38
+#: models/conversion.py:12
+msgid "Reference"
+msgstr ""
+
+#: models/conversion.py:13
+msgid "Inferred"
+msgstr ""
+
+#: models/conversion.py:14
+msgid "Ambiguous"
+msgstr ""
+
+#: models/conversion.py:46
 msgid "From amount"
 msgstr ""
 
-#: models/conversion.py:41
-msgid "To amount"
-msgstr ""
-
-#: models/conversion.py:44
-msgid "Marker"
-msgstr ""
-
-#: models/conversion.py:47
-msgid "Generic"
-msgstr ""
-
 #: models/conversion.py:49
-msgid "From year"
+msgid "From unit"
 msgstr ""
 
 #: models/conversion.py:50
+msgid "To amount"
+msgstr ""
+
+#: models/conversion.py:53
+msgid "To unit"
+msgstr ""
+
+#: models/conversion.py:54
+msgid "Marker"
+msgstr ""
+
+#: models/conversion.py:57
+msgid "Generic"
+msgstr ""
+
+#: models/conversion.py:59
+msgid "From year"
+msgstr ""
+
+#: models/conversion.py:60
 msgid "To year"
 msgstr ""
 
-#: models/conversion.py:51
+#: models/conversion.py:61
 msgid "Original text"
+msgstr ""
+
+#: models/conversion.py:63
+msgid "Status"
 msgstr ""
 
 #: models/expression.py:25 models/recipe.py:37
@@ -57,10 +81,6 @@ msgstr ""
 
 #: models/expression.py:27
 msgid "Operator"
-msgstr ""
-
-#: models/location.py:34
-msgid "location"
 msgstr ""
 
 #: models/recipe.py:15
@@ -107,8 +127,16 @@ msgstr ""
 msgid "Original source"
 msgstr ""
 
-#: models/style.py:10 models/unit.py:21
+#: models/style.py:10 models/unit.py:34
 msgid "Synonyms"
+msgstr ""
+
+#: models/unit.py:153
+msgid "Base unit"
+msgstr ""
+
+#: models/unit.py:155 templates/localunit_detail.html:27
+msgid "Location"
 msgstr ""
 
 #: templates/base.html:30
@@ -197,10 +225,6 @@ msgstr ""
 
 #: templates/localunit_detail.html:25
 msgid "Unit"
-msgstr ""
-
-#: templates/localunit_detail.html:27
-msgid "Location"
 msgstr ""
 
 #: templates/recipe_convert.html:42

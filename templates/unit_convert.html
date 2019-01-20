@@ -1,4 +1,4 @@
-{% extends 'unit_detail.html' %}
+{% extends 'baseunit_detail.html' %}
 
 {% load i18n bootstrap4 unicorn_tags %}
 
@@ -6,7 +6,7 @@
 
 <ul class="nav nav-tabs">
   <li class="nav-item">
-    <a class="nav-link" href="{% url 'view' pk=object.id model='unit' %}">
+    <a class="nav-link" href="{% url 'view' pk=object.id model=view.ctype %}">
       {% trans 'Details' %}
     </a>
   </li>
@@ -38,6 +38,7 @@
     {% endbuttons %}
 </form>
 
+{% if view.request.method == "POST" %}
 {% if view.result %}
 <div class="alert alert-success">
   1 {{ object }} = {{ view.result.median|floatformat:2 }}
@@ -78,6 +79,11 @@
   
 </section>
 {% endfor %}
+{% else %}
+<div class="alert alert-danger">
+  {% trans 'No conversions found' %}
+</div>
+{% endif %}
 {% endif %}
 
 {% endblock content %}
