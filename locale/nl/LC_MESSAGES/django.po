@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-17 12:02+0000\n"
-"PO-Revision-Date: 2019-01-17 13:04+0100\n"
+"POT-Creation-Date: 2019-03-18 17:03+0000\n"
+"PO-Revision-Date: 2019-03-18 18:04+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: models/base.py:8 models/location.py:10 models/material.py:7
-#: models/style.py:9 models/unit.py:33
+#: models/style.py:9 models/unit.py:34
 msgid "Name"
 msgstr "Naam"
 
@@ -83,15 +83,19 @@ msgstr "Hoeveelheid"
 msgid "Operator"
 msgstr "Operator"
 
-#: models/recipe.py:15
+#: models/recipe.py:13
 msgid "Style"
 msgstr "Bierstijl"
+
+#: models/recipe.py:15 models/unit.py:170 templates/localunit_detail.html:27
+msgid "Location"
+msgstr "Plaats"
 
 #: models/recipe.py:16
 msgid "Date"
 msgstr "Datum"
 
-#: models/recipe.py:17 models/source.py:17
+#: models/recipe.py:17 models/source.py:11
 msgid "Year of publication"
 msgstr "Publicatiejaar"
 
@@ -107,37 +111,37 @@ msgstr "Informatie"
 msgid "Yield amount"
 msgstr "Opbrengst hoeveelheid"
 
-#: models/source.py:18
+#: models/source.py:10
 msgid "Title"
 msgstr "Titel"
 
-#: models/source.py:19
+#: models/source.py:13
 msgid "Author"
 msgstr "Auteur"
 
-#: models/source.py:20
+#: models/source.py:15
 msgid "Publisher"
 msgstr "Uitgever"
 
-#: models/source.py:22
-msgid "Other info"
-msgstr "Overige"
+#: models/source.py:17
+msgid "Description"
+msgstr "Beschrijving"
 
-#: models/source.py:23
-msgid "Original source"
-msgstr "Historische bron"
-
-#: models/style.py:10 models/unit.py:34
+#: models/style.py:10 models/unit.py:35
 msgid "Synonyms"
 msgstr "Synoniemen"
 
-#: models/unit.py:153
+#: models/unit.py:137 models/unit.py:160 templates/base.html:40
+msgid "Units"
+msgstr "Eenheden"
+
+#: models/unit.py:168
 msgid "Base unit"
 msgstr "Eenheid"
 
-#: models/unit.py:155 templates/localunit_detail.html:27
-msgid "Location"
-msgstr "Plaats"
+#: models/unit.py:180
+msgid "Local units"
+msgstr "Plaatselijke eenheden"
 
 #: templates/base.html:30
 msgid "Sources"
@@ -146,10 +150,6 @@ msgstr "Bronnen"
 #: templates/base.html:35
 msgid "Locations"
 msgstr "Plaatsen"
-
-#: templates/base.html:40
-msgid "Units"
-msgstr "Eenheden"
 
 #: templates/base.html:45 templates/conversion_detail.html:16
 #: templates/recipe_convert.html:98 templates/recipe_detail.html:32
@@ -174,11 +174,15 @@ msgstr "Recepten"
 msgid "Add %(label)s"
 msgstr "%(label)s toevoegen"
 
-#: templates/base_create.html:44
+#: templates/base_create.html:43
+msgid "Show subformset"
+msgstr "Toon subformulier"
+
+#: templates/base_create.html:54
 msgid "Save"
 msgstr "Opslaan"
 
-#: templates/base_create.html:47 templates/confirm_delete.html:22
+#: templates/base_create.html:57 templates/confirm_delete.html:22
 msgid "Cancel"
 msgstr "Afbreken"
 
@@ -190,6 +194,11 @@ msgstr "Home"
 #, python-format
 msgid "%(label)s"
 msgstr "%(label)s"
+
+#: templates/base_update.html:7
+#, python-format
+msgid "Edit %(label)s"
+msgstr "%(label)s bewerken"
 
 #: templates/baseunit_detail.html:9 templates/localunit_detail.html:9
 #: templates/recipe_convert.html:10 templates/recipe_detail.html:9
@@ -267,23 +276,34 @@ msgstr "Bewerken"
 msgid "Filter"
 msgstr "Filter"
 
-#: templates/unit_convert.html:58
+#: templates/unit_convert.html:59
 msgid "Conversion path"
 msgstr "Conversiepad"
 
-#: templates/unit_convert.html:62
+#: templates/unit_convert.html:63
 msgid "Factor"
 msgstr "Factor"
 
-#: templates/unit_convert.html:64
+#: templates/unit_convert.html:65
 msgid "Precision"
 msgstr "Precisie"
 
+#: templates/unit_convert.html:84
+msgid "No conversions found"
+msgstr "Geen conversies gevonden"
+
+#: views/conversion.py:13
+msgid "Subconversions"
+msgstr "Subconversies"
+
+#~ msgid "Other info"
+#~ msgstr "Overige"
+
+#~ msgid "Original source"
+#~ msgstr "Historische bron"
+
 #~ msgid "location"
 #~ msgstr "Plaats"
-
-#~ msgid "Description"
-#~ msgstr "Beschrijving"
 
 #~ msgid "Local conversions"
 #~ msgstr "Plaatselijke conversies"

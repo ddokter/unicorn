@@ -13,12 +13,13 @@ from polymorphic.models import PolymorphicModel
 #
 MAX_DEPTH = 10
 
-# Set the minimum precision needed as percentage/100 of the best result
-# found.  Only paths with a precision beter than this are kept.
+# Set the minimum precision needed as percentage/100 of the best
+# result found. Only paths with a precision better than this are kept.
 #
 MIN_PRECISION = 0.8
 
-# Set maximum path length as a percentage/100 of the shortest path found.
+# Set maximum path length as a factor of the shortest path found. Any
+# paths longer than this will be discarded.
 #
 MAX_PATH_LENGTH = 1.5
 
@@ -52,9 +53,9 @@ class AbstractUnit(PolymorphicModel):
         """Use breath-first to find the shortest paths for the conversion
         asked. The search will only be performed up to MAX_DEPTH, to
         prevent long searches for non existing conversions. Whenever a
-        path is found, only paths where precision and length is a
-        precentage of the best path are considered, determined by
-        MIN_PRECISION and MAX_PATH_LENGTH.
+        path is found, only paths where precision and length are
+        within the boundaries set by MIN_PRECISION and MAX_PATH_LENGTH
+        are considered.
 
         """
 
@@ -133,9 +134,15 @@ class AbstractUnit(PolymorphicModel):
 
         app_label = "unicorn"
         ordering = ["name"]
+        verbose_name_plural = _("Units")
 
 
 class BaseUnit(AbstractUnit):
+
+    """Base unit, not bound to a specific location. Used to specify metric
+    units that apply to many places, and as a base for local units.
+
+    """
 
     def __str__(self):
 
@@ -146,8 +153,16 @@ class BaseUnit(AbstractUnit):
 
         return _str
 
+    class Meta:
+
+        app_label = "unicorn"
+        ordering = ["name"]
+        verbose_name_plural = _("Units")
+
 
 class LocalUnit(AbstractUnit):
+
+    """ Local unit, bound to a specific location """
 
     unit = models.ForeignKey(BaseUnit, on_delete=models.CASCADE,
                              verbose_name=_("Base unit"))
@@ -157,3 +172,9 @@ class LocalUnit(AbstractUnit):
     def __str__(self):
 
         return self.name or "%s (%s)" % (self.unit.name, self.location)
+
+    class Meta:
+
+        app_label = "unicorn"
+        ordering = ["name"]
+        verbose_name_plural = _("Local units")

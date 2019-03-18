@@ -1,26 +1,20 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
-
-def abbreviate(string, size):
-
-    if len(string) < size:
-        return string
-    else:
-        return "%s..." % string[:size]
+from unicorn.utils import abbreviate
 
 
 class Source(models.Model):
 
-    """ Represent historic sources of information """
+    """Represent historic and not so historic sources of information"""
 
-    year = models.SmallIntegerField(_("Year of publication"))
     title = models.CharField(_("Title"), max_length=255)
-    author = models.CharField(_("Author"), max_length=255)
+    year = models.SmallIntegerField(_("Year of publication"),
+                                    null=True, blank=True)
+    author = models.CharField(_("Author"), max_length=255,
+                              null=True, blank=True)
     publisher = models.CharField(_("Publisher"), max_length=255,
                                  null=True, blank=True)
-    other = models.TextField(_("Other info"), null=True, blank=True)
-    original = models.BooleanField(_("Original source"), default=False)
+    description = models.TextField(_("Description"), null=True, blank=True)
 
     def __str__(self):
 

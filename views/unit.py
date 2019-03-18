@@ -4,7 +4,7 @@ from django.views.generic import FormView
 from django.views.generic.detail import SingleObjectMixin
 from unicorn.models.unit import AbstractUnit, BaseUnit
 from unicorn.models.material import Material
-from unicorn.views.base import CTypeMixin
+from .base import CTypeMixin
 
 
 class ConvertForm(forms.Form):

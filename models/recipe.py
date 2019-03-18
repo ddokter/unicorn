@@ -1,18 +1,18 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from unicorn.models.unit import AbstractUnit
-from unicorn.models.material import Material
-from unicorn.models.source import Source
-from unicorn.models.style import Style
+from .unit import AbstractUnit
+from .material import Material
+from .source import Source
+from .style import Style
+from .location import Location
 
 
 class Recipe(models.Model):
 
-    """Represent a beer recepy. The recipe must be specified by it's name
-    (e.g. Koyt, Kluyn, etc.)"""
-
     style = models.ForeignKey(Style, on_delete=models.CASCADE,
                               verbose_name=_("Style"))
+    location = models.ForeignKey(Location, on_delete=models.CASCADE,
+                                 verbose_name=_("Location")),
     date = models.DateField(_("Date"), null=True, blank=True)
     year = models.SmallIntegerField(_("Year of publication"))
     material = models.ManyToManyField(Material, through="RecipeMaterial")

@@ -1,0 +1,20 @@
+ul.nav-tabs {
+    margin-bottom: 30px;
+}
+
+nav.navbar {
+    margin-bottom: 20px;
+}
+
+blockquote {
+    font-style: italic;
+    font-size: 1rem !important;
+}
+
+.list-group-item .btn {
+    opacity: 0.3;
+}
+
+.list-group-item:hover .btn {
+    opacity: 1.0;
+}
