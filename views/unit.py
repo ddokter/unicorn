@@ -11,6 +11,7 @@ class ConvertForm(forms.Form):
 
     to_unit = forms.ModelChoiceField(queryset=BaseUnit.objects.all())
     material = forms.ModelChoiceField(queryset=Material.objects.all())
+    year = forms.IntegerField(required=False)
 
 
 class UnitConvertView(FormView, SingleObjectMixin, CTypeMixin):
@@ -32,7 +33,9 @@ class UnitConvertView(FormView, SingleObjectMixin, CTypeMixin):
 
         paths = self.object.find_conversion_paths(
             form.cleaned_data['to_unit'],
-            form.cleaned_data['material'])
+            form.cleaned_data['material'],
+            year=form.cleaned_data['year']
+        )
 
         self.result = self._result(paths,
                                    form.cleaned_data['to_unit'],

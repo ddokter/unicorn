@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-18 17:03+0000\n"
+"POT-Creation-Date: 2019-03-18 21:06+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -75,7 +75,7 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: models/expression.py:25 models/recipe.py:37
+#: models/expression.py:25 models/recipe.py:39
 msgid "Amount"
 msgstr ""
 
@@ -111,6 +111,14 @@ msgstr ""
 msgid "Yield amount"
 msgstr ""
 
+#: models/recipe.py:33
+msgid "Recipe"
+msgstr ""
+
+#: models/recipe.py:34 templates/base.html:62
+msgid "Recipes"
+msgstr ""
+
 #: models/source.py:10
 msgid "Title"
 msgstr ""
@@ -131,7 +139,7 @@ msgstr ""
 msgid "Synonyms"
 msgstr ""
 
-#: models/unit.py:137 models/unit.py:160 templates/base.html:40
+#: models/unit.py:137 models/unit.py:160 templates/base.html:42
 msgid "Units"
 msgstr ""
 
@@ -143,30 +151,26 @@ msgstr ""
 msgid "Local units"
 msgstr ""
 
-#: templates/base.html:30
+#: templates/base.html:32
 msgid "Sources"
 msgstr ""
 
-#: templates/base.html:35
+#: templates/base.html:37
 msgid "Locations"
 msgstr ""
 
-#: templates/base.html:45 templates/conversion_detail.html:16
+#: templates/base.html:47 templates/conversion_detail.html:16
 #: templates/recipe_convert.html:98 templates/recipe_detail.html:32
 #: views/recipe.py:45
 msgid "Materials"
 msgstr ""
 
-#: templates/base.html:50
+#: templates/base.html:52
 msgid "Styles"
 msgstr ""
 
-#: templates/base.html:55
+#: templates/base.html:57
 msgid "Conversions"
-msgstr ""
-
-#: templates/base.html:60
-msgid "Recipes"
 msgstr ""
 
 #: templates/base_create.html:6

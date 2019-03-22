@@ -41,13 +41,17 @@
 {% if view.converted_yield %}
 <h2>{% trans 'Specifications' %}</h2>
 
-<dl>
-  <dt>&deg; Plato</dt>
-  <dd>{{ view.gravity.plato|floatformat:1 }}</dd>
-  <dt>OG</dt>
-  <dd>{{ view.gravity.og|floatformat:3 }}</dd>
-  <dt>Alc. (vol) (Assuming 50% attenuation)</dt>
-  <dd>{{ view.gravity.alc|floatformat:1 }}</dd>
+<dl class="row">
+  <dt class="col-3">&deg; Plato</dt>
+  <dd class="col-9">{{ view.gravity.plato|floatformat:1 }}</dd>
+  <dt class="col-3">OG</dt>
+  <dd class="col-9">{{ view.gravity.og|floatformat:3 }}</dd>
+  <dt class="col-3">kg/hl</dt>
+  <dd class="col-9">{{ view.gravity.kghl|floatformat:2 }}</dd>
+  <dt class="col-3">Alc. (vol) (Assuming 50% attenuation)</dt>
+  <dd class="col-9">{{ view.gravity.alc|floatformat:1 }}</dd>
+  <dt class="col-3">IBU</dt>
+  <dd class="col-9">{{ view.ibu }}</dd>
 </dl>
 
 
@@ -97,7 +101,7 @@
 {% if materials|length %}
 <h2>{% trans 'Materials' %}</h2>
 
-{% with converted=view.converted_ingredients %}
+{% with converted=view.materials %}
 <table class="table">
   <thead>
     <tr>
@@ -133,9 +137,42 @@
         <ol>
           {% for conversion in converted|get:material.id|get:'path' %}
           <li>
-            <a href="{% url 'view' pk=conversion.id model='conversion'%}">
+            <a href="#"
+               data-toggle="modal" data-target="#c_{{ conversion.id }}">
               {{ conversion }}
+              {% if conversion.status %}
+              <span class="badge badge-pill badge-{{ conversion.status|status_class }}">
+                {{ conversion|status_label }}
+              </span>
+      {% endif %}
+
             </a>
+
+            <div class="modal fade" id="c_{{ conversion.id }}" tabindex="-1"
+                 role="dialog" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">{{ conversion }}</h5>
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <dl class="row">
+                      <dd class="col-3">{% trans 'Source' %}</dd>
+                      <dt class="col-9">                        
+                        {% for source in conversion.source.all %}
+                        {{ source }}
+                        {% endfor %}
+                      </dt>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
           </li>
           {% endfor %}
         </ol>

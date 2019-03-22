@@ -24,6 +24,13 @@
         {% edit_action item %}
         {% delete_action item %}
       </div>
+
+      {% if item.byline %}
+      <div class="clearfix">
+        <em class="text-secondary">{{ item.byline }}</em>
+      </div>
+      {% endif %}
+      
     </li>
     {% endfor %}
   </ul>

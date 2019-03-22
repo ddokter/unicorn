@@ -16,6 +16,12 @@
         {% inline_delete_action item object %}
       </div>
 
+      {% if item.byline %}
+      <div class="clearfix">
+        <em class="text-secondary">{{ item.byline }}</em>
+      </div>
+      {% endif %}
+      
     </li>
     {% endfor %}
   </ul>

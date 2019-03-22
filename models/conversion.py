@@ -13,7 +13,8 @@ STATUS = (
     (2, _("Inferred")),
     (3, _("Ambiguous")))
 
-# No conversion is considered to be more precise than this.
+# No conversion is considered to be more precise than this. Based on
+# calculations done by Zevenboom.
 #
 BASE_PRECISION = 0.98
 
@@ -78,22 +79,27 @@ class Conversion(models.Model):
 
             _str = "%s %s" % (_str, sub)
 
-        if self.material.exists() and False:
-
-            _str = "%s [%s]" % (
-                _str,
-                ", ".join([str(obj) for obj in self.material.all()]))
-
-        if self.year_from and self.year_to:
-            _str += " [%s - %s]" % (self.year_from, self.year_to)
-        elif self.year_from:
-            _str += " [> %s]" % self.year_from
-        elif self.year_to:
-            _str += " [< %s]" % self.year_to
-
         return _str
 
-    def resolve(self, material):
+    @property
+    def byline(self):
+
+        _line = []
+
+        if self.material.exists():
+
+            _line.append(", ".join([str(obj) for obj in self.material.all()]))
+
+        if self.year_from and self.year_to:
+            _line.append("%s - %s" % (self.year_from, self.year_to))
+        elif self.year_from:
+            _line.append("> %s" % self.year_from)
+        elif self.year_to:
+            _line.append("< %s" % self.year_to)
+
+        return "|".join(_line)
+
+    def resolve(self, material, year=None):
 
         """ Resolve the conversion to it's 'to_unit'. If any subconversions
         are found, try to resolve these as well. """
@@ -102,8 +108,9 @@ class Conversion(models.Model):
 
         for sub in self.subconversion_set.all():
 
-            _res = sub.get_operator()(_res,
-                                      sub.resolve(self.to_unit, material))
+            _res = sub.get_operator()(
+                _res,
+                sub.resolve(self.to_unit, material, self.id, year=year))
 
         return _res
 
@@ -135,11 +142,11 @@ class Conversion(models.Model):
         rel = (min(self.from_amount, self.to_amount) /
                max(self.from_amount, self.to_amount))
 
-        # Maximum of 10% punishment
+        # Maximum of 5% punishment
         #
         _precision -= (rel * 0.05)
 
-        # Maximum of 10% punishment
+        # Maximum of 5% punishment
         #
         part = (len(str(self.from_amount).split('.')[1].strip('0')) +
                 len(str(self.to_amount).split('.')[1].strip('0')))

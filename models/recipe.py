@@ -12,7 +12,7 @@ class Recipe(models.Model):
     style = models.ForeignKey(Style, on_delete=models.CASCADE,
                               verbose_name=_("Style"))
     location = models.ForeignKey(Location, on_delete=models.CASCADE,
-                                 verbose_name=_("Location")),
+                                 verbose_name=_("Location"))
     date = models.DateField(_("Date"), null=True, blank=True)
     year = models.SmallIntegerField(_("Year of publication"))
     material = models.ManyToManyField(Material, through="RecipeMaterial")
@@ -22,14 +22,25 @@ class Recipe(models.Model):
     amount = models.FloatField(_("Yield amount"))
     amount_unit = models.ForeignKey(AbstractUnit, on_delete=models.CASCADE,
                                     verbose_name=("Yield unit"))
+    malt = models.BooleanField(_("Based on malted ingredients"), default=False)
 
     def __str__(self):
 
-        return "%s %s" % (self.style.name, self.year)
+        return "%s (%s), A.D. %s" % (self.style.name, self.location, self.year)
+
+    def list_fermentables(self):
+
+        return self.recipematerial_set.filter(material__fermentable=True)
+
+    def list_hops(self):
+
+        return self.recipematerial_set.filter(material__fermentable=False)
 
     class Meta:
         ordering = ["style__name", "date"]
         app_label = "unicorn"
+        verbose_name = _("Recipe")
+        verbose_name_plural = _("Recipes")
 
 
 class RecipeMaterial(models.Model):

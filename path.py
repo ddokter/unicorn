@@ -1,3 +1,8 @@
+class UnresolvableExpression(Exception):
+
+    """ When an expression cannot be resolved """
+
+
 class Path(list):
 
     """Extend list to add some extra info, like the current conversion
@@ -25,6 +30,13 @@ class Path(list):
         raise NotImplementedError
 
     def append(self, conversion):
+
+        """May throw an exception if the conversion cannot be resolved. This
+        is a tricky operation: the path must provide the resolve
+        operations it's current conversions, to prevent recursion in
+        nested expressions.
+
+        """
 
         self.precision *= conversion.get_precision()
 

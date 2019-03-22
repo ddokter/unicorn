@@ -3,7 +3,7 @@ from django.db import models
 from django.db.models import Q
 from django.apps import apps
 from django.utils.translation import ugettext_lazy as _
-from unicorn.path import Path
+from unicorn.path import Path, UnresolvableExpression
 from .location import Location
 from polymorphic.models import PolymorphicModel
 
@@ -35,7 +35,7 @@ class AbstractUnit(PolymorphicModel):
     synonyms = models.CharField(_("Synonyms"), max_length=255,
                                 null=True, blank=True)
 
-    def find_conversion_paths(self, unit, material, date=None):
+    def find_conversion_paths(self, unit, material, exclude_ids=[], year=None):
 
         """Find all possible conversion paths from self to the given unit. The
         returned list will be sorted on path length, shortest path
@@ -44,11 +44,15 @@ class AbstractUnit(PolymorphicModel):
         """
 
         return sorted(
-            list(self._find_conversion_paths(unit, material, date=date)),
+            list(self._find_conversion_paths(unit,
+                                             material,
+                                             exclude_ids=exclude_ids,
+                                             year=year)),
             key=lambda x: x.precision,
             reverse=True)
 
-    def _find_conversion_paths(self, unit, material, date=None):
+    def _find_conversion_paths(self, unit, material, exclude_ids=[],
+                               year=None):
 
         """Use breath-first to find the shortest paths for the conversion
         asked. The search will only be performed up to MAX_DEPTH, to
@@ -74,7 +78,7 @@ class AbstractUnit(PolymorphicModel):
 
             # Whenever the paths are getting too long, call it a day.
             #
-            if (len(path) > shortest * MAX_PATH_LENGTH):
+            if (len(path) >= shortest * MAX_PATH_LENGTH):
                 break
 
             # Throw out paths that lack precision
@@ -88,47 +92,59 @@ class AbstractUnit(PolymorphicModel):
                 break
 
             qs = conv_model.objects.exclude(
-                id__in=[conv.id for conv in path])
+                id__in=[conv.id for conv in path] + exclude_ids)
 
             qs = qs.filter(Q(material=material) | Q(generic=True))
 
-            if date:
-                qs = qs.filter(Q(date_from__lte=date) |
-                               Q(date_from__isnull=True)).filter(
-                                   Q(date_to__gte=date) |
-                                   Q(date_to__isnull=True))
+            if year:
+                qs = qs.filter(Q(year_from__lte=year) |
+                               Q(year_from__isnull=True)).filter(
+                                   Q(year_to__gte=year) |
+                                   Q(year_to__isnull=True))
 
             qs = qs.find_for_unit(last_unit)
 
             for conv in qs:
 
-                # We have a terminal conversion!
-                #
-                if conv.to_unit == unit or conv.from_unit == unit:
+                try:
+                    # We have a terminal conversion!
+                    #
+                    if conv.to_unit == unit or conv.from_unit == unit:
 
-                    path.append(conv)
+                        new_path = path.copy()
+                        new_path.append(conv)
 
-                    shortest = min(len(path), shortest)
+                        shortest = min(len(new_path), shortest)
 
-                    precision = max(precision, path.precision)
+                        precision = max(precision, new_path.precision)
 
-                    yield path
+                        yield new_path
 
-                else:
-                    new_path = path.copy()
-                    new_path.append(conv)
-
-                    if conv.to_unit == last_unit:
-                        stack.append((conv.from_unit, new_path))
                     else:
-                        stack.append((conv.to_unit, new_path))
+                        new_path = path.copy()
+                        new_path.append(conv)
+
+                        if conv.to_unit == last_unit:
+                            stack.append((conv.from_unit, new_path))
+                        else:
+                            stack.append((conv.to_unit, new_path))
+                except UnresolvableExpression:
+
+                    # forget about this conversion...
+
+                    pass
 
     def list_conversions(self):
 
         """ List conversions for this unit in both directions """
 
-        return self.conversion_set.all().union(
-            self.conversion_set_reverse.all())
+        _all = self.conversion_set.all()
+        _rev = self.conversion_set_reverse.all()
+
+        _all.query.clear_ordering(True)
+        _rev.query.clear_ordering(True)
+
+        return _all.union(_rev)
 
     class Meta:
 

@@ -8,6 +8,8 @@ class Location(models.Model):
     """ Any geographic location, be it a city or a village """
 
     name = models.CharField(_("Name"), max_length=100, unique=True)
+    synonyms = models.CharField(_("Synonyms"), max_length=255,
+                                null=True, blank=True)
 
     def __str__(self):
 
