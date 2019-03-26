@@ -39,21 +39,42 @@ class FormSetMixin:
         return HttpResponseRedirect(self.get_success_url())
 
 
-class ConversionCreateView(FormSetMixin, CreateView):
+class UnitOrderMixin(object):
+
+    def get_form(self, form_class=None):
+
+        form = super().get_form(form_class=form_class)
+
+        qs = form.fields['to_unit'].queryset
+
+        if qs.model.__name__ == "LocalUnit":
+            qs = qs.order_by("unit", "location")
+        else:
+            qs = qs.order_by("localunit", "baseunit")
+
+        form.fields['from_unit'].queryset = qs
+        form.fields['to_unit'].queryset = qs
+
+        return form
+
+
+class ConversionCreateView(FormSetMixin, UnitOrderMixin, CreateView):
 
     model = Conversion
 
 
-class ConversionUpdateView(FormSetMixin, UpdateView):
+class ConversionUpdateView(FormSetMixin, UnitOrderMixin, UpdateView):
 
     model = Conversion
 
 
-class InlineConversionCreateView(FormSetMixin, InlineCreateView):
+class InlineConversionCreateView(FormSetMixin, UnitOrderMixin,
+                                 InlineCreateView):
 
     model = Conversion
 
 
-class InlineConversionUpdateView(FormSetMixin, InlineUpdateView):
+class InlineConversionUpdateView(FormSetMixin, UnitOrderMixin,
+                                 InlineUpdateView):
 
     model = Conversion

@@ -10,6 +10,7 @@ class Location(models.Model):
     name = models.CharField(_("Name"), max_length=100, unique=True)
     synonyms = models.CharField(_("Synonyms"), max_length=255,
                                 null=True, blank=True)
+    description = models.TextField(_("Description"), null=True, blank=True)
 
     def __str__(self):
 

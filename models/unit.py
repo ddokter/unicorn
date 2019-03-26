@@ -195,5 +195,5 @@ class LocalUnit(AbstractUnit):
     class Meta:
 
         app_label = "unicorn"
-        ordering = ["unit__name"]
+        ordering = ["unit__name", "location__name"]
         verbose_name_plural = _("Local units")
