@@ -30,11 +30,13 @@ class Recipe(models.Model):
 
     def list_fermentables(self):
 
-        return self.recipematerial_set.filter(material__fermentable=True)
+        return [item for item in self.recipematerial_set.all()
+                if item.material.__class__.__name__ == 'Fermentable']
 
     def list_hops(self):
 
-        return self.recipematerial_set.filter(material__fermentable=False)
+        return [item for item in self.recipematerial_set.all()
+                if item.material.__class__.__name__ == 'Hop']
 
     class Meta:
         ordering = ["style__name", "date"]

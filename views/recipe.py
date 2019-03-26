@@ -128,13 +128,12 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
         )
 
         self.fermentables = self._converted_ingredients(
-            form.cleaned_data['material_to_unit'],
-            fermentable=True
+            form.cleaned_data['material_to_unit']
         )
 
         self.hops = self._converted_ingredients(
             form.cleaned_data['material_to_unit'],
-            fermentable=False
+            material_type="Hop"
         )
 
         self.materials.update(self.fermentables)
@@ -197,6 +196,9 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
                    self.hops.values())) < 0:
             return None
 
+        if not self.gravity:
+            return None
+
         _yield = 0
 
         # Compensate for OG if need be
@@ -228,12 +230,16 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
                     'unit': unit,
                     'path': []}
 
-    def _converted_ingredients(self, unit, fermentable=True):
+    def _converted_ingredients(self, unit, material_type="Fermentable"):
 
         results = {}
 
-        for material in self.object.recipematerial_set.filter(
-                material__fermentable=fermentable):
+        if material_type == "Fermentable":
+            func = self.object.list_fermentables
+        else:
+            func = self.object.list_hops
+
+        for material in func():
 
             paths = material.unit.find_conversion_paths(
                 unit,

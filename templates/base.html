@@ -25,43 +25,60 @@
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-    <div class="navbar-nav">
-      <a class="nav-item nav-link
-                {% if view.view_name.0 == 'source' %}active{% endif %}"
-         href="{% url 'list' model='source' %}">
-        {% trans 'Sources' %}
-      </a>
-      <a class="nav-item nav-link
-                {% if view.view_name.0 == 'location' %}active{% endif %}"
-         href="{% url 'list' model='location' %}">
-        {% trans 'Locations' %}
-      </a>
-      <a class="nav-item nav-link
-                {% if view.view_name.0 == 'baseunit' %}active{% endif %}"
-         href="{% url 'list' model='baseunit' %}">
-        {% trans 'Units' %}
-      </a>
-      <a class="nav-item nav-link
-                {% if view.view_name.0 == 'material' %}active{% endif %}"
-         href="{% url 'list' model='material' %}">
-        {% trans 'Materials' %}
-      </a>
-      <a class="nav-item nav-link
-                {% if view.view_name.0 == 'style' %}active{% endif %}"
-         href="{% url 'list' model='style' %}">
-        {% trans 'Styles' %}
-      </a>
-      <a class="nav-item nav-link
-         {% if view.view_name.0 == 'conversion' %}active{% endif %}"
-         href="{% url 'list' model='conversion' %}">
-        {% trans 'Conversions' %}
-      </a>
-      <a class="nav-item nav-link
-         {% if view.view_name.0 == 'recipe' %}active{% endif %}"
-         href="{% url 'list' model='recipe' %}">
-        {% trans 'Recipes' %}
-      </a>
-    </div>
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item {% if view.view_name.0 == 'source' %}active{% endif %}">
+        <a class="nav-link" href="{% url 'list' model='source' %}">
+          {% trans 'Sources' %}
+        </a>
+      </li>
+      <li class="nav-item {% if view.view_name.0 == 'location' %}active{% endif %}">
+        <a class="nav-link" href="{% url 'list' model='location' %}">
+          {% trans 'Locations' %}
+        </a>
+      </li>
+      <li class="nav-item {% if view.view_name.0 == 'baseunit' %}active{% endif %}">
+        <a class="nav-link" href="{% url 'list' model='baseunit' %}">
+          {% trans 'Units' %}
+        </a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="materialMenu"
+           role="button" data-toggle="dropdown" aria-haspopup="true"
+           aria-expanded="false">
+          {% trans 'Materials' %}
+        </a>
+        <div class="dropdown-menu" aria-labelledby="materialMenu">
+          <a class="dropdown-item" href="{% url 'list' model='fermentable' %}">
+            {% trans 'Fermentables' %}
+          </a>
+          <a class="dropdown-item" href="{% url 'list' model='hop' %}">
+            {% trans 'Hops' %}
+          </a>
+          <a class="dropdown-item" href="{% url 'list' model='nonfermentable' %}">
+            {% trans 'Other' %}
+          </a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="{% url 'list' model='category' %}">
+            {% trans 'Category' %}
+          </a>          
+        </div>
+      </li>
+      <li class="nav-item {% if view.view_name.0 == 'style' %}active{% endif %}">     
+        <a class="nav-link" href="{% url 'list' model='style' %}">
+          {% trans 'Styles' %}
+        </a>
+      </li>
+      <li class="nav-item {% if view.view_name.0 == 'conversion' %}active{% endif %}">
+        <a class="nav-link" href="{% url 'list' model='conversion' %}">
+          {% trans 'Conversions' %}
+        </a>
+      </li>
+      <li class="nav-item {% if view.view_name.0 == 'recipe' %}active{% endif %}">
+        <a class="nav-link" href="{% url 'list' model='recipe' %}">
+          {% trans 'Recipes' %}
+        </a>
+      </li>
+    </ul>
   </div>
 </nav>
 

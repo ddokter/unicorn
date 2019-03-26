@@ -46,39 +46,47 @@
 </div>
 
 <div class="alert alert-dark" role="alert">
-  <dl>
-    <dt>Median</dt><dd>{{ view.result.median|floatformat:2 }}</dd>
-    <dt>Min</dt><dd>{{ view.result.min|floatformat:2 }}</dd>
-    <dt>Avg</dt><dd>{{ view.result.avg|floatformat:2 }}</dd>
-    <dt>Max</dt><dd>{{ view.result.max|floatformat:2 }}</dd>    
+  <dl class="row">
+    <dt class="col-3">Median</dt>
+    <dd class="col-9">{{ view.result.median|floatformat:2 }}</dd>
+    <dt class="col-3">Min</dt>
+    <dd class="col-9">{{ view.result.min|floatformat:2 }}</dd>
+    <dt class="col-3">Avg</dt>
+    <dd class="col-9">{{ view.result.avg|floatformat:2 }}</dd>
+    <dt class="col-3">Max</dt>
+    <dd class="col-9">{{ view.result.max|floatformat:2 }}</dd>    
   </dl>
 </div>
 
-{% for path in view.result.paths %}
 <section>
-  <h2>{% trans 'Conversion path' %}</h2>
+  <h2>{% trans 'Conversion paths' %}</h2>
 
-  <div class="alert alert-dark" role="alert">
-    <dl>
-      <dt>{% trans 'Factor' %}</dt>
-      <dd>{{ path.factor }}</dd>
-      <dt>{% trans 'Precision' %}</dt>
-      <dd>{{ path.precision }}</dd>      
+  {% for path in view.result.paths %}
+  
+  <div class="card">
+    <div class="card-body">
+    <dl class="row">
+      <dt class="col-3">{% trans 'Factor' %}</dt>
+      <dd class="col-9">{{ path.factor|floatformat:2 }}</dd>
+      <dt class="col-3">{% trans 'Precision' %}</dt>
+      <dd class="col-9">{{ path.precision|floatformat:3 }}</dd>      
     </dl>
+  
+    <ol>
+      {% for conversion in path %}
+      <li>
+        <a href="{% url 'view' model='conversion' pk=conversion.id %}">
+          {{ conversion }}
+        </a>
+      </li>
+      {% endfor %}
+    </ol>
+
   </div>
-  
-  <ol>
-    {% for conversion in path %}
-    <li>
-      <a href="{% url 'view' model='conversion' pk=conversion.id %}">
-        {{ conversion }}
-      </a>
-    </li>
-    {% endfor %}
-  </ol>
-  
+</div>
+  {% endfor %}
 </section>
-{% endfor %}
+
 {% else %}
 <div class="alert alert-danger">
   {% trans 'No conversions found' %}

@@ -72,8 +72,9 @@ class Conversion(models.Model):
 
     def __str__(self):
 
-        _str = "%.2f %s = %.2f %s" % (self.from_amount, self.from_unit,
-                                      self.to_amount, self.to_unit)
+        _str = "%.2f %s %s %.2f %s" % (
+            self.from_amount, self.from_unit,
+            self.marker, self.to_amount, self.to_unit)
 
         for sub in self.subconversion_set.all():
 
@@ -110,7 +111,7 @@ class Conversion(models.Model):
 
             _res = sub.get_operator()(
                 _res,
-                sub.resolve(self.to_unit, material, self.id, year=year))
+                sub.resolve(self.to_unit, material, year=year))
 
         return _res
 

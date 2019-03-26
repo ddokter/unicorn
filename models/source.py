@@ -18,8 +18,14 @@ class Source(models.Model):
 
     def __str__(self):
 
-        return "%s, %s, %s" % (abbreviate(self.title, 50), self.author,
-                               self.year)
+        _str = [abbreviate(self.title, 50)]
+
+        for attr in ['year', 'author', 'publisher']:
+
+            if getattr(self, attr, None):
+                _str.append(str(getattr(self, attr)))
+
+        return ", ".join(_str)
 
     def list_conversions(self):
 

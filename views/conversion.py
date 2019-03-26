@@ -1,7 +1,7 @@
 from django.utils.translation import ugettext_lazy as _
 from django.http import HttpResponseRedirect
 from django.forms import inlineformset_factory
-from .base import CreateView, UpdateView
+from .base import CreateView, UpdateView, InlineCreateView, InlineUpdateView
 from unicorn.models.conversion import Conversion
 from unicorn.models.expression import SubConversion
 
@@ -45,5 +45,15 @@ class ConversionCreateView(FormSetMixin, CreateView):
 
 
 class ConversionUpdateView(FormSetMixin, UpdateView):
+
+    model = Conversion
+
+
+class InlineConversionCreateView(FormSetMixin, InlineCreateView):
+
+    model = Conversion
+
+
+class InlineConversionUpdateView(FormSetMixin, InlineUpdateView):
 
     model = Conversion

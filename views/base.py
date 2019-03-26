@@ -325,7 +325,7 @@ class InlineCreateView(InlineActionMixin, CreateView):
         return reverse("inline_create", kwargs={
             'parent_pk': self.parent.id,
             'parent_model': get_model_name(self.parent),
-            'model': self.kwargs['model']
+            'model': self.ctype
         })
 
 
@@ -344,7 +344,7 @@ class InlineUpdateView(InlineActionMixin, UpdateView):
         return reverse("inline_edit", kwargs={
             'parent_pk': self.parent.id,
             'parent_model': get_model_name(self.parent),
-            'model': self.kwargs['model'],
+            'model': self.ctype,
             'pk': self.kwargs['pk']
         })
 

@@ -8,15 +8,15 @@ from .location import Location
 from polymorphic.models import PolymorphicModel
 
 
-# Do not seek any deeper than this... more than 10 conversions is
-# probably a very unreliable path anyway.
+# Do not seek any deeper than this... more conversions is probably a
+# very unreliable path anyway.
 #
-MAX_DEPTH = 10
+MAX_DEPTH = 7
 
 # Set the minimum precision needed as percentage/100 of the best
 # result found. Only paths with a precision better than this are kept.
 #
-MIN_PRECISION = 0.8
+MIN_PRECISION = 0.9
 
 # Set maximum path length as a factor of the shortest path found. Any
 # paths longer than this will be discarded.
@@ -35,7 +35,7 @@ class AbstractUnit(PolymorphicModel):
     synonyms = models.CharField(_("Synonyms"), max_length=255,
                                 null=True, blank=True)
 
-    def find_conversion_paths(self, unit, material, exclude_ids=[], year=None):
+    def find_conversion_paths(self, unit, material, _filter=None, year=None):
 
         """Find all possible conversion paths from self to the given unit. The
         returned list will be sorted on path length, shortest path
@@ -44,15 +44,12 @@ class AbstractUnit(PolymorphicModel):
         """
 
         return sorted(
-            list(self._find_conversion_paths(unit,
-                                             material,
-                                             exclude_ids=exclude_ids,
-                                             year=year)),
+            list(self._find_conversion_paths(
+                unit, material, _filter=_filter, year=year)),
             key=lambda x: x.precision,
             reverse=True)
 
-    def _find_conversion_paths(self, unit, material, exclude_ids=[],
-                               year=None):
+    def _find_conversion_paths(self, unit, material, _filter=None, year=None):
 
         """Use breath-first to find the shortest paths for the conversion
         asked. The search will only be performed up to MAX_DEPTH, to
@@ -78,7 +75,7 @@ class AbstractUnit(PolymorphicModel):
 
             # Whenever the paths are getting too long, call it a day.
             #
-            if (len(path) >= shortest * MAX_PATH_LENGTH):
+            if (len(path) + 1 >= shortest * MAX_PATH_LENGTH):
                 break
 
             # Throw out paths that lack precision
@@ -91,10 +88,13 @@ class AbstractUnit(PolymorphicModel):
             if len(path) > MAX_DEPTH:
                 break
 
-            qs = conv_model.objects.exclude(
-                id__in=[conv.id for conv in path] + exclude_ids)
+            qs = conv_model.objects.exclude(id__in=[conv.id for conv in path])
 
-            qs = qs.filter(Q(material=material) | Q(generic=True))
+            if material:
+                qs = qs.filter(
+                    Q(material=material) |
+                    Q(material__in=material.categories.all()) |
+                    Q(generic=True))
 
             if year:
                 qs = qs.filter(Q(year_from__lte=year) |
@@ -103,6 +103,9 @@ class AbstractUnit(PolymorphicModel):
                                    Q(year_to__isnull=True))
 
             qs = qs.find_for_unit(last_unit)
+
+            if _filter:
+                qs = qs.filter(**_filter)
 
             for conv in qs:
 
@@ -162,12 +165,12 @@ class BaseUnit(AbstractUnit):
 
     def __str__(self):
 
-        _str = self.name
+        return self.name
 
-        if self.synonyms:
-            _str += " (%s)" % self.synonyms
+    @property
+    def byline(self):
 
-        return _str
+        return self.synonyms
 
     class Meta:
 
@@ -192,5 +195,5 @@ class LocalUnit(AbstractUnit):
     class Meta:
 
         app_label = "unicorn"
-        ordering = ["name"]
+        ordering = ["unit__name"]
         verbose_name_plural = _("Local units")

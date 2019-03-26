@@ -6,11 +6,24 @@
     {% inline_add_action submodel object extra_args %}
   </h2>
 
+  <!--form class="form mb-2" method="POST">
+    {% csrf_token %}
+    <input type="text" class="form-control"
+           placeholder="{% trans 'Filter' %}"
+           name="query">
+  </form-->
+  
   <ul class="list-group">
     {% for item in items %}
     <li class="list-group-item">
       <a href="{{ item|detail_url }}">{{ item }}</a>
 
+      {% if item.status %}
+      <span class="badge badge-pill badge-{{ item.status|status_class }}">
+        {{ item|status_label }}
+      </span>
+      {% endif %}
+      
       <div class="float-right">
         {% inline_edit_action item object %}
         {% inline_delete_action item object %}

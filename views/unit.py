@@ -2,14 +2,14 @@ from statistics import mean, median
 from django import forms
 from django.views.generic import FormView
 from django.views.generic.detail import SingleObjectMixin
-from unicorn.models.unit import AbstractUnit, BaseUnit
+from unicorn.models.unit import AbstractUnit
 from unicorn.models.material import Material
 from .base import CTypeMixin
 
 
 class ConvertForm(forms.Form):
 
-    to_unit = forms.ModelChoiceField(queryset=BaseUnit.objects.all())
+    to_unit = forms.ModelChoiceField(queryset=AbstractUnit.objects.all())
     material = forms.ModelChoiceField(queryset=Material.objects.all())
     year = forms.IntegerField(required=False)
 

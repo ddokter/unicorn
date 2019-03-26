@@ -18,7 +18,10 @@
 <p>{{ object.info }}</p>
 
 <dl>
-  <dt>{% trans 'Source' %}</dt><dd>{{ object.source }}</dd>
+  <dt>{% trans 'Source' %}</dt>
+  <dd>
+    <a href="{{ object.source|detail_url }}">{{ object.source }}</a>
+  </dd>
   <dt>{% trans 'Yield' %}</dt>
   <dd>
     {{ object.amount}}

@@ -6,7 +6,9 @@ from unicorn.views.base import (
 from unicorn.views.recipe import (RecipeCreateView, RecipeUpdateView,
                                   RecipeConvertView)
 from unicorn.views.unit import UnitConvertView
-from unicorn.views.conversion import ConversionCreateView, ConversionUpdateView
+from unicorn.views.conversion import (
+    ConversionCreateView, ConversionUpdateView, InlineConversionCreateView,
+    InlineConversionUpdateView)
 
 
 urlpatterns = [
@@ -33,6 +35,14 @@ urlpatterns = [
     path('conversion/<int:pk>/edit',
          ConversionUpdateView.as_view(),
          name="edit_conversion"),
+
+    path('<str:parent_model>/<int:parent_pk>/add_conversion',
+         InlineConversionCreateView.as_view(),
+         name="inline_create_conversion"),
+
+    path('<str:parent_model>/<int:parent_pk>/edit_conversion/<int:pk>',
+         InlineConversionUpdateView.as_view(),
+         name="inline_edit_conversion"),
 
     # Generic delete view
     #

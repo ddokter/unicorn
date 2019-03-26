@@ -1,6 +1,7 @@
 import operator as _op
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.db.models import F
 from polymorphic.models import PolymorphicModel
 from unicorn.path import UnresolvableExpression
 from .unit import AbstractUnit
@@ -40,18 +41,22 @@ class SubConversion(Expression):
         else:
             return _op.add
 
-    def resolve(self, unit, material, exclude_id, year=None):
+    def resolve(self, unit, material, year=None):
 
-        """ Resolve, or thrown an exception """
+        """ Resolve, or throw an exception. This resolve will only consider
+        local conversions. """
 
         if unit == self.unit:
 
             return 1
 
+        _filter = {
+            'subconversion__isnull': True,
+            'from_unit__localunit__location': F('to_unit__localunit__location')
+        }
+
         paths = self.unit.find_conversion_paths(
-            unit, material,
-            exclude_ids=[exclude_id],
-            year=year)
+            unit, material, year=year, _filter=_filter)
 
         try:
             return paths[0].factor * self.amount
