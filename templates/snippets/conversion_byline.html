@@ -1,0 +1,23 @@
+{% extends 'snippets/byline.html' %}
+
+{% load i18n %}
+
+{% block content %}
+
+{% if obj.material.exists %}
+{% for material in obj.material.all %}
+{{ material }}
+{% endfor %}
+{% elif obj.generic %}
+{% trans 'Generic' %}
+{% endif %}
+
+{% if obj.year_from and self.year_to %}
+{{ obj.year_from }}-{{ obj.year_to }}
+{% elif obj.year_from %}
+&gt; {{ obj.year_from }}
+{% elif obj.year_to %}
+&lt; {{ obj.year_to }}
+{% endif %}
+
+{% endblock %}

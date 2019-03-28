@@ -1,0 +1,9 @@
+{% extends 'snippets/byline.html' %}
+
+{% block content %}
+<ul class="list-inline">
+  {% for cat in obj.categories.all %}
+  <li class="list-inline-item">{{ cat }}</li>
+  {% endfor %}
+</ul>
+{% endblock %}

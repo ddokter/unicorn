@@ -1,0 +1,24 @@
+{% extends 'base_detail.html' %}
+
+{% load i18n unicorn_tags %}
+
+{% block content %}
+
+<dl class="row">
+  <dt class="col-3">{% trans 'Synonyms' %}</dt>
+  <dd class="col-9">{{ object.synonyms|default_if_none:"" }}</dd>
+  <dt class="col-3">{% trans 'Categories' %}</dt>
+  <dd class="col-9">
+    <ul class="list-inline">
+      {% for cat in object.categories.all %}
+      <li class="list-inline-item">
+        <a href="{{ cat|detail_url }}">{{ cat }}</a>
+      </li>
+      {% endfor %}
+    </ul>
+  </dd>
+</dl>
+
+{% sublisting 'Conversions' object.list_conversions 'conversion' %}
+
+{% endblock %}
