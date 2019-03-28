@@ -25,7 +25,7 @@ EXTRACT = 0.8 * YIELD_FACTOR
 # Rough estimate of Gravity Units added per kilo of material to a HL
 # taking into account the lesser yield of old times
 #
-GU_PER_HL = 3 * YIELD_FACTOR
+GU_PER_HL = 3.1 * YIELD_FACTOR
 
 # Hop utilization factor, assuming that all hops are boiled for a long
 # time
@@ -127,13 +127,12 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
             form.cleaned_data['yield_to_unit']
         )
 
-        self.fermentables = self._converted_ingredients(
+        self.fermentables = self._converted_fermentables(
             form.cleaned_data['material_to_unit']
         )
 
-        self.hops = self._converted_ingredients(
-            form.cleaned_data['material_to_unit'],
-            material_type="Hop"
+        self.hops = self._converted_hops(
+            form.cleaned_data['material_to_unit']
         )
 
         self.materials.update(self.fermentables)
@@ -163,9 +162,10 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
         g_units = 0
 
         for ingredient in self.fermentables.values():
-            _yield += EXTRACT * BREWHOUSE_EFF * ingredient['amount']
-            g_units += (GU_PER_HL * ingredient['amount'] * BREWHOUSE_EFF) / (
-                self.converted_yield['amount'] / 100.0)
+            _yield += EXTRACT * BREWHOUSE_EFF * ingredient['amount_malted']
+            g_units += (GU_PER_HL * ingredient['amount_malted'] *
+                        BREWHOUSE_EFF) / (
+                            self.converted_yield['amount'] / 100.0)
 
         density = (1000 + g_units) / 1000.0
 
@@ -175,7 +175,7 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
 
         og_units = (density - 1) * 1000
 
-        total_weight = sum([ingr['amount'] for ingr in
+        total_weight = sum([ingr['amount_malted'] for ingr in
                             self.fermentables.values()])
 
         return {'plato': plato,
@@ -230,16 +230,11 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
                     'unit': unit,
                     'path': []}
 
-    def _converted_ingredients(self, unit, material_type="Fermentable"):
+    def _converted_hops(self, unit):
 
         results = {}
 
-        if material_type == "Fermentable":
-            func = self.object.list_fermentables
-        else:
-            func = self.object.list_hops
-
-        for material in func():
+        for material in self.object.list_hops():
 
             paths = material.unit.find_conversion_paths(
                 unit,
@@ -257,6 +252,41 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
             else:
                 results[material.id] = {
                     'amount': -1,
+                    'unit': unit,
+                    'path': []}
+
+        return results
+
+    def _converted_fermentables(self, unit):
+
+        results = {}
+
+        for material in self.object.list_fermentables():
+
+            paths = material.unit.find_conversion_paths(
+                unit,
+                material.material,
+                year=self.object.year)
+
+            if len(paths):
+
+                _median = median([path.factor for path in paths])
+
+                if material.malted:
+                    # volume increase of 7%, weight decrease of 22.5%
+                    _factor = 0.935 * 0.775
+                else:
+                    _factor = 0.775
+
+                results[material.id] = {
+                    'amount': _median * material.amount,
+                    'amount_malted': _median * material.amount * _factor,
+                    'unit': unit,
+                    'path': paths[0]}
+            else:
+                results[material.id] = {
+                    'amount': -1,
+                    'amount_malted': -1,
                     'unit': unit,
                     'path': []}
 

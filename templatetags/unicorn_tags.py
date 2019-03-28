@@ -1,4 +1,5 @@
 from django.template import Library
+from django.template.loader import render_to_string
 from django.urls import reverse
 from django.urls.exceptions import NoReverseMatch
 from unicorn.utils import get_model_name
@@ -113,7 +114,7 @@ def detail_url(obj):
 @register.filter
 def get(iterable, idx):
 
-    return iterable[idx]
+    return iterable.get(idx, None)
 
 
 @register.filter
@@ -127,5 +128,18 @@ def status_class(status):
 
     if status == 1:
         return "info"
+    elif status == 4:
+        return "danger"
     else:
         return "warning"
+
+
+@register.simple_tag
+def byline(obj):
+
+    try:
+        return render_to_string("snippets/%s_byline.html" %
+                                get_model_name(obj),
+                                {'obj': obj})
+    except:
+        return ""

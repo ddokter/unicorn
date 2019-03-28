@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext
 from .source import Source
 from .material import Material
 from .unit import AbstractUnit
@@ -11,12 +12,18 @@ MARKERS = (('<', '<'), ('=', '='), ('>', '>'))
 STATUS = (
     (1, _("Reference")),
     (2, _("Inferred")),
-    (3, _("Ambiguous")))
+    (3, _("Ambiguous")),
+    (4, _("Asumption"))
+)
 
 # No conversion is considered to be more precise than this. Based on
 # calculations done by Zevenboom.
 #
 BASE_PRECISION = 0.98
+
+# if status is ambiguous, punish
+#
+AMBIGOUS_CONVERSION_PUNISHMENT = 0.8
 
 
 class ConversionQuerySet(models.QuerySet):
@@ -82,24 +89,6 @@ class Conversion(models.Model):
 
         return _str
 
-    @property
-    def byline(self):
-
-        _line = []
-
-        if self.material.exists():
-
-            _line.append(", ".join([str(obj) for obj in self.material.all()]))
-
-        if self.year_from and self.year_to:
-            _line.append("%s - %s" % (self.year_from, self.year_to))
-        elif self.year_from:
-            _line.append("> %s" % self.year_from)
-        elif self.year_to:
-            _line.append("< %s" % self.year_to)
-
-        return "|".join(_line)
-
     def resolve(self, material, year=None):
 
         """ Resolve the conversion to it's 'to_unit'. If any subconversions
@@ -145,14 +134,21 @@ class Conversion(models.Model):
 
         # Maximum of 5% punishment
         #
-        _precision -= (rel * 0.05)
+        _precision *= (1 - rel * 0.05)
 
         # Maximum of 5% punishment
         #
         part = (len(str(self.from_amount).split('.')[1].strip('0')) +
                 len(str(self.to_amount).split('.')[1].strip('0')))
 
-        _precision -= ((1/pow(part + 1, 3)) * 0.05)
+        _precision *= (1 - (1/pow(part + 1, 3)) * 0.05)
+
+        # Punish non exact conversion
+        if self.marker != '=':
+            _precision *= BASE_PRECISION
+
+        if self.status == 3:
+            _precision *= AMBIGOUS_CONVERSION_PUNISHMENT
 
         return _precision
 

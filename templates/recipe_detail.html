@@ -42,6 +42,11 @@
     {{ material.amount }}
     <a href="{{ material.unit|detail_url }}">{{ material.unit }}</a>
     <a href="{{ material.material|detail_url }}">{{ material.material }}</a>
+    {% if material.malted %}
+    <span class="badge badge-pill badge-info">
+      {% trans 'Malted' %}
+    </span>
+    {% endif %}    
   </li>
   {% endfor %}
 </ul>

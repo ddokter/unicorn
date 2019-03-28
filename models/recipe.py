@@ -22,7 +22,6 @@ class Recipe(models.Model):
     amount = models.FloatField(_("Yield amount"))
     amount_unit = models.ForeignKey(AbstractUnit, on_delete=models.CASCADE,
                                     verbose_name=("Yield unit"))
-    malt = models.BooleanField(_("Based on malted ingredients"), default=False)
 
     def __str__(self):
 
@@ -51,3 +50,4 @@ class RecipeMaterial(models.Model):
     unit = models.ForeignKey(AbstractUnit, on_delete=models.CASCADE)
     recepy = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     material = models.ForeignKey(Material, on_delete=models.CASCADE)
+    malted = models.BooleanField(_("Malted"), default=False)

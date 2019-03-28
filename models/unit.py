@@ -69,6 +69,12 @@ class AbstractUnit(PolymorphicModel):
         #
         precision = 0
 
+        # Keep track of conversions that are already under scrutiny in
+        # the same direction. Any path that has less precision, than
+        # currently registered, may be thrown out.
+        #
+        seen = {}
+
         while stack:
 
             (last_unit, path) = stack.pop(0)
@@ -90,10 +96,14 @@ class AbstractUnit(PolymorphicModel):
 
             qs = conv_model.objects.exclude(id__in=[conv.id for conv in path])
 
-            if material:
+            if material and hasattr(material, 'categories'):
                 qs = qs.filter(
                     Q(material=material) |
                     Q(material__in=material.categories.all()) |
+                    Q(generic=True))
+            else:
+                qs = qs.filter(
+                    Q(material=material) |
                     Q(generic=True))
 
             if year:
@@ -126,6 +136,13 @@ class AbstractUnit(PolymorphicModel):
                     else:
                         new_path = path.copy()
                         new_path.append(conv)
+
+                        if (
+                                seen.get(conv.id, -inf) >
+                                (1.0 * new_path.precision)):
+                            continue
+                        else:
+                            seen[conv.id] = new_path.precision
 
                         if conv.to_unit == last_unit:
                             stack.append((conv.from_unit, new_path))
@@ -166,11 +183,6 @@ class BaseUnit(AbstractUnit):
     def __str__(self):
 
         return self.name
-
-    @property
-    def byline(self):
-
-        return self.synonyms
 
     class Meta:
 

@@ -3,7 +3,9 @@
 <section>
   <h2>
     {% trans title %}
+    {% if submodel %}
     {% inline_add_action submodel object extra_args %}
+    {% endif %}
   </h2>
 
   <!--form class="form mb-2" method="POST">

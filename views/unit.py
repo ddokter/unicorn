@@ -29,6 +29,23 @@ class UnitConvertView(FormView, SingleObjectMixin, CTypeMixin):
         self.object = self.get_object()
         return super().post(request, *args, **kwargs)
 
+    def get_form(self, form_class=None):
+
+        """ TODO: dry! """
+
+        form = super().get_form(form_class=form_class)
+
+        qs = form.fields['to_unit'].queryset
+
+        if qs.model.__name__ == "LocalUnit":
+            qs = qs.order_by("unit", "location")
+        else:
+            qs = qs.order_by("localunit", "baseunit")
+
+        form.fields['to_unit'].queryset = qs
+
+        return form
+
     def form_valid(self, form):
 
         paths = self.object.find_conversion_paths(

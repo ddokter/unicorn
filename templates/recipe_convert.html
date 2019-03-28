@@ -51,7 +51,7 @@
   <dt class="col-3">Alc. (vol) (Assuming 50% attenuation)</dt>
   <dd class="col-9">{{ view.gravity.alc|floatformat:1 }}</dd>
   <dt class="col-3">IBU</dt>
-  <dd class="col-9">{{ view.ibu }}</dd>
+  <dd class="col-9">{{ view.ibu|default_if_none:"n.v.t." }}</dd>
 </dl>
 
 
@@ -118,6 +118,7 @@
       </th>
       <td>
         {{ material.amount }}
+
         <a href="{{ material.unit|detail_url }}">{{ material.unit }}</a>
       </td>
       <td>
@@ -127,6 +128,11 @@
         </div>
         {% else %}
         {{ converted|get:material.id|get:'amount'|floatformat:2 }}
+
+        {% if converted|get:material.id|get:'amount_malted' %}
+        ({{ converted|get:material.id|get:'amount_malted'|floatformat:2 }})
+        {% endif %}
+
         {{ converted|get:material.id|get:'unit' }}
         {% endif %}
       </td>
@@ -162,7 +168,7 @@
                   <div class="modal-body">
                     <dl class="row">
                       <dd class="col-3">{% trans 'Source' %}</dd>
-                      <dt class="col-9">                        
+                      <dt class="col-9">
                         {% for source in conversion.source.all %}
                         {{ source }}
                         {% endfor %}
@@ -172,7 +178,7 @@
                 </div>
               </div>
             </div>
-            
+
           </li>
           {% endfor %}
         </ol>
