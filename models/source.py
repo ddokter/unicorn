@@ -15,6 +15,7 @@ class Source(models.Model):
     publisher = models.CharField(_("Publisher"), max_length=255,
                                  null=True, blank=True)
     description = models.TextField(_("Description"), null=True, blank=True)
+    enabled = models.BooleanField(_("Enabled"), default=True)
 
     def __str__(self):
 

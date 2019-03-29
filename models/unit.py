@@ -24,6 +24,12 @@ MIN_PRECISION = 0.9
 MAX_PATH_LENGTH = 1.5
 
 
+QUANTITY = (
+    (1, _("Mass")),
+    (2, _("Volume")),
+)
+
+
 class AbstractUnit(PolymorphicModel):
 
     """Base class for unit models, so as to be able to define both
@@ -69,9 +75,9 @@ class AbstractUnit(PolymorphicModel):
         #
         precision = 0
 
-        # Keep track of conversions that are already under scrutiny in
-        # the same direction. Any path that has less precision, than
-        # currently registered, may be thrown out.
+        # Keep track of end points of the paths under scrutiny. Any
+        # new end-point that is less precise than this, can be
+        # discarded.
         #
         seen = {}
 
@@ -96,6 +102,8 @@ class AbstractUnit(PolymorphicModel):
 
             qs = conv_model.objects.exclude(id__in=[conv.id for conv in path])
 
+            qs = qs.filter(source__enabled=True)
+
             if material and hasattr(material, 'categories'):
                 qs = qs.filter(
                     Q(material=material) |
@@ -112,7 +120,7 @@ class AbstractUnit(PolymorphicModel):
                                    Q(year_to__gte=year) |
                                    Q(year_to__isnull=True))
 
-            qs = qs.find_for_unit(last_unit)
+            qs = qs.find_for_unit(last_unit).distinct()
 
             if _filter:
                 qs = qs.filter(**_filter)
@@ -137,12 +145,20 @@ class AbstractUnit(PolymorphicModel):
                         new_path = path.copy()
                         new_path.append(conv)
 
-                        if (
-                                seen.get(conv.id, -inf) >
-                                (1.0 * new_path.precision)):
+                        if conv.to_unit == last_unit:
+                            end_unit = conv.from_unit
+                        else:
+                            end_unit = conv.to_unit
+
+                        if (seen.get(end_unit.id, -inf) > new_path.precision):
                             continue
                         else:
-                            seen[conv.id] = new_path.precision
+                            seen[end_unit.id] = new_path.precision
+
+                        # Discard conversions over different quantities
+                        #
+                        if (conv.from_unit.quantity != conv.to_unit.quantity):
+                            continue
 
                         if conv.to_unit == last_unit:
                             stack.append((conv.from_unit, new_path))
@@ -180,6 +196,9 @@ class BaseUnit(AbstractUnit):
 
     """
 
+    quantity = models.SmallIntegerField(_("Quantity"), default=2,
+                                        choices=QUANTITY)
+
     def __str__(self):
 
         return self.name
@@ -203,6 +222,11 @@ class LocalUnit(AbstractUnit):
     def __str__(self):
 
         return self.name or "%s (%s)" % (self.unit.name, self.location)
+
+    @property
+    def quantity(self):
+
+        return self.unit.quantity
 
     class Meta:
 

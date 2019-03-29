@@ -32,13 +32,13 @@ tot de meest waarschijnlijke omzetting.
          aria-selected="false">Grondstoffen</a>
       <a class="nav-link" id="styles-tab" data-toggle="pill"
          href="#styles" role="tab" aria-controls="styles"
-         aria-selected="false">Bierstijlen</a>      
+         aria-selected="false">Bierstijlen</a>
       <a class="nav-link" id="conversions-tab" data-toggle="pill"
          href="#conversions" role="tab" aria-controls="conversions"
-         aria-selected="false">Conversies</a>      
+         aria-selected="false">Conversies</a>
       <a class="nav-link" id="recipes-tab" data-toggle="pill"
          href="#recipes" role="tab" aria-controls="recipes"
-         aria-selected="false">Recepten</a>            
+         aria-selected="false">Recepten</a>
     </div>
   </div>
   <div class="col-9">
@@ -93,7 +93,7 @@ tot de meest waarschijnlijke omzetting.
 
       <div class="tab-pane fade" id="styles" role="tabpanel"
            aria-labelledby="styles-tab">
-        
+
       </div>
 
       <div class="tab-pane fade" id="conversions" role="tabpanel"
@@ -121,15 +121,30 @@ tot de meest waarschijnlijke omzetting.
         In geval van een complexe conversie, moeten alle onderdelen van het
         'rechterdeel' verwijzen naar dezelfde plaats, om oneindig geneste
         constructies te voorkomen.
-        
+
       </div>
-      
+
       <div class="tab-pane fade" id="recipes" role="tabpanel"
            aria-labelledby="recipes-tab">
+
+        Bij alle recepten wordt uitgegaan van een omrekening naar wort
+        sterkte op basis van een bijdrage in 'Gravity Units' per kilo
+        per liter. Deze bijdrage is volgens de formule voor
+        pounds/gallon, omgerekend naar het metrieke stelsel:
+
+        PPG = (potentieel extract / 100) * 46
+
+        Vanuit deze bijdrage per graansoort kan worden berekend wat de
+        uiteindelijke dichtheid van de wort is, en daarmee de massa
+        van de wort en vervolgens het stamwortgehalte.
+
+        Voor de bepaling van alcohol per volume wordt uitgegaan van
+        een schijnbare vergistingsgraad van 50%.
+
       </div>
 
     </div>
   </div>
 </div>
-    
+
 {% endblock %}

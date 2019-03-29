@@ -57,6 +57,15 @@ class Fermentable(MaterialBase):
 
     """ Fermentable stuff, like malt. """
 
+    extract = models.FloatField(_("Potential extract"), default=0.8)
+
+    @property
+    def gu(self):
+
+        """ Calculate GU yield of 1 kg per 10 L """
+
+        return self.extract * 46 * (2.205 / 2.642)
+
     class Meta:
         app_label = "unicorn"
         ordering = ["name"]
@@ -66,6 +75,8 @@ class Fermentable(MaterialBase):
 class Hop(MaterialBase):
 
     """ Well... hop """
+
+    alfa_acid = models.FloatField(_("Alfa acid"), default=5.0)
 
     class Meta:
         app_label = "unicorn"

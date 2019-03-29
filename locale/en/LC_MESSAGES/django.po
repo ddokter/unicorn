@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-18 21:06+0000\n"
+"POT-Creation-Date: 2019-03-29 15:42+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,9 +18,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: models/base.py:8 models/location.py:10 models/material.py:7
-#: models/style.py:9 models/unit.py:34
+#: models/base.py:8 models/category.py:9 models/location.py:10
+#: models/material.py:8 models/style.py:9 models/unit.py:40
 msgid "Name"
+msgstr ""
+
+#: models/category.py:10 models/location.py:11 models/material.py:9
+#: models/style.py:10 models/unit.py:41 templates/fermentable_detail.html:8
+#: templates/hop_detail.html:8
+msgid "Synonyms"
+msgstr ""
+
+#: models/category.py:29 models/material.py:45
+#: templates/fermentable_detail.html:14 templates/hop_detail.html:10
+msgid "Categories"
 msgstr ""
 
 #: models/conversion.py:12
@@ -35,59 +46,87 @@ msgstr ""
 msgid "Ambiguous"
 msgstr ""
 
-#: models/conversion.py:46
-msgid "From amount"
-msgstr ""
-
-#: models/conversion.py:49
-msgid "From unit"
-msgstr ""
-
-#: models/conversion.py:50
-msgid "To amount"
+#: models/conversion.py:15
+msgid "Asumption"
 msgstr ""
 
 #: models/conversion.py:53
-msgid "To unit"
+msgid "From amount"
 msgstr ""
 
-#: models/conversion.py:54
-msgid "Marker"
+#: models/conversion.py:56
+msgid "From unit"
 msgstr ""
 
 #: models/conversion.py:57
-msgid "Generic"
+msgid "To amount"
 msgstr ""
 
-#: models/conversion.py:59
-msgid "From year"
-msgstr ""
-
-#: models/conversion.py:60
-msgid "To year"
+#: models/conversion.py:60 views/unit.py:14
+msgid "To unit"
 msgstr ""
 
 #: models/conversion.py:61
+msgid "Marker"
+msgstr ""
+
+#: models/conversion.py:64 templates/snippets/conversion_byline.html:12
+msgid "Generic"
+msgstr ""
+
+#: models/conversion.py:66
+msgid "From year"
+msgstr ""
+
+#: models/conversion.py:67
+msgid "To year"
+msgstr ""
+
+#: models/conversion.py:68
 msgid "Original text"
 msgstr ""
 
-#: models/conversion.py:63
+#: models/conversion.py:70
 msgid "Status"
 msgstr ""
 
-#: models/expression.py:25 models/recipe.py:39
+#: models/expression.py:27 models/recipe.py:49
 msgid "Amount"
 msgstr ""
 
-#: models/expression.py:27
+#: models/expression.py:29
 msgid "Operator"
+msgstr ""
+
+#: models/location.py:13 models/source.py:17
+msgid "Description"
+msgstr ""
+
+#: models/material.py:60 templates/fermentable_detail.html:12
+msgid "Potential extract"
+msgstr ""
+
+#: models/material.py:72 templates/base.html:52
+msgid "Fermentables"
+msgstr ""
+
+#: models/material.py:79
+msgid "Alfa acid"
+msgstr ""
+
+#: models/material.py:84
+msgid "Hop"
+msgstr ""
+
+#: models/material.py:94
+msgid "Nonfermentables"
 msgstr ""
 
 #: models/recipe.py:13
 msgid "Style"
 msgstr ""
 
-#: models/recipe.py:15 models/unit.py:170 templates/localunit_detail.html:27
+#: models/recipe.py:15 models/unit.py:220 templates/localunit_detail.html:27
 msgid "Location"
 msgstr ""
 
@@ -99,7 +138,8 @@ msgstr ""
 msgid "Year of publication"
 msgstr ""
 
-#: models/recipe.py:20 templates/recipe_detail.html:21
+#: models/recipe.py:20 templates/recipe_convert.html:170
+#: templates/recipe_detail.html:21
 msgid "Source"
 msgstr ""
 
@@ -111,12 +151,16 @@ msgstr ""
 msgid "Yield amount"
 msgstr ""
 
-#: models/recipe.py:33
+#: models/recipe.py:43
 msgid "Recipe"
 msgstr ""
 
-#: models/recipe.py:34 templates/base.html:62
+#: models/recipe.py:44 templates/base.html:78
 msgid "Recipes"
+msgstr ""
+
+#: models/recipe.py:53 templates/recipe_detail.html:47
+msgid "Malted"
 msgstr ""
 
 #: models/source.py:10
@@ -131,45 +175,65 @@ msgstr ""
 msgid "Publisher"
 msgstr ""
 
-#: models/source.py:17
-msgid "Description"
+#: models/source.py:18
+msgid "Enabled"
 msgstr ""
 
-#: models/style.py:10 models/unit.py:35
-msgid "Synonyms"
+#: models/unit.py:28
+msgid "Mass"
 msgstr ""
 
-#: models/unit.py:137 models/unit.py:160 templates/base.html:42
+#: models/unit.py:29
+msgid "Volume"
+msgstr ""
+
+#: models/unit.py:189 models/unit.py:210 templates/base.html:41
 msgid "Units"
 msgstr ""
 
-#: models/unit.py:168
+#: models/unit.py:199
+msgid "Quantity"
+msgstr ""
+
+#: models/unit.py:218
 msgid "Base unit"
 msgstr ""
 
-#: models/unit.py:180
+#: models/unit.py:235
 msgid "Local units"
 msgstr ""
 
-#: templates/base.html:32
+#: templates/base.html:31
 msgid "Sources"
 msgstr ""
 
-#: templates/base.html:37
+#: templates/base.html:36
 msgid "Locations"
 msgstr ""
 
-#: templates/base.html:47 templates/conversion_detail.html:16
-#: templates/recipe_convert.html:98 templates/recipe_detail.html:32
-#: views/recipe.py:45
+#: templates/base.html:48 templates/conversion_detail.html:16
+#: templates/recipe_convert.html:102 templates/recipe_detail.html:35
+#: views/recipe.py:40
 msgid "Materials"
 msgstr ""
 
-#: templates/base.html:52
+#: templates/base.html:55
+msgid "Hops"
+msgstr ""
+
+#: templates/base.html:58
+msgid "Other"
+msgstr ""
+
+#: templates/base.html:62
+msgid "Category"
+msgstr ""
+
+#: templates/base.html:68
 msgid "Styles"
 msgstr ""
 
-#: templates/base.html:57
+#: templates/base.html:73
 msgid "Conversions"
 msgstr ""
 
@@ -236,6 +300,10 @@ msgstr ""
 msgid "To"
 msgstr ""
 
+#: templates/fermentable_detail.html:10
+msgid "GU for 1 Kg/10 L"
+msgstr ""
+
 #: templates/localunit_detail.html:25
 msgid "Unit"
 msgstr ""
@@ -244,23 +312,23 @@ msgstr ""
 msgid "Specifications"
 msgstr ""
 
-#: templates/recipe_convert.html:59 templates/recipe_convert.html:105
+#: templates/recipe_convert.html:63 templates/recipe_convert.html:109
 msgid "Original"
 msgstr ""
 
-#: templates/recipe_convert.html:60 templates/recipe_convert.html:106
+#: templates/recipe_convert.html:64 templates/recipe_convert.html:110
 msgid "Converted"
 msgstr ""
 
-#: templates/recipe_convert.html:65 templates/recipe_detail.html:22
+#: templates/recipe_convert.html:69 templates/recipe_detail.html:25
 msgid "Yield"
 msgstr ""
 
-#: templates/recipe_convert.html:78 templates/recipe_convert.html:131
+#: templates/recipe_convert.html:82 templates/recipe_convert.html:141
 msgid "Conversion"
 msgstr ""
 
-#: templates/recipe_convert.html:122
+#: templates/recipe_convert.html:127
 msgid "No conversion path found"
 msgstr ""
 
@@ -276,26 +344,46 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: templates/snippets/listing.html:8
+#: templates/snippets/listing.html:8 templates/snippets/sublisting.html:14
 msgid "Filter"
 msgstr ""
 
-#: templates/unit_convert.html:59
-msgid "Conversion path"
+#: templates/unit_convert.html:50
+msgid "Weighed average"
 msgstr ""
 
-#: templates/unit_convert.html:63
+#: templates/unit_convert.html:62
+msgid "Conversion paths"
+msgstr ""
+
+#: templates/unit_convert.html:69
 msgid "Factor"
 msgstr ""
 
-#: templates/unit_convert.html:65
+#: templates/unit_convert.html:71
 msgid "Precision"
 msgstr ""
 
-#: templates/unit_convert.html:84
+#: templates/unit_convert.html:92
 msgid "No conversions found"
 msgstr ""
 
 #: views/conversion.py:13
 msgid "Subconversions"
+msgstr ""
+
+#: views/recipe.py:83
+msgid "Yield unit"
+msgstr ""
+
+#: views/recipe.py:87
+msgid "Material unit"
+msgstr ""
+
+#: views/unit.py:16
+msgid "Material"
+msgstr ""
+
+#: views/unit.py:18
+msgid "Year"
 msgstr ""

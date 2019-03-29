@@ -47,8 +47,8 @@
 
 <div class="alert alert-dark" role="alert">
   <dl class="row">
-    <dt class="col-3">Median</dt>
-    <dd class="col-9">{{ view.result.median|floatformat:2 }}</dd>
+    <dt class="col-3">{% trans 'Weighed average' %}</dt>
+    <dd class="col-9">{{ view.result.w_avg|floatformat:2 }}</dd>
     <dt class="col-3">Min</dt>
     <dd class="col-9">{{ view.result.min|floatformat:2 }}</dd>
     <dt class="col-3">Avg</dt>

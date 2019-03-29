@@ -1,17 +1,21 @@
-from statistics import mean, median
+from statistics import mean
 from django import forms
+from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView
 from django.views.generic.detail import SingleObjectMixin
 from unicorn.models.unit import AbstractUnit
 from unicorn.models.material import Material
+from unicorn.utils import calculate_avg
 from .base import CTypeMixin
 
 
 class ConvertForm(forms.Form):
 
-    to_unit = forms.ModelChoiceField(queryset=AbstractUnit.objects.all())
-    material = forms.ModelChoiceField(queryset=Material.objects.all())
-    year = forms.IntegerField(required=False)
+    to_unit = forms.ModelChoiceField(label=_("To unit"),
+                                     queryset=AbstractUnit.objects.all())
+    material = forms.ModelChoiceField(label=_("Material"),
+                                      queryset=Material.objects.all())
+    year = forms.IntegerField(label=_("Year"), required=False)
 
 
 class UnitConvertView(FormView, SingleObjectMixin, CTypeMixin):
@@ -70,7 +74,7 @@ class UnitConvertView(FormView, SingleObjectMixin, CTypeMixin):
                 'min': min(results),
                 'max': max(results),
                 'avg': mean(results),
-                'median': median(results)
+                'w_avg': calculate_avg(paths)
             }
         else:
             return None

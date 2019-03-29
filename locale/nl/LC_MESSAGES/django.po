@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-18 21:06+0000\n"
-"PO-Revision-Date: 2019-03-18 22:06+0100\n"
+"POT-Creation-Date: 2019-03-29 15:42+0000\n"
+"PO-Revision-Date: 2019-03-29 16:43+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -18,10 +18,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: models/base.py:8 models/location.py:10 models/material.py:7
-#: models/style.py:9 models/unit.py:34
+#: models/base.py:8 models/category.py:9 models/location.py:10
+#: models/material.py:8 models/style.py:9 models/unit.py:40
 msgid "Name"
 msgstr "Naam"
+
+#: models/category.py:10 models/location.py:11 models/material.py:9
+#: models/style.py:10 models/unit.py:41 templates/fermentable_detail.html:8
+#: templates/hop_detail.html:8
+msgid "Synonyms"
+msgstr "Synoniemen"
+
+#: models/category.py:29 models/material.py:45
+#: templates/fermentable_detail.html:14 templates/hop_detail.html:10
+msgid "Categories"
+msgstr "Categorieën"
 
 #: models/conversion.py:12
 msgid "Reference"
@@ -35,59 +46,87 @@ msgstr "Afgeleid"
 msgid "Ambiguous"
 msgstr "Ambigu"
 
-#: models/conversion.py:46
+#: models/conversion.py:15
+msgid "Asumption"
+msgstr "Aanname"
+
+#: models/conversion.py:53
 msgid "From amount"
 msgstr "Van hoeveelheid"
 
-#: models/conversion.py:49
+#: models/conversion.py:56
 msgid "From unit"
 msgstr "Van eenheid"
 
-#: models/conversion.py:50
+#: models/conversion.py:57
 msgid "To amount"
 msgstr "Naar hoeveelheid"
 
-#: models/conversion.py:53
+#: models/conversion.py:60 views/unit.py:14
 msgid "To unit"
 msgstr "Naar eenheid"
 
-#: models/conversion.py:54
+#: models/conversion.py:61
 msgid "Marker"
 msgstr "Markering"
 
-#: models/conversion.py:57
+#: models/conversion.py:64 templates/snippets/conversion_byline.html:12
 msgid "Generic"
 msgstr "Generiek"
 
-#: models/conversion.py:59
+#: models/conversion.py:66
 msgid "From year"
 msgstr "Vanaf jaar"
 
-#: models/conversion.py:60
+#: models/conversion.py:67
 msgid "To year"
 msgstr "Tot jaar"
 
-#: models/conversion.py:61
+#: models/conversion.py:68
 msgid "Original text"
 msgstr "Oorspronkelijke text"
 
-#: models/conversion.py:63
+#: models/conversion.py:70
 msgid "Status"
 msgstr "Status"
 
-#: models/expression.py:25 models/recipe.py:39
+#: models/expression.py:27 models/recipe.py:49
 msgid "Amount"
 msgstr "Hoeveelheid"
 
-#: models/expression.py:27
+#: models/expression.py:29
 msgid "Operator"
 msgstr "Operator"
+
+#: models/location.py:13 models/source.py:17
+msgid "Description"
+msgstr "Beschrijving"
+
+#: models/material.py:60 templates/fermentable_detail.html:12
+msgid "Potential extract"
+msgstr "Potentieel extract"
+
+#: models/material.py:72 templates/base.html:52
+msgid "Fermentables"
+msgstr "Vergistbare ingrediënten"
+
+#: models/material.py:79
+msgid "Alfa acid"
+msgstr "Alfazuur"
+
+#: models/material.py:84
+msgid "Hop"
+msgstr "Hop"
+
+#: models/material.py:94
+msgid "Nonfermentables"
+msgstr "Onvergistbare ingrediënten"
 
 #: models/recipe.py:13
 msgid "Style"
 msgstr "Bierstijl"
 
-#: models/recipe.py:15 models/unit.py:170 templates/localunit_detail.html:27
+#: models/recipe.py:15 models/unit.py:220 templates/localunit_detail.html:27
 msgid "Location"
 msgstr "Plaats"
 
@@ -99,7 +138,8 @@ msgstr "Datum"
 msgid "Year of publication"
 msgstr "Publicatiejaar"
 
-#: models/recipe.py:20 templates/recipe_detail.html:21
+#: models/recipe.py:20 templates/recipe_convert.html:170
+#: templates/recipe_detail.html:21
 msgid "Source"
 msgstr "Bron"
 
@@ -111,13 +151,17 @@ msgstr "Informatie"
 msgid "Yield amount"
 msgstr "Opbrengst hoeveelheid"
 
-#: models/recipe.py:33
+#: models/recipe.py:43
 msgid "Recipe"
 msgstr "Recept"
 
-#: models/recipe.py:34 templates/base.html:62
+#: models/recipe.py:44 templates/base.html:78
 msgid "Recipes"
 msgstr "Recepten"
+
+#: models/recipe.py:53 templates/recipe_detail.html:47
+msgid "Malted"
+msgstr "Gemouten"
 
 #: models/source.py:10
 msgid "Title"
@@ -131,45 +175,65 @@ msgstr "Auteur"
 msgid "Publisher"
 msgstr "Uitgever"
 
-#: models/source.py:17
-msgid "Description"
-msgstr "Beschrijving"
+#: models/source.py:18
+msgid "Enabled"
+msgstr "In gebruik"
 
-#: models/style.py:10 models/unit.py:35
-msgid "Synonyms"
-msgstr "Synoniemen"
+#: models/unit.py:28
+msgid "Mass"
+msgstr "Massa"
 
-#: models/unit.py:137 models/unit.py:160 templates/base.html:42
+#: models/unit.py:29
+msgid "Volume"
+msgstr "Volume"
+
+#: models/unit.py:189 models/unit.py:210 templates/base.html:41
 msgid "Units"
 msgstr "Eenheden"
 
-#: models/unit.py:168
+#: models/unit.py:199
+msgid "Quantity"
+msgstr "Grootheid"
+
+#: models/unit.py:218
 msgid "Base unit"
 msgstr "Eenheid"
 
-#: models/unit.py:180
+#: models/unit.py:235
 msgid "Local units"
 msgstr "Plaatselijke eenheden"
 
-#: templates/base.html:32
+#: templates/base.html:31
 msgid "Sources"
 msgstr "Bronnen"
 
-#: templates/base.html:37
+#: templates/base.html:36
 msgid "Locations"
 msgstr "Plaatsen"
 
-#: templates/base.html:47 templates/conversion_detail.html:16
-#: templates/recipe_convert.html:98 templates/recipe_detail.html:32
-#: views/recipe.py:45
+#: templates/base.html:48 templates/conversion_detail.html:16
+#: templates/recipe_convert.html:102 templates/recipe_detail.html:35
+#: views/recipe.py:40
 msgid "Materials"
 msgstr "Grondstoffen"
 
-#: templates/base.html:52
+#: templates/base.html:55
+msgid "Hops"
+msgstr "Hop"
+
+#: templates/base.html:58
+msgid "Other"
+msgstr "Overige"
+
+#: templates/base.html:62
+msgid "Category"
+msgstr "Categorie"
+
+#: templates/base.html:68
 msgid "Styles"
 msgstr "Bierstijlen"
 
-#: templates/base.html:57
+#: templates/base.html:73
 msgid "Conversions"
 msgstr "Conversies"
 
@@ -236,6 +300,10 @@ msgstr "Vanaf"
 msgid "To"
 msgstr "Naar"
 
+#: templates/fermentable_detail.html:10
+msgid "GU for 1 Kg/10 L"
+msgstr "GU voor 1 Kg/10 L"
+
 #: templates/localunit_detail.html:25
 msgid "Unit"
 msgstr "Eenheid"
@@ -244,23 +312,23 @@ msgstr "Eenheid"
 msgid "Specifications"
 msgstr "Specificaties"
 
-#: templates/recipe_convert.html:59 templates/recipe_convert.html:105
+#: templates/recipe_convert.html:63 templates/recipe_convert.html:109
 msgid "Original"
 msgstr "Oorspronkelijk"
 
-#: templates/recipe_convert.html:60 templates/recipe_convert.html:106
+#: templates/recipe_convert.html:64 templates/recipe_convert.html:110
 msgid "Converted"
 msgstr "Geconverteerd"
 
-#: templates/recipe_convert.html:65 templates/recipe_detail.html:22
+#: templates/recipe_convert.html:69 templates/recipe_detail.html:25
 msgid "Yield"
 msgstr "Opbrengst"
 
-#: templates/recipe_convert.html:78 templates/recipe_convert.html:131
+#: templates/recipe_convert.html:82 templates/recipe_convert.html:141
 msgid "Conversion"
 msgstr "Conversie"
 
-#: templates/recipe_convert.html:122
+#: templates/recipe_convert.html:127
 msgid "No conversion path found"
 msgstr "Geen conversiepad gevonden"
 
@@ -276,23 +344,27 @@ msgstr "Verwijderen"
 msgid "Edit"
 msgstr "Bewerken"
 
-#: templates/snippets/listing.html:8
+#: templates/snippets/listing.html:8 templates/snippets/sublisting.html:14
 msgid "Filter"
 msgstr "Filter"
 
-#: templates/unit_convert.html:59
-msgid "Conversion path"
-msgstr "Conversiepad"
+#: templates/unit_convert.html:50
+msgid "Weighed average"
+msgstr "Gewogen gemiddelde"
 
-#: templates/unit_convert.html:63
+#: templates/unit_convert.html:62
+msgid "Conversion paths"
+msgstr "Conversiepaden"
+
+#: templates/unit_convert.html:69
 msgid "Factor"
 msgstr "Factor"
 
-#: templates/unit_convert.html:65
+#: templates/unit_convert.html:71
 msgid "Precision"
 msgstr "Precisie"
 
-#: templates/unit_convert.html:84
+#: templates/unit_convert.html:92
 msgid "No conversions found"
 msgstr "Geen conversies gevonden"
 
@@ -300,8 +372,21 @@ msgstr "Geen conversies gevonden"
 msgid "Subconversions"
 msgstr "Subconversies"
 
-#~ msgid "Other info"
-#~ msgstr "Overige"
+#: views/recipe.py:83
+msgid "Yield unit"
+msgstr "Opbrengst eenheid"
+
+#: views/recipe.py:87
+msgid "Material unit"
+msgstr "Grondstof eenheid"
+
+#: views/unit.py:16
+msgid "Material"
+msgstr "Grondstof"
+
+#: views/unit.py:18
+msgid "Year"
+msgstr "Jaar"
 
 #~ msgid "Original source"
 #~ msgstr "Historische bron"

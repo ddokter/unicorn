@@ -1,5 +1,5 @@
 {% extends 'snippets/byline.html' %}
 
 {% block content %}
-{{ obj.synonyms }}
+{{ obj.synonyms|default_if_none:"" }}
 {% endblock %}

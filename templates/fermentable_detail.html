@@ -7,6 +7,10 @@
 <dl class="row">
   <dt class="col-3">{% trans 'Synonyms' %}</dt>
   <dd class="col-9">{{ object.synonyms|default_if_none:"" }}</dd>
+  <dt class="col-3">{% trans 'GU for 1 Kg/10 L' %}</dt>
+  <dd class="col-9">{{ object.gu|floatformat:2 }}</dd>
+  <dt class="col-3">{% trans 'Potential extract' %}</dt>
+  <dd class="col-9">{{ object.extract }}</dd>    
   <dt class="col-3">{% trans 'Categories' %}</dt>
   <dd class="col-9">
     <ul class="list-inline">

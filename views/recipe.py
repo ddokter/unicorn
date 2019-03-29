@@ -1,4 +1,3 @@
-from statistics import median
 from django.utils.translation import ugettext_lazy as _
 from django.http import HttpResponseRedirect
 from django.forms import inlineformset_factory
@@ -9,23 +8,11 @@ from django.views.generic.detail import SingleObjectMixin
 from unicorn.models.recipe import Recipe
 from unicorn.models.unit import BaseUnit
 from unicorn.views.base import CTypeMixin
+from unicorn.utils import calculate_avg
 
 
 BREWHOUSE_EFF = 0.8
 
-# Factor to compensate for the difference of modern day yield and the
-# average yield of ye good old days.
-#
-YIELD_FACTOR = 0.75
-
-# Extract, average, with compensation for old skool yield
-#
-EXTRACT = 0.8 * YIELD_FACTOR
-
-# Rough estimate of Gravity Units added per kilo of material to a HL
-# taking into account the lesser yield of old times
-#
-GU_PER_HL = 3.1 * YIELD_FACTOR
 
 # Hop utilization factor, assuming that all hops are boiled for a long
 # time
@@ -94,13 +81,12 @@ class ConvertForm(forms.Form):
 
     yield_to_unit = forms.ModelChoiceField(
         label=_("Yield unit"),
-        queryset=BaseUnit.objects.all(),
-        initial=BaseUnit.objects.filter(name='Liter').first()
+        queryset=BaseUnit.objects.all()
     )
     material_to_unit = forms.ModelChoiceField(
         label=_("Material unit"),
-        queryset=BaseUnit.objects.all(),
-        initial=BaseUnit.objects.filter(name='Kilo').first())
+        queryset=BaseUnit.objects.all()
+    )
 
 
 class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
@@ -120,6 +106,18 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         return super().post(request, *args, **kwargs)
+
+    def get_form(self, form_class=None):
+
+        form = super().get_form(form_class=form_class)
+
+        form.fields['material_to_unit'].initial = BaseUnit.objects.filter(
+            name='Kilo').first()
+
+        form.fields['yield_to_unit'].initial = BaseUnit.objects.filter(
+            name='Liter').first()
+
+        return form
 
     def form_valid(self, form):
 
@@ -162,10 +160,13 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
         g_units = 0
 
         for ingredient in self.fermentables.values():
-            _yield += EXTRACT * BREWHOUSE_EFF * ingredient['amount_malted']
-            g_units += (GU_PER_HL * ingredient['amount_malted'] *
-                        BREWHOUSE_EFF) / (
-                            self.converted_yield['amount'] / 100.0)
+            _yield += (ingredient['extract'] * BREWHOUSE_EFF *
+                       ingredient['amount_malted'])
+
+            g_units += (
+                (ingredient['gu'] * ingredient['amount_malted'] *
+                 BREWHOUSE_EFF) /
+                (self.converted_yield['amount'] / 10))
 
         density = (1000 + g_units) / 1000.0
 
@@ -220,9 +221,9 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
 
         if len(paths):
 
-            _median = median([path.factor for path in paths])
+            w_avg = calculate_avg(paths)
 
-            return {'amount': _median * self.object.amount,
+            return {'amount': w_avg * self.object.amount,
                     'unit': unit,
                     'path': paths[0]}
         else:
@@ -243,10 +244,10 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
 
             if len(paths):
 
-                _median = median([path.factor for path in paths])
+                w_avg = calculate_avg(paths)
 
                 results[material.id] = {
-                    'amount': _median * material.amount,
+                    'amount': w_avg * material.amount,
                     'unit': unit,
                     'path': paths[0]}
             else:
@@ -270,23 +271,31 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
 
             if len(paths):
 
-                _median = median([path.factor for path in paths])
+                w_avg = calculate_avg(paths)
 
                 if material.malted:
-                    # volume increase of 7%, weight decrease of 22.5%
-                    _factor = 0.935 * 0.775
-                else:
+                    # decrease with 22.5% due to calculations with actual
+                    # grain
                     _factor = 0.775
+                else:
+                    # decrease weight for malting per hl, but volume
+                    # increases by 7%
+                    #
+                    _factor = 1.07 * 0.775
 
                 results[material.id] = {
-                    'amount': _median * material.amount,
-                    'amount_malted': _median * material.amount * _factor,
+                    'amount': w_avg * material.amount,
+                    'amount_malted': w_avg * material.amount * _factor,
+                    'extract': material.material.extract,
+                    'gu': material.material.gu,
                     'unit': unit,
                     'path': paths[0]}
             else:
                 results[material.id] = {
                     'amount': -1,
                     'amount_malted': -1,
+                    'extract': -1,
+                    'gu': -1,
                     'unit': unit,
                     'path': []}
 
