@@ -37,6 +37,11 @@ class Recipe(models.Model):
         return [item for item in self.recipematerial_set.all()
                 if item.material.__class__.__name__ == 'Hop']
 
+    def list_nonfermentables(self):
+
+        return [item for item in self.recipematerial_set.all()
+                if item.material.__class__.__name__ == 'Nonfermentable']
+
     class Meta:
         ordering = ["style__name", "date"]
         app_label = "unicorn"

@@ -7,17 +7,19 @@
 {% if obj.material.exists %}
 {% for material in obj.material.all %}
 {{ material }}
-{% endfor %}
+{% endfor %} |
 {% elif obj.generic %}
-{% trans 'Generic' %}
+{% trans 'Generic' %} |
 {% endif %}
 
 {% if obj.year_from and self.year_to %}
-{{ obj.year_from }}-{{ obj.year_to }}
+{{ obj.year_from }}-{{ obj.year_to }} |
 {% elif obj.year_from %}
-&gt; {{ obj.year_from }}
+&gt; {{ obj.year_from }} |
 {% elif obj.year_to %}
-&lt; {{ obj.year_to }}
+&lt; {{ obj.year_to }} |
 {% endif %}
+
+{% for src in obj.source.all %}[{{ src.abbr }}] {% endfor %}
 
 {% endblock %}

@@ -41,7 +41,7 @@
 {% if view.request.method == "POST" %}
 {% if view.result %}
 <div class="alert alert-success">
-  1 {{ object }} = {{ view.result.median|floatformat:2 }}
+  1 {{ object }} = {{ view.result.w_avg|floatformat:2 }}
   {{ form.cleaned_data.to_unit }}
 </div>
 

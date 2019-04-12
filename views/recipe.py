@@ -7,6 +7,7 @@ from .base import CreateView, UpdateView
 from django.views.generic.detail import SingleObjectMixin
 from unicorn.models.recipe import Recipe
 from unicorn.models.unit import BaseUnit
+from unicorn.models.material import Nonfermentable
 from unicorn.views.base import CTypeMixin
 from unicorn.utils import calculate_avg
 
@@ -96,6 +97,7 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
     form_class = ConvertForm
     converted_yield = None
     fermentables = None
+    nonfermentables = None
     hops = None
     materials = {}
 
@@ -133,8 +135,13 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
             form.cleaned_data['material_to_unit']
         )
 
+        self.nonfermentables = self._converted_nonfermentables(
+            form.cleaned_data['material_to_unit']
+        )
+
         self.materials.update(self.fermentables)
         self.materials.update(self.hops)
+        self.materials.update(self.nonfermentables)
 
         return self.render_to_response(self.get_context_data(form=form))
 
@@ -216,8 +223,10 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
 
     def _converted_yield(self, unit):
 
+        beer = Nonfermentable.objects.filter(name='Bier').first()
+
         paths = self.object.amount_unit.find_conversion_paths(
-            unit, None, year=self.object.year)
+            unit, beer, year=self.object.year)
 
         if len(paths):
 
@@ -236,6 +245,33 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
         results = {}
 
         for material in self.object.list_hops():
+
+            paths = material.unit.find_conversion_paths(
+                unit,
+                material.material,
+                year=self.object.year)
+
+            if len(paths):
+
+                w_avg = calculate_avg(paths)
+
+                results[material.id] = {
+                    'amount': w_avg * material.amount,
+                    'unit': unit,
+                    'path': paths[0]}
+            else:
+                results[material.id] = {
+                    'amount': -1,
+                    'unit': unit,
+                    'path': []}
+
+        return results
+
+    def _converted_nonfermentables(self, unit):
+
+        results = {}
+
+        for material in self.object.list_nonfermentables():
 
             paths = material.unit.find_conversion_paths(
                 unit,

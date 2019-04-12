@@ -1,3 +1,4 @@
+import re
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from unicorn.utils import abbreviate
@@ -31,6 +32,21 @@ class Source(models.Model):
     def list_conversions(self):
 
         return self.conversion_set.all().order_by("from_unit__name")
+
+    @property
+    def abbr(self):
+
+        """ Abbreviate source """
+
+        if self.author:
+            _abbr = re.compile("[.\s]").split(self.author)[-1].lower()
+        else:
+            _abbr = self.title.split()[0].lower()
+
+        if self.year:
+            _abbr += " %s" % self.year
+
+        return _abbr
 
     class Meta:
         app_label = "unicorn"

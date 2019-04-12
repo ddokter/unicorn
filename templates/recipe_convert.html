@@ -74,7 +74,7 @@
         </a>
       </td>
       <td>
-        {{ converted.amount }}
+        {{ converted.amount|floatformat:2 }}
         <a href="{{ converted.unit|detail_url }}">{{ converted.unit }}</a>
       </td>
     </tr>

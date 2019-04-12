@@ -21,7 +21,7 @@ MIN_PRECISION = 0.9
 # Set maximum path length as a factor of the shortest path found. Any
 # paths longer than this will be discarded.
 #
-MAX_PATH_LENGTH = 1.5
+MAX_PATH_LENGTH = 2
 
 
 QUANTITY = (
@@ -87,7 +87,7 @@ class AbstractUnit(PolymorphicModel):
 
             # Whenever the paths are getting too long, call it a day.
             #
-            if (len(path) + 1 >= shortest * MAX_PATH_LENGTH):
+            if (len(path) + 1 > shortest * MAX_PATH_LENGTH):
                 break
 
             # Throw out paths that lack precision
@@ -157,8 +157,8 @@ class AbstractUnit(PolymorphicModel):
 
                         # Discard conversions over different quantities
                         #
-                        if (conv.from_unit.quantity != conv.to_unit.quantity):
-                            continue
+                        # if(conv.from_unit.quantity != conv.to_unit.quantity):
+                        #    continue
 
                         if conv.to_unit == last_unit:
                             stack.append((conv.from_unit, new_path))
