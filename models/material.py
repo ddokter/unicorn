@@ -62,9 +62,12 @@ class Fermentable(MaterialBase):
     @property
     def gu(self):
 
-        """ Calculate GU yield of 1 kg per 10 L """
+        """ Calculate GU yield of 1 kg per 10 L (Based on PPG calculation) """
 
-        return self.extract * 46 * (2.205 / 2.642)
+        gallon_conv_factor = 10 / 3.7854
+        pound_conv_factor = 2.2046
+
+        return (self.extract * 46 * pound_conv_factor) / gallon_conv_factor
 
     class Meta:
         app_label = "unicorn"
