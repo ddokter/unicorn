@@ -128,7 +128,7 @@ def status_class(status):
 
     if status == 1:
         return "info"
-    elif status == 4:
+    elif status > 4:
         return "danger"
     else:
         return "warning"
@@ -143,3 +143,27 @@ def byline(obj):
                                 {'obj': obj})
     except:
         return ""
+
+
+@register.filter
+def push(obj1, obj2):
+
+    """ Push second object to the stack and return """
+
+    return obj1, obj2
+
+
+@register.filter
+def has_obj_perm(user_obj, perm):
+
+    user, obj = user_obj
+
+    return user.has_perm("unicorn.%s_%s" % (perm, get_model_name(obj)))
+
+
+@register.filter
+def has_model_perm(user_model, perm):
+
+    user, model = user_model
+
+    return user.has_perm("unicorn.%s_%s" % (perm, model))

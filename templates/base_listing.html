@@ -3,7 +3,9 @@
 {% load i18n unicorn_tags %}
 
 {% block actions %}
+{% if user|push:view.ctype|has_model_perm:'add' %}
 {% add_action view.model %}
+{% endif %}
 {% endblock %}
 
 

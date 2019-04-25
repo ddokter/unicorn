@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from .source import Source
 from .material import Material
 from .unit import AbstractUnit
+from .validators import is_range_01
 
 
 MARKERS = (('<', '<'), ('=', '='), ('>', '>'))
@@ -12,7 +13,8 @@ STATUS = (
     (1, _("Reference")),
     (2, _("Inferred")),
     (3, _("Ambiguous")),
-    (4, _("Asumption"))
+    (4, _("Asumption")),
+    (5, _("Anomalous"))
 )
 
 # No conversion is considered to be more precise than this. Based on
@@ -66,7 +68,8 @@ class Conversion(models.Model):
     year_from = models.SmallIntegerField(_("From year"), null=True, blank=True)
     year_to = models.SmallIntegerField(_("To year"), null=True, blank=True)
     original_text = models.TextField(_("Original text"), null=True, blank=True)
-    precision = models.FloatField(blank=True, null=True)
+    precision = models.FloatField(blank=True, null=True,
+                                  validators=[is_range_01])
     status = models.SmallIntegerField(_("Status"), default=1, choices=STATUS)
 
     objects = ConversionManager()

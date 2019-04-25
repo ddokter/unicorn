@@ -1,5 +1,6 @@
-from django.urls import path
+from django.urls import path, include
 from unicorn.views.home import Home
+from unicorn.views.auth import LoginView, LogoutView
 from unicorn.views.base import (
     ListingView, CreateView, UpdateView, DeleteView, DetailView,
     InlineCreateView, InlineDeleteView, InlineUpdateView)
@@ -12,6 +13,17 @@ from unicorn.views.conversion import (
 
 
 urlpatterns = [
+
+    path('auth/', include('django.contrib.auth.urls')),
+
+    path('login/',
+         LoginView.as_view(),
+         name="login"),
+
+    path('logout/',
+         LogoutView.as_view(),
+         name="logout"),
+
     path('', Home.as_view(), name="home"),
 
     # Not so generic views

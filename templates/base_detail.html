@@ -21,8 +21,12 @@
 {% endblock %}
 
 {% block actions %}
+{% if user|push:object|has_obj_perm:'change' %}
 {% edit_action object %}
+{% endif %}
+{% if user|push:object|has_obj_perm:'delete' %}
 {% delete_action object %}
+{% endif %}
 {% block extra_actions %}
 {% endblock %}
 {% endblock %}

@@ -77,6 +77,9 @@
       <li>
         <a href="{% url 'view' model='conversion' pk=conversion.id %}">
           {{ conversion }}
+          <span class="badge badge-pill badge-{{ conversion.status|status_class }}">
+            {{ conversion|status_label }}
+          </span>
         </a>
       </li>
       {% endfor %}

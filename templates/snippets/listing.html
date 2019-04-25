@@ -21,12 +21,16 @@
       {% endif %}
 
       <div class="float-right">
+        {% if user|push:item|has_obj_perm:'change' %}
         {% edit_action item %}
+        {% endif %}
+        {% if user|push:item|has_obj_perm:'delete' %}
         {% delete_action item %}
+        {% endif %}
       </div>
 
       {% byline item %}
-      
+
     </li>
     {% endfor %}
   </ul>

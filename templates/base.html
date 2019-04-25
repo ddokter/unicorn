@@ -12,8 +12,11 @@
       href="{% static 'unicorn.css' %}" type="text/css">
 {% endblock %}
 
-{% block bootstrap4_content %}
+{% block bootstrap4_extra_script %}
+<script type="text/javascript" src="{% static 'unicorn.js' %}"></script>
+{% endblock %}
 
+{% block bootstrap4_content %}
 <nav class="navbar navbar-dark bg-dark navbar-expand-lg">
   <a class="navbar-brand" href="{% url 'home' %}">
     <span class="fas fa-beer" />
@@ -80,6 +83,28 @@
         </a>
       </li>
     </ul>
+
+    <ul class="navbar-nav navbar-right">
+      {% if request.user.is_authenticated %}
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle"
+           data-toggle="dropdown">
+          {{ request.user }}
+          <span class="caret"></span>
+        </a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="{% url 'logout' %}">
+            {% trans 'Logout' %}
+          </a>
+        </div>
+      </li>
+      {% else %}
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'login' %}">
+          {% trans 'Login' %}
+        </a>
+      </li>
+      {% endif %}
   </div>
 </nav>
 

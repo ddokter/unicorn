@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% load bootstrap4 i18n %}
+
+
+{% block content %}
+
+<div class="well center-block login">
+  <form action="/login/" method="POST">
+    {% csrf_token %}
+  
+    {% bootstrap_form form %}
+  
+    <input class="btn" type="submit" name="change" value="{% trans 'Login' %}"/>
+  </form>
+
+  <!--p class="text-info">
+    <a href="#">{% trans "Forgot your password?" %}</a>
+  </p-->
+
+</div>  
+
+{% endblock %}
+
