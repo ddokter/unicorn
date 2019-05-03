@@ -81,22 +81,19 @@
     <tr>
       <th>{% trans 'Conversion' %}</th>
       <td colspan="2">
-        <ol>
-          {% for conversion in converted.path %}
-          <li>
-            <a href="{{ conversion|detail_url }}">
-              {{ conversion }}
-              {% if conversion.status %}
-              <span class="badge badge-pill badge-{{ conversion.status|status_class }}">
-                {{ conversion|status_label }}
-              </span>
-              {% endif %}
+        1 {{ object.amount_unit }} = {{ converted.wavg|floatformat:2 }} {{ converted.unit }}
 
-            </a>
-          </li>
+        <a data-toggle="collapse"
+           href="#yieldDetail" role="button" aria-expanded="false"
+           aria-controls="yieldDetail">
+          {% trans 'Show details' %}
+        </a>
+
+        <div class="collapse" id="yieldDetail">
+          {% for path in converted.paths %}
+          {% path_detail path %}
           {% endfor %}
-        </ol>
-
+        </div>
       </td>
     </tr>
   </tbody>
@@ -146,48 +143,20 @@
     <tr>
       <th>{% trans 'Conversion' %}</th>
       <td colspan="3">
-        <ol>
-          {% for conversion in converted|get:material.id|get:'path' %}
-          <li>
-            <a href="#"
-               data-toggle="modal" data-target="#c_{{ conversion.id }}">
-              {{ conversion }}
-              {% if conversion.status %}
-              <span class="badge badge-pill badge-{{ conversion.status|status_class }}">
-                {{ conversion|status_label }}
-              </span>
-              {% endif %}
+        1 {{ material.unit }} {{ material.material }} = {{ converted|get:material.id|get:'wavg'|floatformat:2 }} {{ converted|get:material.id|get:'unit' }}
 
-            </a>
+        <a data-toggle="collapse"
+           href="#materialDetail{{ material.id }}"
+           role="button" aria-expanded="false"
+           aria-controls="materialDetail{{ material.id }}">
+          {% trans 'Show details' %}
+        </a>
 
-            <div class="modal fade" id="c_{{ conversion.id }}" tabindex="-1"
-                 role="dialog" aria-hidden="true">
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title">{{ conversion }}</h5>
-                    <button type="button" class="close" data-dismiss="modal"
-                            aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div class="modal-body">
-                    <dl class="row">
-                      <dd class="col-3">{% trans 'Source' %}</dd>
-                      <dt class="col-9">
-                        {% for source in conversion.source.all %}
-                        {{ source }}
-                        {% endfor %}
-                      </dt>
-                    </dl>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          </li>
+        <div class="collapse" id="materialDetail{{ material.id }}">
+          {% for path in converted|get:material.id|get:'paths' %}
+          {% path_detail path %}
           {% endfor %}
-        </ol>
+        </div>
       </td>
     </tr>
     {% endfor %}

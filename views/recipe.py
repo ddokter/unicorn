@@ -100,6 +100,7 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
     nonfermentables = None
     hops = None
     materials = {}
+    units_found = {}
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -234,11 +235,13 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
 
             return {'amount': w_avg * self.object.amount,
                     'unit': unit,
-                    'path': paths[0]}
+                    'wavg': w_avg,
+                    'paths': paths}
         else:
             return {'amount': -1,
                     'unit': unit,
-                    'path': []}
+                    'wavg': -1,
+                    'paths': []}
 
     def _converted_hops(self, unit):
 
@@ -246,10 +249,7 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
 
         for material in self.object.list_hops():
 
-            paths = material.unit.find_conversion_paths(
-                unit,
-                material.material,
-                year=self.object.year)
+            paths = self._get_paths(material, unit)
 
             if len(paths):
 
@@ -258,12 +258,14 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
                 results[material.id] = {
                     'amount': w_avg * material.amount,
                     'unit': unit,
-                    'path': paths[0]}
+                    'wavg': w_avg,
+                    'paths': paths}
             else:
                 results[material.id] = {
                     'amount': -1,
                     'unit': unit,
-                    'path': []}
+                    'wavg': w_avg,
+                    'paths': []}
 
         return results
 
@@ -273,10 +275,7 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
 
         for material in self.object.list_nonfermentables():
 
-            paths = material.unit.find_conversion_paths(
-                unit,
-                material.material,
-                year=self.object.year)
+            paths = self._get_paths(material, unit)
 
             if len(paths):
 
@@ -285,12 +284,14 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
                 results[material.id] = {
                     'amount': w_avg * material.amount,
                     'unit': unit,
-                    'path': paths[0]}
+                    'wavg': w_avg,
+                    'paths': paths}
             else:
                 results[material.id] = {
                     'amount': -1,
                     'unit': unit,
-                    'path': []}
+                    'wavg': w_avg,
+                    'paths': []}
 
         return results
 
@@ -300,10 +301,7 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
 
         for material in self.object.list_fermentables():
 
-            paths = material.unit.find_conversion_paths(
-                unit,
-                material.material,
-                year=self.object.year)
+            paths = self._get_paths(material, unit)
 
             if len(paths):
 
@@ -325,7 +323,8 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
                     'extract': material.material.extract,
                     'gu': material.material.gu,
                     'unit': unit,
-                    'path': paths[0]}
+                    'wavg': w_avg,
+                    'paths': paths}
             else:
                 results[material.id] = {
                     'amount': -1,
@@ -333,6 +332,21 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
                     'extract': -1,
                     'gu': -1,
                     'unit': unit,
-                    'path': []}
+                    'wavg': -1,
+                    'paths': []}
 
         return results
+
+    def _get_paths(self, material, unit):
+
+        if (material.unit, unit) in self.units_found:
+            paths = self.units_found[(material.unit, unit)]
+        else:
+            paths = material.unit.find_conversion_paths(
+                unit,
+                material.material,
+                year=self.object.year)
+
+            self.units_found[(material.unit, unit)] = paths
+
+        return paths

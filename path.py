@@ -11,15 +11,29 @@ class Path(list):
 
     def __init__(self, from_node, to_node, material):
 
-        self.factor = 1
         self.precision = 1
         self.from_node = from_node
         self.to_node = to_node
         self.material = material
-
         self._last_node = from_node
 
         return super().__init__()
+
+    @property
+    def factor(self):
+
+        _factor = 1
+        _last_node = self.from_node
+
+        for conv in self:
+            if _last_node == conv.from_unit:
+                _factor *= conv.resolve(self.material)
+                _last_node = conv.to_unit
+            else:
+                _factor /= conv.resolve(self.material)
+                _last_node = conv.from_unit
+
+        return _factor
 
     def __delitem__(self, idx):
 
@@ -41,10 +55,8 @@ class Path(list):
         self.precision *= conversion.get_precision()
 
         if self._last_node == conversion.from_unit:
-            self.factor *= conversion.resolve(self.material)
             self._last_node = conversion.to_unit
         else:
-            self.factor /= conversion.resolve(self.material)
             self._last_node = conversion.from_unit
 
         return super().append(conversion)
@@ -52,7 +64,7 @@ class Path(list):
     def clear(self):
 
         self.precision = 1
-        self.factor = 1
+        # self.factor = 1
         self._last_node = self.from_node
 
         return super().clear()
@@ -62,7 +74,7 @@ class Path(list):
         assert(isinstance(path, self.__class__))
 
         self.precision *= path.precision
-        self.factor *= path.factor
+        # self.factor *= path.factor
         self._last_node = path._last_node
 
         return super().extend(path)
@@ -77,7 +89,7 @@ class Path(list):
         new._extend(self[:])
 
         new.precision = self.precision
-        new.factor = self.factor
+        # new.factor = self.factor
         new._last_node = self._last_node
 
         return new

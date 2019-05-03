@@ -1,10 +1,12 @@
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
+from unicorn.utils import obj_cache, cache
 from .source import Source
 from .material import Material
 from .unit import AbstractUnit
 from .validators import is_range_01
+from .base import CacheKeyMixin
 
 
 MARKERS = (('<', '<'), ('=', '='), ('>', '>'))
@@ -15,6 +17,11 @@ STATUS = (
     (3, _("Ambiguous")),
     (4, _("Asumption")),
     (5, _("Anomalous"))
+)
+
+AUTO_STATUS = (
+    (-1, _("Duplicate")),
+    (-2, _("Deviating duplicate")),
 )
 
 # No conversion is considered to be more precise than this. Based on
@@ -50,7 +57,7 @@ class ConversionManager(models.Manager):
         return ConversionQuerySet(self.model, using=self._db)
 
 
-class Conversion(models.Model):
+class Conversion(models.Model, CacheKeyMixin):
 
     from_amount = models.FloatField(_("From amount"), default=1.0)
     from_unit = models.ForeignKey(
@@ -79,6 +86,7 @@ class Conversion(models.Model):
 
         return "conversion"
 
+    @obj_cache()
     def __str__(self):
 
         _str = "%.2f %s %s %.2f %s" % (
@@ -91,6 +99,7 @@ class Conversion(models.Model):
 
         return _str
 
+    @cache()
     def resolve(self, material, year=None):
 
         """ Resolve the conversion to it's 'to_unit'. If any subconversions
@@ -110,6 +119,7 @@ class Conversion(models.Model):
 
         return self.from_amount / self.to_amount
 
+    @obj_cache()
     def get_precision(self):
 
         """
@@ -153,6 +163,18 @@ class Conversion(models.Model):
             _precision *= AMBIGOUS_CONVERSION_PUNISHMENT
 
         return _precision
+
+    def get_status(self):
+
+        """ Allow for automatic status override """
+
+        if (
+                self._meta.model.objects.filter(from_unit=self.from_unit).
+                filter(to_unit=self.to_unit).exclude(id=self.id).exists()
+        ):
+            return -2
+        else:
+            return self.status
 
     class Meta:
 

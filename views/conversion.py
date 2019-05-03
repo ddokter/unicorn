@@ -1,7 +1,9 @@
+from django.db.models import Count
 from django.utils.translation import ugettext_lazy as _
 from django.http import HttpResponseRedirect
 from django.forms import inlineformset_factory
-from .base import CreateView, UpdateView, InlineCreateView, InlineUpdateView
+from .base import (CreateView, UpdateView, InlineCreateView, InlineUpdateView,
+                   ListingView)
 from unicorn.models.conversion import Conversion
 from unicorn.models.expression import SubConversion
 
@@ -78,3 +80,23 @@ class InlineConversionUpdateView(FormSetMixin, UnitOrderMixin,
                                  InlineUpdateView):
 
     model = Conversion
+
+
+class OddConversions(ListingView):
+
+    """ TODO: not used currently """
+
+    model = Conversion
+
+    def list_items(self):
+
+        items = []
+
+        for conv in self.model.objects.all():
+            if (
+                    self.model.objects.filter(from_unit=conv.from_unit).
+                    filter(to_unit=conv.to_unit).exclude(id=conv.id).exists()
+            ):
+                items.append(conv)
+
+        return items

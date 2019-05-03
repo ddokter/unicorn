@@ -81,10 +81,25 @@
         <a class="nav-link" href="{% url 'list' model='recipe' %}">
           {% trans 'Recipes' %}
         </a>
-      </li>
+      </li>      
     </ul>
 
     <ul class="navbar-nav navbar-right">
+
+      <!--li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="toolMenu"
+           role="button" data-toggle="dropdown" aria-haspopup="true"
+           aria-expanded="false">
+          {% trans 'Tools' %}
+        </a>
+        <div class="dropdown-menu" aria-labelledby="toolMenu">
+          <a class="dropdown-item" href="{-% url 'odd_conversions' %-}">
+            {% trans 'Find odd conversions' %}
+          </a>
+        </div>
+      </li-->
+
+      
       {% if request.user.is_authenticated %}
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle"

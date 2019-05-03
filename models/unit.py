@@ -125,6 +125,8 @@ class AbstractUnit(PolymorphicModel):
             if _filter:
                 qs = qs.filter(**_filter)
 
+            qs = qs.prefetch_related("to_unit", "from_unit")
+
             for conv in qs:
 
                 try:

@@ -105,6 +105,12 @@ def inline_delete_action(obj, parent, extra_args=""):
         extra_args)}
 
 
+@register.inclusion_tag('snippets/path_detail.html')
+def path_detail(path):
+
+    return {'path': path}
+
+
 @register.filter
 def detail_url(obj):
 

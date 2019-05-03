@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from .unit import AbstractUnit
-from .material import Material
+from .material import Material, Fermentable, Hop, Nonfermentable
 from .source import Source
 from .style import Style
 from .location import Location
@@ -29,18 +29,20 @@ class Recipe(models.Model):
 
     def list_fermentables(self):
 
-        return [item for item in self.recipematerial_set.all()
-                if item.material.__class__.__name__ == 'Fermentable']
+        return self._list_recipematerial(Fermentable)
 
     def list_hops(self):
 
-        return [item for item in self.recipematerial_set.all()
-                if item.material.__class__.__name__ == 'Hop']
+        return self._list_recipematerial(Hop)
 
     def list_nonfermentables(self):
 
-        return [item for item in self.recipematerial_set.all()
-                if item.material.__class__.__name__ == 'Nonfermentable']
+        return self._list_recipematerial(Nonfermentable)
+
+    def _list_recipematerial(self, model):
+        return self.recipematerial_set.all().prefetch_related(
+            "material",
+            "unit").filter(material__id__in=model.objects.values("id"))
 
     class Meta:
         ordering = ["style__name", "date"]
