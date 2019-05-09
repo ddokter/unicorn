@@ -10,7 +10,7 @@ from unicorn.views.recipe import (RecipeCreateView, RecipeUpdateView,
 from unicorn.views.unit import UnitConvertView
 from unicorn.views.conversion import (
     ConversionCreateView, ConversionUpdateView, InlineConversionCreateView,
-    InlineConversionUpdateView)
+    InlineConversionUpdateView, ConversionConvertView)
 
 
 urlpatterns = [
@@ -56,6 +56,10 @@ urlpatterns = [
     path('<str:parent_model>/<int:parent_pk>/edit_conversion/<int:pk>',
          InlineConversionUpdateView.as_view(),
          name="inline_edit_conversion"),
+
+    path('conversion/<int:pk>/convert/',
+         ConversionConvertView.as_view(),
+         name='convert_conversion'),
 
     # path('conversion/oddities/',
     #     OddConversions.as_view(),

@@ -1,11 +1,18 @@
-from django.db.models import Count
 from django.utils.translation import ugettext_lazy as _
 from django.http import HttpResponseRedirect
 from django.forms import inlineformset_factory
+from django import forms
+from django.views.generic import FormView
+from django.views.generic.detail import SingleObjectMixin
 from .base import (CreateView, UpdateView, InlineCreateView, InlineUpdateView,
                    ListingView)
 from unicorn.models.conversion import Conversion
 from unicorn.models.expression import SubConversion
+from statistics import mean
+from unicorn.models.unit import AbstractUnit
+from unicorn.models.material import Material
+from unicorn.utils import calculate_avg
+from .base import CTypeMixin
 
 
 class FormSetMixin:
@@ -100,3 +107,58 @@ class OddConversions(ListingView):
                 items.append(conv)
 
         return items
+
+
+class ConvertForm(forms.Form):
+
+    to_unit = forms.ModelChoiceField(label=_("To unit"),
+                                     queryset=AbstractUnit.objects.all())
+    material = forms.ModelChoiceField(label=_("Material"),
+                                      queryset=Material.objects.all())
+    year = forms.IntegerField(label=_("Year"), required=False)
+
+
+class ConversionConvertView(FormView, SingleObjectMixin, CTypeMixin):
+
+    template_name = "conversion_convert.html"
+    form_class = ConvertForm
+    result = None
+    model = Conversion
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+
+        paths = self.object.from_unit.find_conversion_paths(
+            form.cleaned_data['to_unit'],
+            form.cleaned_data['material'],
+            year=form.cleaned_data['year'],
+            stack=[self.object]
+        )
+
+        self.result = self._result(paths,
+                                   form.cleaned_data['to_unit'],
+                                   form.cleaned_data['material'])
+
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def _result(self, paths, to_unit, material):
+
+        results = [path.factor for path in paths]
+
+        if len(results):
+            return {
+                'paths': paths,
+                'min': min(results),
+                'max': max(results),
+                'avg': mean(results),
+                'w_avg': calculate_avg(paths)
+            }
+        else:
+            return None

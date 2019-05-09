@@ -16,7 +16,8 @@ STATUS = (
     (2, _("Inferred")),
     (3, _("Ambiguous")),
     (4, _("Asumption")),
-    (5, _("Anomalous"))
+    (5, _("Anomalous")),
+    (6, _("Error")),
 )
 
 AUTO_STATUS = (
@@ -80,6 +81,8 @@ class Conversion(models.Model, CacheKeyMixin):
     status = models.SmallIntegerField(_("Status"), default=1, choices=STATUS)
 
     objects = ConversionManager()
+
+    _related = ["to_unit", "from_unit"]
 
     @property
     def ctype(self):

@@ -1,0 +1,100 @@
+{% extends 'baseunit_detail.html' %}
+
+{% load i18n bootstrap4 unicorn_tags %}
+
+{% block content %}
+
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'view' pk=object.id model=view.ctype %}">
+      {% trans 'Details' %}
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" href="#">
+      {% trans 'Convert' %}
+    </a>
+  </li>
+</ul>
+
+{% bootstrap_messages %}
+
+<form action="{% url 'convert_conversion' pk=object.id %}"
+      method="POST"
+      enctype="multipart/form-data"
+      class="form">
+
+    {% csrf_token %}
+    {{ form.media }}
+
+    {% block formfields %}
+    {% bootstrap_form form %}
+    {% endblock %}
+
+    {% buttons %}
+    <button type="submit" class="btn btn-primary">
+      {% trans 'Convert' %}
+    </button>
+    {% endbuttons %}
+</form>
+
+{% if view.request.method == "POST" %}
+{% if view.result %}
+<div class="alert alert-success">
+  1 {{ object.from_unit }} = {{ view.result.w_avg|floatformat:2 }}
+  {{ form.cleaned_data.to_unit }}
+</div>
+
+<div class="alert alert-dark" role="alert">
+  <dl class="row">
+    <dt class="col-3">{% trans 'Weighed average' %}</dt>
+    <dd class="col-9">{{ view.result.w_avg|floatformat:2 }}</dd>
+    <dt class="col-3">Min</dt>
+    <dd class="col-9">{{ view.result.min|floatformat:2 }}</dd>
+    <dt class="col-3">Avg</dt>
+    <dd class="col-9">{{ view.result.avg|floatformat:2 }}</dd>
+    <dt class="col-3">Max</dt>
+    <dd class="col-9">{{ view.result.max|floatformat:2 }}</dd>
+  </dl>
+</div>
+
+<section>
+  <h2>{% trans 'Conversion paths' %}</h2>
+
+  {% for path in view.result.paths %}
+
+  <div class="card">
+    <div class="card-body">
+    <dl class="row">
+      <dt class="col-3">{% trans 'Factor' %}</dt>
+      <dd class="col-9">{{ path.factor|floatformat:2 }}</dd>
+      <dt class="col-3">{% trans 'Precision' %}</dt>
+      <dd class="col-9">{{ path.precision|floatformat:3 }}</dd>
+    </dl>
+
+    <ol>
+      {% for conversion in path %}
+      <li>
+        <a href="{% url 'view' model='conversion' pk=conversion.id %}">
+          {{ conversion }}
+          <span class="badge badge-pill badge-{{ conversion.status|status_class }}">
+            {{ conversion|status_label }}
+          </span>
+        </a>
+      </li>
+      {% endfor %}
+    </ol>
+
+  </div>
+</div>
+  {% endfor %}
+</section>
+
+{% else %}
+<div class="alert alert-danger">
+  {% trans 'No conversions found' %}
+</div>
+{% endif %}
+{% endif %}
+
+{% endblock content %}

@@ -11,12 +11,12 @@ from polymorphic.models import PolymorphicModel
 # Do not seek any deeper than this... more conversions is probably a
 # very unreliable path anyway.
 #
-MAX_DEPTH = 7
+MAX_DEPTH = 10
 
 # Set the minimum precision needed as percentage/100 of the best
 # result found. Only paths with a precision better than this are kept.
 #
-MIN_PRECISION = 0.9
+MIN_PRECISION = 0.8
 
 # Set maximum path length as a factor of the shortest path found. Any
 # paths longer than this will be discarded.
@@ -41,7 +41,8 @@ class AbstractUnit(PolymorphicModel):
     synonyms = models.CharField(_("Synonyms"), max_length=255,
                                 null=True, blank=True)
 
-    def find_conversion_paths(self, unit, material, _filter=None, year=None):
+    def find_conversion_paths(self, unit, material, _filter=None, year=None,
+                              stack=None):
 
         """Find all possible conversion paths from self to the given unit. The
         returned list will be sorted on path length, shortest path
@@ -51,11 +52,12 @@ class AbstractUnit(PolymorphicModel):
 
         return sorted(
             list(self._find_conversion_paths(
-                unit, material, _filter=_filter, year=year)),
+                unit, material, _filter=_filter, year=year, _stack=stack)),
             key=lambda x: x.precision,
             reverse=True)
 
-    def _find_conversion_paths(self, unit, material, _filter=None, year=None):
+    def _find_conversion_paths(self, unit, material, _filter=None, year=None,
+                               _stack=None):
 
         """Use breath-first to find the shortest paths for the conversion
         asked. The search will only be performed up to MAX_DEPTH, to
@@ -67,7 +69,27 @@ class AbstractUnit(PolymorphicModel):
         """
 
         conv_model = apps.get_model("unicorn", "Conversion")
-        stack = [(self, Path(self, unit, material))]
+
+        if _stack:
+            path = Path(self, unit, material)
+            for conv in _stack:
+                path.append(conv)
+            stack = [(_stack[0].to_unit, path)]
+        else:
+            stack = [(self, Path(self, unit, material))]
+
+        # If last conversion on path is already what we are looking
+        # for, yield this! Also, return since it looks like we're not
+        # interested in more results...
+        #
+        if (_stack and (_stack[0].to_unit == unit or
+                        _stack[0].from_unit == unit)):
+
+            yield stack[0][1]
+            return
+
+        # Set shortest to infinity
+        #
         shortest = inf
 
         # Set initial precision, so as to be able to cut off whenever the
@@ -103,6 +125,8 @@ class AbstractUnit(PolymorphicModel):
             qs = conv_model.objects.exclude(id__in=[conv.id for conv in path])
 
             qs = qs.filter(source__enabled=True)
+
+            qs = qs.exclude(status=6)
 
             if material and hasattr(material, 'categories'):
                 qs = qs.filter(
@@ -176,8 +200,10 @@ class AbstractUnit(PolymorphicModel):
 
         """ List conversions for this unit in both directions """
 
-        _all = self.conversion_set.all()
-        _rev = self.conversion_set_reverse.all()
+        _all = self.conversion_set.all().select_related(
+            "to_unit", "from_unit")
+        _rev = self.conversion_set_reverse.all().select_related(
+            "to_unit", "from_unit")
 
         _all.query.clear_ordering(True)
         _rev.query.clear_ordering(True)

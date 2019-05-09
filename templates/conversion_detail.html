@@ -3,6 +3,16 @@
 {% load i18n unicorn_tags %}
 
 {% block content %}
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link active" href="#">{% trans 'Details' %}</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'convert_conversion' pk=object.id %}">
+      {% trans 'Convert' %}
+    </a>
+  </li>
+</ul>
 
 <dl>
   <dt>{% trans 'From' %}</dt>

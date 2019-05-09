@@ -45,13 +45,6 @@ class Path(list):
 
     def append(self, conversion):
 
-        """May throw an exception if the conversion cannot be resolved. This
-        is a tricky operation: the path must provide the resolve
-        operations it's current conversions, to prevent recursion in
-        nested expressions.
-
-        """
-
         self.precision *= conversion.get_precision()
 
         if self._last_node == conversion.from_unit:
