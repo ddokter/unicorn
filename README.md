@@ -35,18 +35,20 @@ always assuming you run a serious OS like Debian or so:
 
     mkdir VENV
     cd VENV
-    virtualenv --python=python3.7 VENV
+    virtualenv --python=python3.7 .
 
 2. Activate it
 
-    cd VENV
     . bin/activate
 
 3. Now you have a nice sandbox, to play around in without destroying your
    system. Unless you use Micro$oft, of course. Install the needed software:
 
-    pip install https://github.com/ddokter/beerlab/archive/master.zip
-    pip install https://github.com/ddokter/unicorn/archive/master.zip
+    git clone https://github.com/ddokter/beerlab.git
+    git clone https://github.com/ddokter/unicorn.git
+
+    pip install -e beerlab
+    pip install -e unicorn
 
 4. Create a Django instance:
 
@@ -60,19 +62,6 @@ always assuming you run a serious OS like Debian or so:
       'bootstrap4',
       'unicorn'
     ]
-
-    BOOTSTRAP4 = {
-      "css_url": {
-        "href": "/static/bootstrap/css/bootstrap.css"
-     },
-     'include_jquery': True,
-     "javascript_url": {
-       "url": "/static/bootstrap/js/bootstrap.bundle.js"
-     },
-     "jquery_url": {
-       "url": "/static/bootstrap/js/jquery-3.2.1.js"
-     }
-    }
 
 6. Edit URLS in ./foo/foo/urls.py, add unicorn urls to existing list, and
     import include:
