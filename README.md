@@ -46,7 +46,7 @@ always assuming you run a serious OS like Debian or so:
    system. Unless you use Micro$oft, of course. Install the needed software:
 
     pip install https://github.com/ddokter/beerlab/archive/master.zip
-    pip install https://github.com/ddokter/unicorn/archive/master.zip
+    pip install https://github.com/ddokter/unicorn/archive/develop.zip
 
 4. Create a Django instance:
 

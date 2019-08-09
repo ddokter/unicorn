@@ -1,5 +1,4 @@
 from django.urls import path, include
-from django.conf import settings
 from unicorn.views.home import Home
 from unicorn.views.auth import LoginView, LogoutView
 from unicorn.views.base import (
@@ -125,9 +124,3 @@ urlpatterns = [
          UnitConvertView.as_view(),
          name='convert_localunit'),
 ]
-
-if settings.DEBUG:
-    import debug_toolbar
-    urlpatterns = [
-        path('__debug__/', include(debug_toolbar.urls)),
-    ] + urlpatterns
