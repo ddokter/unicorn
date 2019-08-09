@@ -4,18 +4,9 @@
 
 {% block content %}
 
-<ul class="nav nav-tabs">
-  <li class="nav-item">
-    <a class="nav-link" href="{{ object|detail_url }}">
-      {% trans 'Details' %}
-    </a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link active" href="#">
-      {% trans 'Convert' %}
-    </a>
-  </li>
-</ul>
+{% with active_tab='convert_modern' %}
+{% include 'snippets/recipe_tabs.html' %}
+{% endwith %}
 
 {% bootstrap_messages %}
 
@@ -110,7 +101,7 @@
     <tr>
       <th />
       <th>{% trans 'Original' %}</th>
-      <th>{% trans 'Converted' %} ({% trans 'Malted' %})</th>
+      <th>{% trans 'Converted' %}</th>
     </tr>
   </thead>
   <tbody>

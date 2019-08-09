@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from polymorphic.models import PolymorphicModel
+from beerlab.fermentable import FermentableMixin
 
 
 class Material(PolymorphicModel):
@@ -53,21 +54,15 @@ class MaterialBase(Material):
         abstract = True
 
 
-class Fermentable(MaterialBase):
+class Fermentable(FermentableMixin, MaterialBase):
 
     """ Fermentable stuff, like malt. """
 
     extract = models.FloatField(_("Potential extract"), default=0.8)
 
-    @property
-    def gu(self):
+    def get_extract(self):
 
-        """ Calculate GU yield of 1 kg per 10 L (Based on PPG calculation) """
-
-        gallon_conv_factor = 10 / 3.7854
-        pound_conv_factor = 2.2046
-
-        return (self.extract * 46 * pound_conv_factor) / gallon_conv_factor
+        return self.extract
 
     class Meta:
         app_label = "unicorn"

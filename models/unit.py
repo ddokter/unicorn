@@ -126,17 +126,20 @@ class AbstractUnit(PolymorphicModel):
 
             qs = qs.filter(source__enabled=True)
 
-            qs = qs.exclude(status=6)
+            qs = qs.exclude(status__lt=0)
 
             if material and hasattr(material, 'categories'):
                 qs = qs.filter(
+                    Q(generic=True) |
                     Q(material=material) |
-                    Q(material__in=material.categories.all()) |
-                    Q(generic=True))
+                    Q(material__in=material.categories.all())
+                )
+
             else:
                 qs = qs.filter(
-                    Q(material=material) |
-                    Q(generic=True))
+                    Q(generic=True) |
+                    Q(material=material)
+                )
 
             if year:
                 qs = qs.filter(Q(year_from__lte=year) |
@@ -200,10 +203,11 @@ class AbstractUnit(PolymorphicModel):
 
         """ List conversions for this unit in both directions """
 
-        _all = self.conversion_set.all().select_related(
-            "to_unit", "from_unit")
-        _rev = self.conversion_set_reverse.all().select_related(
-            "to_unit", "from_unit")
+        _all = self.conversion_set.all()
+        _rev = self.conversion_set_reverse.all()
+
+        _all = _all.prefetch_related(*_all.model._prefetch_related)
+        _rev = _rev.prefetch_related(*_rev.model._prefetch_related)
 
         _all.query.clear_ordering(True)
         _rev.query.clear_ordering(True)

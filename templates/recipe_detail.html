@@ -4,16 +4,9 @@
 
 {% block content %}
 
-<ul class="nav nav-tabs">
-  <li class="nav-item">
-    <a class="nav-link active" href="#">{% trans 'Details' %}</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{% url 'convert_recipe' pk=object.id %}">
-      {% trans 'Convert' %}
-    </a>
-  </li>
-</ul>
+{% with active_tab='details' %}
+{% include 'snippets/recipe_tabs.html' %}
+{% endwith %}
 
 <p>{{ object.info }}</p>
 

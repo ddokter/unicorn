@@ -90,6 +90,21 @@ class ConvertForm(forms.Form):
     )
 
 
+class ConvertModernForm(forms.Form):
+
+    yield_to_unit = forms.ModelChoiceField(
+        label=_("Yield unit"),
+        queryset=BaseUnit.objects.all()
+    )
+    material_to_unit = forms.ModelChoiceField(
+        label=_("Material unit"),
+        queryset=BaseUnit.objects.all()
+    )
+    amount = forms.FloatField(
+        label=_("Amount")
+    )
+
+
 class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
 
     template_name = "recipe_convert.html"
@@ -264,7 +279,7 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
                 results[material.id] = {
                     'amount': -1,
                     'unit': unit,
-                    'wavg': w_avg,
+                    'wavg': -1,
                     'paths': []}
 
         return results
@@ -290,7 +305,7 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
                 results[material.id] = {
                     'amount': -1,
                     'unit': unit,
-                    'wavg': w_avg,
+                    'wavg': -1,
                     'paths': []}
 
         return results
@@ -308,8 +323,9 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
                 w_avg = calculate_avg(paths)
 
                 if material.malted:
-                    # decrease with 22.5% due to calculations with actual
-                    # grain
+                    # decrease with 22.5% due to calculations with
+                    # actual grain. Malted grain is 20-25% less dense
+                    # than the original grain
                     _factor = 0.775
                 else:
                     # decrease weight for malting per hl, but volume
@@ -321,7 +337,7 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
                     'amount': w_avg * material.amount,
                     'amount_malted': w_avg * material.amount * _factor,
                     'extract': material.material.extract,
-                    'gu': material.material.gu,
+                    'gu': material.material.pkdl,
                     'unit': unit,
                     'wavg': w_avg,
                     'paths': paths}
@@ -339,14 +355,36 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
 
     def _get_paths(self, material, unit):
 
-        if (material.unit, unit) in self.units_found:
-            paths = self.units_found[(material.unit, unit)]
-        else:
-            paths = material.unit.find_conversion_paths(
-                unit,
-                material.material,
-                year=self.object.year)
+        # Not correct. Need to take into account the material...
+        # if (material.unit, unit) in self.units_found:
+        #    paths = self.units_found[(material.unit, unit)]
+        # else:
+        paths = material.unit.find_conversion_paths(
+            unit,
+            material.material,
+            year=self.object.year)
 
-            self.units_found[(material.unit, unit)] = paths
+        # self.units_found[(material.unit, unit)] = paths
 
         return paths
+
+
+class RecipeConvertModernView(FormView, SingleObjectMixin, CTypeMixin):
+
+    template_name = "recipe_convert_modern.html"
+    model = Recipe
+    form_class = ConvertModernForm
+    converted_yield = None
+    fermentables = None
+    nonfermentables = None
+    hops = None
+    materials = {}
+    units_found = {}
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().post(request, *args, **kwargs)

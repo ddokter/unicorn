@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Prefetch
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from unicorn.utils import obj_cache, cache
@@ -17,7 +18,8 @@ STATUS = (
     (3, _("Ambiguous")),
     (4, _("Asumption")),
     (5, _("Anomalous")),
-    (6, _("Error")),
+    (-1, _("Error")),
+    (-2, _("Irrelevant")),
 )
 
 AUTO_STATUS = (
@@ -33,6 +35,10 @@ BASE_PRECISION = 0.98
 # if status is ambiguous, punish
 #
 AMBIGOUS_CONVERSION_PUNISHMENT = 0.8
+
+# if status is anomalous, punish
+#
+ANOMALOUS_CONVERSION_PUNISHMENT = 0.4
 
 
 class ConversionQuerySet(models.QuerySet):
@@ -82,7 +88,14 @@ class Conversion(models.Model, CacheKeyMixin):
 
     objects = ConversionManager()
 
-    _related = ["to_unit", "from_unit"]
+    _prefetch_related = [
+        "to_unit",
+        "from_unit",
+        "source",
+        Prefetch('material',
+                 queryset=Material.objects.non_polymorphic())]
+
+    _select_related = []
 
     @property
     def ctype(self):
@@ -93,8 +106,8 @@ class Conversion(models.Model, CacheKeyMixin):
     def __str__(self):
 
         _str = "%.2f %s %s %.2f %s" % (
-            self.from_amount, self.from_unit,
-            self.marker, self.to_amount, self.to_unit)
+            self.from_amount, self.from_unit.get_real_instance(),
+            self.marker, self.to_amount, self.to_unit.get_real_instance())
 
         for sub in self.subconversion_set.all():
 
@@ -140,8 +153,20 @@ class Conversion(models.Model, CacheKeyMixin):
 
         if self.precision:
             return self.precision
-        elif (getattr(self.to_unit, 'location', None) ==
-              getattr(self.from_unit, 'location', None)):
+
+        # Punish non exact conversion
+        if self.marker != '=':
+            _precision *= BASE_PRECISION
+
+        if self.status == 3:
+            _precision *= AMBIGOUS_CONVERSION_PUNISHMENT
+        elif self.status == 5:
+            _precision *= ANOMALOUS_CONVERSION_PUNISHMENT
+
+        if (
+                getattr(self.to_unit, 'location', None) ==
+                getattr(self.from_unit, 'location', None)
+        ):
             return _precision
 
         rel = (min(self.from_amount, self.to_amount) /
@@ -157,13 +182,6 @@ class Conversion(models.Model, CacheKeyMixin):
                 len(str(self.to_amount).split('.')[1].strip('0')))
 
         _precision *= (1 - (1/pow(part + 1, 3)) * 0.05)
-
-        # Punish non exact conversion
-        if self.marker != '=':
-            _precision *= BASE_PRECISION
-
-        if self.status == 3:
-            _precision *= AMBIGOUS_CONVERSION_PUNISHMENT
 
         return _precision
 

@@ -294,8 +294,8 @@ class ListingView(GenericMixin, FormView, CTypeMixin):
 
         items = self.model.objects.all()
 
-        if getattr(self.model, "_related", None):
-            items = items.prefetch_related(*self.model._related)
+        if getattr(self.model, "_prefetch_related", None):
+            items = items.prefetch_related(*self.model._prefetch_related)
 
         if self.query:
 

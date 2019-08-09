@@ -58,3 +58,7 @@ class RecipeMaterial(models.Model):
     recepy = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     material = models.ForeignKey(Material, on_delete=models.CASCADE)
     malted = models.BooleanField(_("Malted"), default=False)
+
+    def __str__(self):
+
+        return "%s %s" % (self.material, self.amount)

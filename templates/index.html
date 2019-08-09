@@ -6,11 +6,18 @@
 
 Unicorn is een systeem dat het mogelijk maakt oude recepten met
 niet-metrische maten om te zetten naar metrische maten. De omzetting
-geschiedt op basis van conversies, zoals deze gevonden kunnen worden
-in historische bronnen. Conversies kunnen door Unicorn worden
-aaneengeregen om van de eenheid zoals gevonden in het recept te komen
-tot metrische eenheden. Het systeem past heuristieken toe om te komen
-tot de meest waarschijnlijke omzetting.
+geschiedt op basis van conversieregels, zoals deze gevonden kunnen
+worden in verschillende historische bronnen. Bekend zijn de
+koopmansboekjes zoals die van Muller, vander Gucht en
+Roelants. Conversieregels kunnen door Unicorn worden aaneengeregen om
+van de eenheid zoals gevonden in het recept te komen tot metrische
+eenheden. Het systeem past verschillende heuristieken toe om te komen
+tot de meest waarschijnlijke omzetting. <strong>Nota bene: de
+omzetting naar metrische maten betekent niet gelijk een modern
+recept!</strong> Bij de omzetting wordt rekening gehouden met lagere
+rendementen van granen en het brouwproces, zodat het brouwen op basis
+van de berekende maten een veel sterker bier zou opleveren. Voor een
+omrekening naar een modern recept is een aparte actie ingebouwd.
 
 <hr>
 
@@ -43,30 +50,31 @@ tot de meest waarschijnlijke omzetting.
   </div>
   <div class="col-9">
     <div class="tab-content" id="sections-content">
-      <div class="tab-pane fade show active" id="sources" role="tabpanel"
-           aria-labelledby="sources-tab"> Historische bronnen zijn de
-        basis van Unicorn. Recepten en conversies moeten een
-        bronvermelding hebben.  Er is redelijk veel bronnen materiaal
-        met conversie informatie, maar veel bronnen lijken elkaars
-        data te hebben overgenomen. Bronnen met louter
-        geinterpreteerde data, zoals de site van het KNAW over oude
-        maten en gewichten, worden bij voorkeur niet gebruikt.
+      <div class="tab-pane fade show active" id="sources"
+           role="tabpanel" aria-labelledby="sources-tab"> Historische
+           bronnen zijn de basis van Unicorn. Recepten en
+           conversieregels moeten een bronvermelding hebben.  Er is
+           redelijk veel bronnenmateriaal met conversie informatie,
+           maar veel bronnen lijken elkaars data te hebben
+           overgenomen. Bronnen met louter geinterpreteerde data,
+           zoals de site van het KNAW over oude maten en gewichten,
+           worden bij voorkeur niet gebruikt.
       </div>
       <div class="tab-pane fade" id="locations" role="tabpanel"
            aria-labelledby="locations-tab"> Lijst van oude steden en
-        dorpen. Het systeem gaat er van uit dat er geen plaatsnamen
-        bestaan die vaker voorkomen. In werkelijkheid is dit
-        natuurlijk wel het geval, maar momenteel lijken er geen
-        recepten of conversies voor te komen die in dit opzicht ambigu
-        zijn.
+           dorpen. Het systeem gaat er van uit dat er geen plaatsnamen
+           bestaan die vaker voorkomen. In werkelijkheid is dit
+           natuurlijk wel het geval, maar momenteel lijken er geen
+           recepten of conversies voor te komen die in dit opzicht
+           ambigu zijn.
       </div>
       <div class="tab-pane fade" id="units" role="tabpanel"
-           aria-labelledby="units-tab">
-        Eenheden kunnen voorkomen als algemene eenheid, en kunnen
-        indien van toepassing worden onderverdeeld in plaatselijke
-        eenheden. De liter is bijvoorbeeld een generieke, metrische
-        maat, maar de 'hoed' komt voor in verschillende steden. Deze
-        worden allen als verschillend beschouwd.
+           aria-labelledby="units-tab"> Eenheden kunnen voorkomen als
+        algemene eenheid, en kunnen indien van toepassing worden
+        onderverdeeld in plaatselijke eenheden. De liter is
+        bijvoorbeeld een generieke, metrische maat, maar de 'hoed'
+        komt voor in verschillende steden. Deze worden allen als
+        verschillend beschouwd.
       </div>
       <div class="tab-pane fade" id="materials" role="tabpanel"
            aria-labelledby="materials-tab">
@@ -97,10 +105,10 @@ tot de meest waarschijnlijke omzetting.
       </div>
 
       <div class="tab-pane fade" id="conversions" role="tabpanel"
-           aria-labelledby="conversions-tab"> Conversies zijn formules
-        voor het omreken van een specifieke eenheid naar een andere
-        eenheid. In sommige gevallen zelfs naar meer eenheden, zoals
-        in het geval van bijvoorbeeld:
+           aria-labelledby="conversions-tab"> Conversieregels zijn
+           formules voor het omreken van een specifieke eenheid naar
+           een andere eenheid. In sommige gevallen zelfs naar meer
+           eenheden, zoals in het geval van bijvoorbeeld:
 
         <blockquote class="blockquote">
           Te Montfoerde 4 hoet maken 4 &frac12; hoet ende 6 achtendeel van
@@ -118,9 +126,11 @@ tot de meest waarschijnlijke omzetting.
           <dd class="col-sm-9">Kan op verschillende manieren worden opgevat</dd>
         </dl>
 
-        In geval van een complexe conversie, moeten alle onderdelen van het
-        'rechterdeel' verwijzen naar dezelfde plaats, om oneindig geneste
-        constructies te voorkomen.
+        In geval van een complexe conversieregel, moeten alle
+        onderdelen van het 'rechterdeel' verwijzen naar dezelfde
+        plaats, om oneindig geneste constructies te voorkomen. Dit is
+        slechts 1 mogelijke interpretatie van dit soort regels: deze
+        zijn meestal ambigu.
 
       </div>
 
@@ -128,15 +138,16 @@ tot de meest waarschijnlijke omzetting.
            aria-labelledby="recipes-tab">
 
         Bij alle recepten wordt uitgegaan van een omrekening naar wort
-        sterkte op basis van een bijdrage in 'Gravity Units' per kilo
-        per liter. Deze bijdrage is volgens de formule voor
-        pounds/gallon, omgerekend naar het metrieke stelsel:
+        sterkte op basis van een bijdrage in 'SG punten' per kilo per
+        liter. Deze bijdrage is volgens de formule voor PPG (points
+        per pound per gallon), omgerekend naar het metrieke stelsel
+        (punten per kilo per 10 (deka) liter):
 
-        PPG = (potentieel extract / 100) * 46
+        PKdL = (potentieel extract / 100) * 38.4
 
         Vanuit deze bijdrage per graansoort kan worden berekend wat de
-        uiteindelijke dichtheid van de wort is, en daarmee de massa
-        van de wort en vervolgens het stamwortgehalte.
+        uiteindelijke dichtheid (SG) van de wort is, en daarmee de
+        massa van de wort en vervolgens het stamwortgehalte.
 
         Voor de bepaling van alcohol per volume wordt uitgegaan van
         een schijnbare vergistingsgraad van 50%.
