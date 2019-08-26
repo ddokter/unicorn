@@ -17,6 +17,7 @@ class Source(models.Model):
                                  null=True, blank=True)
     description = models.TextField(_("Description"), null=True, blank=True)
     enabled = models.BooleanField(_("Enabled"), default=True)
+    online_version = models.URLField(null=True, blank=True)
 
     def __str__(self):
 

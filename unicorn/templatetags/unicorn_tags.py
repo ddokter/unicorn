@@ -105,6 +105,14 @@ def inline_delete_action(obj, parent, extra_args=""):
         extra_args)}
 
 
+@register.inclusion_tag('snippets/export_action.html')
+def export_action(obj, extra_args=""):
+
+    return {'export_url': "%s%s" % (reverse("export", kwargs={
+        'model': get_model_name(obj),
+        'pk': obj.id}), extra_args)}
+
+
 @register.inclusion_tag('snippets/path_detail.html')
 def path_detail(path):
 

@@ -4,6 +4,7 @@ from unicorn.views.auth import LoginView, LogoutView
 from unicorn.views.base import (
     ListingView, CreateView, UpdateView, DeleteView, DetailView,
     InlineCreateView, InlineDeleteView, InlineUpdateView)
+from unicorn.views.export import ExportView
 from unicorn.views.recipe import (RecipeCreateView, RecipeUpdateView,
                                   RecipeConvertView, RecipeConvertModernView)
 from unicorn.views.unit import UnitConvertView
@@ -97,6 +98,12 @@ urlpatterns = [
     path('<str:model>/<int:pk>/edit',
          UpdateView.as_view(),
          name="edit"),
+
+    # Generic export view
+    #
+    path('<str:model>/<int:pk>/export',
+         ExportView.as_view(),
+         name="export"),
 
     # Generic inline add
     #

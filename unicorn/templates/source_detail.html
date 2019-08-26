@@ -2,6 +2,10 @@
 
 {% load i18n unicorn_tags %}
 
+{% block extra_actions %}
+{% export_action object %}
+{% endblock %}
+
 {% block after_content %}
 {% sublisting 'Conversions' object.list_conversions 'conversion' %}
 {% endblock %}
