@@ -7,6 +7,8 @@ from beerlab.fermentable import FermentableMixin
 class Material(PolymorphicModel):
 
     name = models.CharField(_("Name"), max_length=100)
+    strict_measurement = models.BooleanField(_("Strictly measured"),
+                                             default=False)
     synonyms = models.CharField(_("Synonyms"), max_length=255,
                                 null=True, blank=True)
 

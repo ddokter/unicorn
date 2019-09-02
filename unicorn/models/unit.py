@@ -30,6 +30,17 @@ QUANTITY = (
 )
 
 
+STANDARD_SIZE_HELP = _("""Specify whether this size was a calibrated standard
+size""")
+
+
+STATUS = (
+    (0, _("")),
+    (1, _("Metric")),
+    (2, _("Standard"))
+)
+
+
 class AbstractUnit(PolymorphicModel):
 
     """Base class for unit models, so as to be able to define both
@@ -40,6 +51,7 @@ class AbstractUnit(PolymorphicModel):
     name = models.CharField(_("Name"), null=True, blank=True, max_length=100)
     synonyms = models.CharField(_("Synonyms"), max_length=255,
                                 null=True, blank=True)
+    status = models.SmallIntegerField(_("Status"), default=0, choices=STATUS)
 
     def find_conversion_paths(self, unit, material, _filter=None, year=None,
                               stack=None):
@@ -71,12 +83,12 @@ class AbstractUnit(PolymorphicModel):
         conv_model = apps.get_model("unicorn", "Conversion")
 
         if _stack:
-            path = Path(self, unit, material)
+            path = Path(self, unit)
             for conv in _stack:
                 path.append(conv)
             stack = [(_stack[0].to_unit, path)]
         else:
-            stack = [(self, Path(self, unit, material))]
+            stack = [(self, Path(self, unit))]
 
         # If last conversion on path is already what we are looking
         # for, yield this! Also, return since it looks like we're not
@@ -128,18 +140,10 @@ class AbstractUnit(PolymorphicModel):
 
             qs = qs.exclude(status__lt=0)
 
-            if material and hasattr(material, 'categories'):
-                qs = qs.filter(
-                    Q(generic=True) |
-                    Q(material=material) |
-                    Q(material__in=material.categories.all())
-                )
-
-            else:
-                qs = qs.filter(
-                    Q(generic=True) |
-                    Q(material=material)
-                )
+            qs = qs.filter(
+                Q(generic=True) |
+                Q(material__strict_measurement=True)
+            )
 
             if year:
                 qs = qs.filter(Q(year_from__lte=year) |
@@ -224,7 +228,7 @@ class AbstractUnit(PolymorphicModel):
 class BaseUnit(AbstractUnit):
 
     """Base unit, not bound to a specific location. Used to specify metric
-    units that apply to many places, and as a base for local units.
+    units that apply in general.
 
     """
 

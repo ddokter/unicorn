@@ -16,7 +16,7 @@
 
       {% if item.status %}
       <span class="badge badge-pill badge-{{ item.status|status_class }}">
-        {{ item|status_label }}
+        {{ item|status_label|default:item.status }}
       </span>
       {% endif %}
 

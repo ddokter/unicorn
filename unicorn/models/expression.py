@@ -41,7 +41,7 @@ class SubConversion(Expression):
         else:
             return _op.add
 
-    def resolve(self, unit, material, year=None):
+    def resolve(self, unit, year=None):
 
         """ Resolve, or throw an exception. This resolve will only consider
         local conversions. """
@@ -56,7 +56,7 @@ class SubConversion(Expression):
         }
 
         paths = self.unit.find_conversion_paths(
-            unit, material, year=year, _filter=_filter)
+            unit, None, year=year, _filter=_filter)
 
         try:
             return paths[0].factor * self.amount

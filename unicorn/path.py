@@ -9,12 +9,11 @@ class Path(list):
     factor and the precision of the path found.
     """
 
-    def __init__(self, from_node, to_node, material):
+    def __init__(self, from_node, to_node):
 
         self.precision = 1
         self.from_node = from_node
         self.to_node = to_node
-        self.material = material
         self._last_node = from_node
 
         return super().__init__()
@@ -27,10 +26,10 @@ class Path(list):
 
         for conv in self:
             if _last_node == conv.from_unit:
-                _factor *= conv.resolve(self.material)
+                _factor *= conv.resolve()
                 _last_node = conv.to_unit
             else:
-                _factor /= conv.resolve(self.material)
+                _factor /= conv.resolve()
                 _last_node = conv.from_unit
 
         return _factor
@@ -78,7 +77,7 @@ class Path(list):
 
     def copy(self):
 
-        new = Path(self.from_node, self.to_node, self.material)
+        new = Path(self.from_node, self.to_node)
         new._extend(self[:])
 
         new.precision = self.precision

@@ -134,18 +134,26 @@ def get(iterable, idx):
 @register.filter
 def status_label(obj):
 
-    return obj._meta.model.get_status_display(obj)
+    try:
+        return obj._meta.model.get_status_display(obj)
+    except:
+        return None
 
 
 @register.filter
 def status_class(status):
 
-    if status == 1:
+    """ If status is not an int, always return info """
+
+    try:
+        if status == 1:
+            return "info"
+        elif status > 4:
+            return "danger"
+        else:
+            return "warning"
+    except:
         return "info"
-    elif status > 4:
-        return "danger"
-    else:
-        return "warning"
 
 
 @register.simple_tag

@@ -18,6 +18,7 @@ STATUS = (
     (3, _("Ambiguous")),
     (4, _("Asumption")),
     (5, _("Anomalous")),
+    (6, _("Measured")),
     (-1, _("Error")),
     (-2, _("Irrelevant")),
 )
@@ -116,7 +117,7 @@ class Conversion(models.Model, CacheKeyMixin):
         return _str
 
     @cache()
-    def resolve(self, material, year=None):
+    def resolve(self, year=None):
 
         """ Resolve the conversion to it's 'to_unit'. If any subconversions
         are found, try to resolve these as well. """
@@ -127,7 +128,7 @@ class Conversion(models.Model, CacheKeyMixin):
 
             _res = sub.get_operator()(
                 _res,
-                sub.resolve(self.to_unit, material, year=year))
+                sub.resolve(self.to_unit, year=year))
 
         return _res
 
