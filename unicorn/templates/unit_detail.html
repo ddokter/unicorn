@@ -1,0 +1,20 @@
+{% extends 'base_detail.html' %}
+
+{% load i18n unicorn_tags %}
+
+{% block content %}
+
+{% if unit.info %}
+<p>
+  {{ unit.info }}
+</p>
+{% endif %}
+
+<dl>
+  <dt>{% trans 'Unit' %}</dt>
+  <dd><a href="{{ object.unit|detail_url }}">{{ object.unit }}</a></dd>
+</dl>
+
+
+
+{% endblock %}

@@ -187,8 +187,17 @@ class CreateView(GenericMixin, BaseCreateView, CTypeMixin):
 
 class UpdateView(GenericMixin, BaseUpdateView, CTypeMixin):
 
-    fields = "__all__"
     view_type = "edit"
+
+    @property
+    def fields(self):
+
+        if not hasattr(self.object, 'readonly'):
+            return "__all__"
+        else:
+            return [field.name for field in self.object._meta.fields
+                    if field.editable
+                    and field.name not in self.object.readonly]
 
     @property
     def permission(self):

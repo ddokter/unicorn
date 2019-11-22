@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-29 15:42+0000\n"
-"PO-Revision-Date: 2019-03-29 16:43+0100\n"
+"PO-Revision-Date: 2019-09-24 20:43+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -161,7 +161,7 @@ msgstr "Recepten"
 
 #: models/recipe.py:53 templates/recipe_detail.html:47
 msgid "Malted"
-msgstr "Gemouten"
+msgstr "Gemout"
 
 #: models/source.py:10
 msgid "Title"

@@ -110,7 +110,9 @@
     <tr>
       <th />
       <th>{% trans 'Original' %}</th>
-      <th>{% trans 'Converted' %} ({% trans 'Malted' %})</th>
+      <th>{% trans 'Converted' %}</th>
+      <th>{% trans 'Malted' %}</th>
+      <th>{% trans 'Percentage' %}</th>
     </tr>
   </thead>
   <tbody>
@@ -131,18 +133,24 @@
         </div>
         {% else %}
         {{ converted|get:material.id|get:'amount'|floatformat:2 }}
-
-        {% if converted|get:material.id|get:'amount_malted' %}
-        ({{ converted|get:material.id|get:'amount_malted'|floatformat:2 }})
-        {% endif %}
-
         {{ converted|get:material.id|get:'unit' }}
         {% endif %}
       </td>
+      <td>
+        {% if converted|get:material.id|get:'amount_malted' %}
+        {{ converted|get:material.id|get:'amount_malted'|floatformat:2 }}
+        {{ converted|get:material.id|get:'unit' }}
+        {% endif %}
+      </td>
+      <td>
+        {% if converted|get:material.id|get:'percentage' %}
+        {{ converted|get:material.id|get:'percentage'|floatformat:2 }} %
+        {% endif %}        
+      </td>         
     </tr>
     <tr>
       <th>{% trans 'Conversion' %}</th>
-      <td colspan="3">
+      <td colspan="4">
         1 {{ material.unit }} {{ material.material }} = {{ converted|get:material.id|get:'wavg'|floatformat:2 }} {{ converted|get:material.id|get:'unit' }}
 
         <a data-toggle="collapse"

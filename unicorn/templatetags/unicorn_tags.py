@@ -120,6 +120,12 @@ def path_detail(path):
 
 
 @register.filter
+def format_sources(sources):
+
+    return "[%s]" % ", ".join([src.abbr for src in sources])
+
+
+@register.filter
 def detail_url(obj):
 
     return reverse('view', kwargs={'model': get_model_name(obj), 'pk': obj.id})
@@ -189,3 +195,25 @@ def has_model_perm(user_model, perm):
     user, model = user_model
 
     return user.has_perm("unicorn.%s_%s" % (perm, model))
+
+
+@register.simple_tag
+def icon(obj):
+
+    try:
+        return render_to_string("snippets/icon/%s.html" %
+                                get_model_name(obj),
+                                {'obj': obj})
+    except:
+        return ""
+
+
+@register.simple_tag
+def status(obj):
+
+    try:
+        return render_to_string("snippets/status/%s.html" %
+                                get_model_name(obj),
+                                {'obj': obj})
+    except:
+        return ""

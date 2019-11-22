@@ -19,6 +19,9 @@
   <ul class="list-group">
     {% for item in items %}
     <li class="list-group-item">
+
+      {% icon item %}
+      
       <a href="{{ item|detail_url }}">{{ item }}</a>
 
       {% if item.status %}

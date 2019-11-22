@@ -313,6 +313,7 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
     def _converted_fermentables(self, unit):
 
         results = {}
+        total_malt_weight = 0.0
 
         for material in self.object.list_fermentables():
 
@@ -328,8 +329,7 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
                     # than the original grain
                     _factor = 0.775
                 else:
-                    # decrease weight for malting per hl, but volume
-                    # increases by 7%
+                    # decrease weight, but volume increases by 7%
                     #
                     _factor = 1.07 * 0.775
 
@@ -341,6 +341,8 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
                     'unit': unit,
                     'wavg': w_avg,
                     'paths': paths}
+
+                total_malt_weight += results[material.id]['amount_malted']
             else:
                 results[material.id] = {
                     'amount': -1,
@@ -351,22 +353,18 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
                     'wavg': -1,
                     'paths': []}
 
+            for key in results:
+                results[key]['percentage'] = (results[key]['amount_malted'] /
+                                              total_malt_weight) * 100
+
         return results
 
     def _get_paths(self, material, unit):
 
-        # Not correct. Need to take into account the material...
-        # if (material.unit, unit) in self.units_found:
-        #    paths = self.units_found[(material.unit, unit)]
-        # else:
-        paths = material.unit.find_conversion_paths(
+        return material.unit.find_conversion_paths(
             unit,
             material.material,
             year=self.object.year)
-
-        # self.units_found[(material.unit, unit)] = paths
-
-        return paths
 
 
 class RecipeConvertModernView(FormView, SingleObjectMixin, CTypeMixin):

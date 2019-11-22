@@ -117,7 +117,7 @@ class Conversion(models.Model, CacheKeyMixin):
         return _str
 
     @cache()
-    def resolve(self, year=None):
+    def resolve(self, material, year=None):
 
         """ Resolve the conversion to it's 'to_unit'. If any subconversions
         are found, try to resolve these as well. """
@@ -128,7 +128,7 @@ class Conversion(models.Model, CacheKeyMixin):
 
             _res = sub.get_operator()(
                 _res,
-                sub.resolve(self.to_unit, year=year))
+                sub.resolve(self.to_unit, material, year=year))
 
         return _res
 

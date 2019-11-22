@@ -3,24 +3,24 @@
 <div class="card">
   <div class="card-body">
     <dl class="row">
-      <dt class="col-3">{% trans 'Factor' %}</dt>
+      <dt class="col-3">{% trans 'Result' %}</dt>
       <dd class="col-9">{{ path.factor|floatformat:2 }}</dd>
       <dt class="col-3">{% trans 'Precision' %}</dt>
-      <dd class="col-9">{{ path.precision|floatformat:3 }}</dd>      
+      <dd class="col-9">{{ path.precision|floatformat:3 }}</dd>
     </dl>
-    
+
     <ol>
       {% for conversion in path %}
       <li>
         <a href="{{ conversion|detail_url }}">
           {{ conversion }}
           {% if conversion.status %}
-          <span class="badge badge-pill badge-{{ conversion.status|status_class }}">
+          <span class="float-right badge badge-pill badge-{{ conversion.status|status_class }}">
             {{ conversion|status_label }}
           </span>
           {% endif %}
-          
         </a>
+        {% byline conversion %}
       </li>
       {% endfor %}
     </ol>

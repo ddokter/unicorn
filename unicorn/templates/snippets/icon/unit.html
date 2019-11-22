@@ -1,0 +1,8 @@
+{% if obj.quantity == 1 %}
+<i class="icon fas fa-balance-scale"></i>
+{% elif obj.quantity == 2 %}
+<i class="icon fas fa-cube"></i>
+{% elif obj.quantity == 3 %}
+<i class="icon fas fa-balance-scale"></i>/
+<i class="icon fas fa-cube"></i>
+{% endif %}

@@ -24,3 +24,11 @@ blockquote {
 .list-group-item:hover .btn {
     opacity: 1.0;
 }
+
+.icon {
+    color: #707070;
+}
+
+.status {
+    font-size: 70%;
+}

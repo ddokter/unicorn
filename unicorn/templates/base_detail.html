@@ -32,8 +32,13 @@
 {% endblock %}
 
 {% block title %}
+{% icon object %}
 {{ object }}
 {% endblock title %}
+
+{% block status %}
+{% status object %}
+{% endblock status %}
 
 {% block content %}
 <dl>

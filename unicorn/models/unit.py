@@ -27,6 +27,7 @@ MAX_PATH_LENGTH = 2
 QUANTITY = (
     (1, _("Mass")),
     (2, _("Volume")),
+    (3, _("Mixed")),
 )
 
 
@@ -52,6 +53,8 @@ class AbstractUnit(PolymorphicModel):
     synonyms = models.CharField(_("Synonyms"), max_length=255,
                                 null=True, blank=True)
     status = models.SmallIntegerField(_("Status"), default=0, choices=STATUS)
+    quantity = models.SmallIntegerField(_("Quantity"), default=2,
+                                        choices=QUANTITY)
 
     def find_conversion_paths(self, unit, material, _filter=None, year=None,
                               stack=None):
@@ -83,12 +86,12 @@ class AbstractUnit(PolymorphicModel):
         conv_model = apps.get_model("unicorn", "Conversion")
 
         if _stack:
-            path = Path(self, unit)
+            path = Path(self, unit, material)
             for conv in _stack:
                 path.append(conv)
             stack = [(_stack[0].to_unit, path)]
         else:
-            stack = [(self, Path(self, unit))]
+            stack = [(self, Path(self, unit, material))]
 
         # If last conversion on path is already what we are looking
         # for, yield this! Also, return since it looks like we're not
@@ -140,9 +143,23 @@ class AbstractUnit(PolymorphicModel):
 
             qs = qs.exclude(status__lt=0)
 
+            # Either the from and to units are both volume units and
+            # the material is 'strict' (like barley)
+            # or
+            # the material is the same as the conversion or is in the
+            # material categories
+            #
             qs = qs.filter(
                 Q(generic=True) |
-                Q(material__strict_measurement=True)
+                Q(
+                    Q(from_unit__quantity=2) &
+                    Q(to_unit__quantity=2) &
+                    Q(material__strict_measurement=True)
+                ) |
+                Q(
+                    Q(material=material) |
+                    Q(material__in=material.categories.all())
+                )
             )
 
             if year:
@@ -232,9 +249,6 @@ class BaseUnit(AbstractUnit):
 
     """
 
-    quantity = models.SmallIntegerField(_("Quantity"), default=2,
-                                        choices=QUANTITY)
-
     def __str__(self):
 
         return self.name
@@ -255,14 +269,17 @@ class LocalUnit(AbstractUnit):
     location = models.ForeignKey(Location, on_delete=models.CASCADE,
                                  verbose_name=_("Location"))
 
+    readonly = ['quantity']
+
     def __str__(self):
 
         return self.name or "%s (%s)" % (self.unit.name, self.location)
 
-    @property
-    def quantity(self):
+    def save(self, *args, **kwargs):
 
-        return self.unit.quantity
+        self.quantity = self.unit.quantity
+
+        super(LocalUnit, self).save(*args, **kwargs)
 
     class Meta:
 
