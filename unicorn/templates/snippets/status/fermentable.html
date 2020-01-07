@@ -1,0 +1,11 @@
+{% load i18n %}
+
+{% if obj.strict_measurement %}
+<span class="badge badge-pill badge-info">
+  {% trans 'strict' %}
+</span>
+{% else %}
+<span class="badge badge-pill badge-warning">
+  {% trans 'non strict' %}
+</span>
+{% endif %}

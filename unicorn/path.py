@@ -57,7 +57,6 @@ class Path(list):
     def clear(self):
 
         self.precision = 1
-        # self.factor = 1
         self._last_node = self.from_node
 
         return super().clear()
@@ -67,7 +66,6 @@ class Path(list):
         assert(isinstance(path, self.__class__))
 
         self.precision *= path.precision
-        # self.factor *= path.factor
         self._last_node = path._last_node
 
         return super().extend(path)
@@ -82,7 +80,6 @@ class Path(list):
         new._extend(self[:])
 
         new.precision = self.precision
-        # new.factor = self.factor
         new._last_node = self._last_node
 
         return new

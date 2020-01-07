@@ -81,6 +81,8 @@ class AbstractUnit(PolymorphicModel):
         within the boundaries set by MIN_PRECISION and MAX_PATH_LENGTH
         are considered.
 
+        TODO: year is not used at the moment...
+
         """
 
         conv_model = apps.get_model("unicorn", "Conversion")
@@ -162,11 +164,13 @@ class AbstractUnit(PolymorphicModel):
                 )
             )
 
-            if year:
-                qs = qs.filter(Q(year_from__lte=year) |
-                               Q(year_from__isnull=True)).filter(
-                                   Q(year_to__gte=year) |
-                                   Q(year_to__isnull=True))
+            if len(path) and path[-1].year_from:
+                qs = qs.filter(Q(year_to__gte=path[-1].year_from) |
+                               Q(year_to__isnull=True))
+
+            if len(path) and path[-1].year_to:
+                qs = qs.filter(Q(year_from__gte=path[-1].year_to) |
+                               Q(year_from__isnull=True))
 
             qs = qs.find_for_unit(last_unit).distinct()
 

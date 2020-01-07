@@ -4,11 +4,18 @@ from polymorphic.models import PolymorphicModel
 from beerlab.fermentable import FermentableMixin
 
 
+STRICT_MEASUREMENT_HELP = """Defines whether this material was strictly
+measured on markets, as opposed to materials that were measured in a lax
+way to compensate for low weight/volume ratio."""
+
+
 class Material(PolymorphicModel):
 
     name = models.CharField(_("Name"), max_length=100)
-    strict_measurement = models.BooleanField(_("Strictly measured"),
-                                             default=False)
+    strict_measurement = models.BooleanField(
+        _("Strictly measured"),
+        help_text=_(STRICT_MEASUREMENT_HELP),
+        default=False)
     synonyms = models.CharField(_("Synonyms"), max_length=255,
                                 null=True, blank=True)
 
