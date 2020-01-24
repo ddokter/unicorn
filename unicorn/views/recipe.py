@@ -9,10 +9,8 @@ from unicorn.models.recipe import Recipe
 from unicorn.models.unit import BaseUnit
 from unicorn.models.material import Nonfermentable
 from unicorn.views.base import CTypeMixin
-from unicorn.utils import calculate_avg
-
-
-BREWHOUSE_EFF = 0.8
+from unicorn.utils import (calculate_avg, get_brewhouse_efficiency,
+                           get_yeast_efficiency)
 
 
 # Hop utilization factor, assuming that all hops are boiled for a long
@@ -183,12 +181,13 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
         g_units = 0
 
         for ingredient in self.fermentables.values():
-            _yield += (ingredient['extract'] * BREWHOUSE_EFF *
+            _yield += (ingredient['extract'] *
+                       get_brewhouse_efficiency(self.object.year) *
                        ingredient['amount_malted'])
 
             g_units += (
                 (ingredient['gu'] * ingredient['amount_malted'] *
-                 BREWHOUSE_EFF) /
+                 get_brewhouse_efficiency(self.object.year)) /
                 (self.converted_yield['amount'] / 10))
 
         density = (1000 + g_units) / 1000.0
@@ -205,7 +204,8 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
         return {'plato': plato,
                 'og': density,
                 'kghl': total_weight / (self.converted_yield['amount'] / 100),
-                'alc': (og_units - og_units * 0.5) * 0.135}
+                'alc': (og_units *
+                        get_yeast_efficiency(self.object.year)) * 0.135}
 
     @property
     def ibu(self):
@@ -323,15 +323,18 @@ class RecipeConvertView(FormView, SingleObjectMixin, CTypeMixin):
 
                 w_avg = calculate_avg(paths)
 
-                if material.malted:
-                    # decrease with 22.5% due to calculations with
-                    # actual grain. Malted grain is 20-25% less dense
-                    # than the original grain
-                    _factor = 0.775
+                if material.unit.quantity != 1:
+                    if material.malted:
+                        # decrease with 22.5% due to calculations with
+                        # actual grain. Malted grain is 20-25% less dense
+                        # than the original grain
+                        _factor = 0.775
+                    else:
+                        # decrease weight, but volume increases by 7%
+                        #
+                        _factor = 1.07 * 0.775
                 else:
-                    # decrease weight, but volume increases by 7%
-                    #
-                    _factor = 1.07 * 0.775
+                    _factor = 1
 
                 results[material.id] = {
                     'amount': w_avg * material.amount,

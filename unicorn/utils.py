@@ -75,3 +75,41 @@ def obj_cache(time=None):
             return result
         return wrapper
     return decorator
+
+
+def get_brewhouse_efficiency(year):
+
+    """Efficiency. We assume that after 1900 grain efficiency was at
+    modern levels.
+
+    """
+
+    base = 0.8
+
+    if year > 1900:
+        coeff = 1
+    elif year < 1500:
+        coeff = 0.8
+    else:
+        coeff = 1 - ((1900 - year) / 2000.0)
+
+    return base * coeff
+
+
+def get_yeast_efficiency(year):
+
+    """Efficiency. We assume that after 1900 attenuation was up to modern
+    standards.
+
+    """
+
+    base = 0.7
+
+    if year > 1900:
+        coeff = 1
+    elif year < 1500:
+        coeff = 0.8
+    else:
+        coeff = 1 - ((1900 - year) / 2000.0)
+
+    return base * coeff
