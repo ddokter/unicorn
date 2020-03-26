@@ -76,11 +76,14 @@
       {% for conversion in path %}
       <li>
         <a href="{% url 'view' model='conversion' pk=conversion.id %}">
-          {{ conversion }}
+          {{ conversion }} &rarr;
+          {{ path.result_path|get:conversion.id|floatformat:2 }}
+        </a>
+        <div class="float-right">
           <span class="badge badge-pill badge-{{ conversion.status|status_class }}">
             {{ conversion|status_label }}
           </span>
-        </a>
+        </div>
       </li>
       {% endfor %}
     </ol>

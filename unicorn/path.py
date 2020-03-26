@@ -16,6 +16,7 @@ class Path(list):
         self.to_node = to_node
         self.material = material
         self._last_node = from_node
+        self._results = {}
 
         return super().__init__()
 
@@ -33,7 +34,16 @@ class Path(list):
                 _factor /= conv.resolve(self.material)
                 _last_node = conv.from_unit
 
+            self._results[conv.id] = _factor
+
         return _factor
+
+    @property
+    def result_path(self):
+
+        """ Return a dict that indicates the result after the given step """
+
+        return self._results
 
     def __delitem__(self, idx):
 
