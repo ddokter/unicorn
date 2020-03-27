@@ -59,7 +59,7 @@ class SubConversion(Expression):
             unit, material, year=year, _filter=_filter)
 
         try:
-            return paths[0].factor * self.amount
+            return paths[0].result * self.amount
         except IndexError:
             raise UnresolvableExpression
 

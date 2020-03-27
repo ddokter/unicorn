@@ -80,9 +80,6 @@ class AbstractUnit(PolymorphicModel):
         path is found, only paths where precision and length are
         within the boundaries set by MIN_PRECISION and MAX_PATH_LENGTH
         are considered.
-
-        TODO: year is not used at the moment...
-
         """
 
         conv_model = apps.get_model("unicorn", "Conversion")
@@ -115,8 +112,7 @@ class AbstractUnit(PolymorphicModel):
         precision = 0
 
         # Keep track of end points of the paths under scrutiny. Any
-        # new end-point that is less precise than this, can be
-        # discarded.
+        # new end-point that is less precise than this, is discarded.
         #
         seen = {}
 
@@ -164,12 +160,11 @@ class AbstractUnit(PolymorphicModel):
                 )
             )
 
-            if len(path) and path[-1].year_from:
-                qs = qs.filter(Q(year_to__gte=path[-1].year_from) |
+            if year:
+                qs = qs.filter(Q(year_to__gte=year) |
                                Q(year_to__isnull=True))
 
-            if len(path) and path[-1].year_to:
-                qs = qs.filter(Q(year_from__gte=path[-1].year_to) |
+                qs = qs.filter(Q(year_from__lte=year) |
                                Q(year_from__isnull=True))
 
             qs = qs.find_for_unit(last_unit).distinct()
@@ -204,6 +199,10 @@ class AbstractUnit(PolymorphicModel):
                         else:
                             end_unit = conv.to_unit
 
+                        # If we have already seen this end unit in a path,
+                        # with greater precision, we might as well throw
+                        # the other ones away...
+                        #
                         if (seen.get(end_unit.id, -inf) > new_path.precision):
                             continue
                         else:
@@ -214,10 +213,8 @@ class AbstractUnit(PolymorphicModel):
                         # if(conv.from_unit.quantity != conv.to_unit.quantity):
                         #    continue
 
-                        if conv.to_unit == last_unit:
-                            stack.append((conv.from_unit, new_path))
-                        else:
-                            stack.append((conv.to_unit, new_path))
+                        stack.append((end_unit, new_path))
+
                 except UnresolvableExpression:
 
                     # forget about this conversion...

@@ -66,7 +66,7 @@ class UnitConvertView(FormView, SingleObjectMixin, CTypeMixin):
 
     def _result(self, paths, to_unit, material):
 
-        results = [path.factor for path in paths]
+        results = [path.result for path in paths]
 
         if len(results):
             return {

@@ -20,7 +20,7 @@ def calculate_avg(paths):
     """ Path is supposed to be an array of Path objects """
 
     return (
-        sum([path.factor * path.precision for path in paths]) /
+        sum([path.result * path.precision for path in paths]) /
         sum([path.precision for path in paths])
     )
 

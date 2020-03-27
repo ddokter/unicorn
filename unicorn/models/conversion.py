@@ -132,10 +132,6 @@ class Conversion(models.Model, CacheKeyMixin):
 
         return _res
 
-    def get_factor(self):
-
-        return self.from_amount / self.to_amount
-
     @obj_cache()
     def get_precision(self):
 

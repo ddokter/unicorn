@@ -33,7 +33,7 @@ class TestPath(TestCase):
     def test_init(self):
 
         self.assertEquals(self.path.precision, 1)
-        self.assertEquals(self.path.factor, 1)
+        self.assertEquals(self.path.result, 1)
 
     def test_append(self):
 
@@ -61,4 +61,4 @@ class TestPath(TestCase):
 
         self.assertEquals(self.path.material, new.material)
         self.assertEquals(self.path.precision, new.precision)
-        self.assertEquals(self.path.factor, new.factor)
+        self.assertEquals(self.path.result, new.result)

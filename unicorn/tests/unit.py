@@ -117,5 +117,5 @@ class TestUnit(TestCase):
 
         paths = self.groningse_mud.find_conversion_paths(self.kilo, hop)
 
-        self.assertAlmostEqual(paths[0].factor, 8.45, 2)
+        self.assertAlmostEqual(paths[0].result, 8.45, 2)
         self.assertAlmostEqual(paths[0].precision, 0.80, 2)

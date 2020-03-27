@@ -5,8 +5,9 @@ class UnresolvableExpression(Exception):
 
 class Path(list):
 
-    """Extend list to add some extra info, like the current conversion
-    factor and the precision of the path found.
+    """Extend list to add some extra info, like the precision of the path
+    found.
+
     """
 
     def __init__(self, from_node, to_node, material):
@@ -21,22 +22,22 @@ class Path(list):
         return super().__init__()
 
     @property
-    def factor(self):
+    def result(self):
 
-        _factor = 1
+        _res = 1
         _last_node = self.from_node
 
         for conv in self:
             if _last_node == conv.from_unit:
-                _factor *= conv.resolve(self.material)
+                _res *= conv.resolve(self.material)
                 _last_node = conv.to_unit
             else:
-                _factor /= conv.resolve(self.material)
+                _res /= conv.resolve(self.material)
                 _last_node = conv.from_unit
 
-            self._results[conv.id] = _factor
+            self._results[conv.id] = _res
 
-        return _factor
+        return _res
 
     @property
     def result_path(self):
